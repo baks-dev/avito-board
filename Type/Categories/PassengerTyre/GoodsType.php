@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *  
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *  
+ *
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *  
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,36 +23,37 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board;
+namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryInterface;
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
+final class GoodsType implements AvitoBoardCategoryInterface
 {
-    public const NAMESPACE = __NAMESPACE__.'\\';
+    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
-    public const PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function getTitle(): string
     {
-        $services = $container->services()
-            ->defaults()
-            ->public()
-            ->autowire()
-            ->autoconfigure();
+        return 'Легковые шины';
+    }
 
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
+    public function getCategory(): string
+    {
+        return self::ROOT_CATEGORY;
+    }
 
-        $services->load(
-            self::NAMESPACE.'Type\Categories\\',
-            self::PATH.'Type/Categories'
-        );
+    public function isRequired(): bool
+    {
+        return true;
+    }
+
+    /** Массив допустимых значений */
+    public function choices(): ?array
+    {
+        return ['Товар приобретен на продажу', 'Товар от производителя'];
+    }
+
+    public static function priority(): int
+    {
+        return 996;
     }
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding='UTF-8'?>
+
+<Ads formatVersion='3' target='Avito.ru'>
+    {% for card in products|filter(v => v.product_price > 0) %}
+        <Ad>
+            {#        обязательные параметры #}
+            <Id>card.product_article</Id>
+            <Address>_from_avito_board</Address>
+
+            <Category>Запчасти и аксессуары</Category>{# значение от авито апи #}
+            <Description></Description>
+
+            <GoodsType>Шины, диски и колёса</GoodsType>{# значение от авито апи #}
+            <AdType></AdType>
+            <ProductType></ProductType>
+            <Brand></Brand>
+            <Model></Model>
+            <TireSectionWidth></TireSectionWidth>
+            <RimDiameter></RimDiameter>
+            <TireAspectRatio></TireAspectRatio>
+            <TireType></TireType>
+            <Quantity></Quantity>
+            <ResidualTread></ResidualTread>
+            <BackRimDiameter></BackRimDiameter>
+            <BackTireAspectRatio></BackTireAspectRatio>
+            <BackTireSectionWidth></BackTireSectionWidth>
+            <Condition></Condition>
+
+            {#        опциональные параметры #}
+            <DateBegin></DateBegin>
+            <DateEnd></DateEnd>
+            <ListingFee></ListingFee>
+            <AdStatus></AdStatus>
+            <AvitoId></AvitoId>
+            <ManagerName></ManagerName>
+            <ContactPhone></ContactPhone>
+            <Price></Price>
+            <DisplayAreas></DisplayAreas>
+            <Images>
+                <Image url=""/>
+            </Images>
+            <VideoURL></VideoURL>
+            <Latitude></Latitude>
+            <Longitude></Longitude>
+            <ContactMethod></ContactMethod>
+            <Title></Title>
+            <TypeId></TypeId>
+            <InternetCalls></InternetCalls>
+            <CallsDevices></CallsDevices>
+            <Delivery></Delivery>
+            <WeightForDelivery></WeightForDelivery>
+            <LengthForDelivery></LengthForDelivery>
+            <HeightForDelivery></HeightForDelivery>
+            <WidthForDelivery></WidthForDelivery>
+            <VideoFileURL></VideoFileURL>
+            <LoadIndex></LoadIndex>
+            <Homologation></Homologation>
+            <SpeedIndex></SpeedIndex>
+            <RunFlat></RunFlat>
+            <DifferentWidthTires></DifferentWidthTires>
+            <TireYear></TireYear>
+        </Ad>
+    {% endfor %}
+</Ads>
+
+

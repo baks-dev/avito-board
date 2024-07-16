@@ -1,0 +1,23 @@
+# Role
+
+ROLE_AVITO_BOARD:
+  header: 'Avito-board'
+  name: 'Avito-board products'
+  desc: 'Avito auth tokens'
+
+# Rules
+ROLE_AVITO_BOARD_INDEX:
+  name: 'View'
+  desc: ''
+
+ROLE_AVITO_BOARD_NEW:
+  name: 'Add'
+  desc: ''
+
+ROLE_AVITO_BOARD_EDIT:
+  name: 'Edit'
+  desc: ''
+
+ROLE_AVITO_BOARD_DELETE:
+  name: 'Delete'
+  desc: ''
