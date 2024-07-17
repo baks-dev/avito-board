@@ -28,7 +28,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class MappingCategoryForm extends AbstractType
+final class CategoryMapperForm extends AbstractType
 {
     public function __construct(
         private AvitoBoardCategoryProvider $categoryProvider,
@@ -83,7 +83,7 @@ final class MappingCategoryForm extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => MappingCategoryDTO::class,
+                'data_class' => CategoryMapperDTO::class,
                 'method' => 'POST',
                 'attr' => ['class' => 'w-100'],
             ],

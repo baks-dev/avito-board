@@ -27,7 +27,7 @@ namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
 
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 
-final class BrandFeedElement implements AvitoBoardFeedElementInterface
+final class Brand implements AvitoBoardFeedElementInterface
 {
     public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
@@ -49,8 +49,7 @@ final class BrandFeedElement implements AvitoBoardFeedElementInterface
     /** Массив допустимых значений */
     public function choices(): ?array
     {
-        $brands = file_get_contents('https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml');
-        dd($brands);
+        return null;
     }
 
     public static function priority(): int
@@ -60,6 +59,6 @@ final class BrandFeedElement implements AvitoBoardFeedElementInterface
 
     public function getFeedElement(): string
     {
-        return 'Address';
+        return 'Brand';
     }
 }

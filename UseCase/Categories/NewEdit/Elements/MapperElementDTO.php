@@ -23,7 +23,7 @@ use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class AvitoBoardMapperElementDTO implements AvitoBoardProductCategoriesMappingInterface
+final class MapperElementDTO implements AvitoBoardProductCategoriesMappingInterface
 {
     /**
      * @TODO нужно понять, какое значение сохранять в БД

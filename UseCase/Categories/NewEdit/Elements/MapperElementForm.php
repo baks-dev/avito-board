@@ -32,7 +32,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Форма для отрисовки полей соответствия между категориями -
  * передаются те поля, которые необходимо сопоставить
  */
-final class AvitoBoardMapperElementForm extends AbstractType
+final class MapperElementForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -40,7 +40,7 @@ final class AvitoBoardMapperElementForm extends AbstractType
 
             $form = $event->getForm();
 
-            /** @var AvitoBoardMapperElementDTO $mapperElementDTO */
+            /** @var MapperElementDTO $mapperElementDTO */
             if ($mapperElementDTO = $event->getData())
             {
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productField */
@@ -99,7 +99,7 @@ final class AvitoBoardMapperElementForm extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => AvitoBoardMapperElementDTO::class,
+                'data_class' => MapperElementDTO::class,
                 'property_fields' => null,
             ]
         );

@@ -22,7 +22,7 @@ use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class MappingCategoryDTO
+final class CategoryMapperDTO
 {
     #[Assert\NotBlank]
     #[Assert\Uuid]

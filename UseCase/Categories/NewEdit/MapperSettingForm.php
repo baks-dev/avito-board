@@ -20,8 +20,8 @@ namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit;
 
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryProvider;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementDTO;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementForm;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\MapperElementDTO;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\MapperElementForm;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\ModificationCategoryProductSectionField\ModificationCategoryProductSectionFieldInterface;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\OffersCategoryProductSectionField\OffersCategoryProductSectionFieldInterface;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\PropertyFieldsCategoryChoiceInterface;
@@ -37,7 +37,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-final class AvitoBoardMapperForm extends AbstractType
+final class MapperSettingForm extends AbstractType
 {
     public function __construct(
         private readonly OffersCategoryProductSectionFieldInterface       $offersCategoryProductSectionField,
@@ -53,11 +53,11 @@ final class AvitoBoardMapperForm extends AbstractType
 
             $form = $event->getForm();
 
-            /** @var AvitoBoardMapperDTO $mapperDTO */
+            /** @var MapperSettingDTO $mapperDTO */
             $mapperDTO = $event->getData();
 
             /**
-             * Параметры продукта в системе (ТПб варианты, модификации)
+             * Параметры продукта в системе (ТП, варианты, модификации)
              */
             $propertyFields = $this->getProductParameters($mapperDTO->getLocalCategory());
 
@@ -69,15 +69,13 @@ final class AvitoBoardMapperForm extends AbstractType
 
             foreach ($elements as $element)
             {
-                dump($element->choices());
-                $elementDTO = new AvitoBoardMapperElementDTO();
+                $elementDTO = new MapperElementDTO();
                 $elementDTO->setFeedElement($element);
                 $mapperDTO->addCategory($elementDTO);
             }
-            dd();
 
             $form->add('categories', CollectionType::class, [
-                'entry_type' => AvitoBoardMapperElementForm::class,
+                'entry_type' => MapperElementForm::class,
                 'entry_options' => [
                     'label' => false,
                     'property_fields' => $propertyFields
@@ -99,7 +97,7 @@ final class AvitoBoardMapperForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => AvitoBoardMapperDTO::class,
+            'data_class' => MapperSettingDTO::class,
             'method' => 'POST',
             'attr' => ['class' => 'w-100'],
         ]);

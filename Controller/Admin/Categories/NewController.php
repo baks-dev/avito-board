@@ -23,10 +23,10 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Categories;
 
-use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\MappingCategoryDTO;
-use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\MappingCategoryForm;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\AvitoBoardMapperDTO;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\AvitoBoardMapperForm;
+use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\CategoryMapperDTO;
+use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\CategoryMapperForm;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\MapperSettingDTO;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\MapperSettingForm;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Products\Category\Entity\CategoryProduct;
@@ -46,9 +46,9 @@ final class NewController extends AbstractController
     #[Route('/admin/avito-board/categories/before_new', name: 'admin.categories.beforenew', methods: ['POST', 'GET'])]
     public function beforeNew(Request $request): Response
     {
-        $mappingCategory = new MappingCategoryDTO();
+        $mappingCategory = new CategoryMapperDTO();
 
-        $form = $this->createForm(MappingCategoryForm::class, $mappingCategory, [
+        $form = $this->createForm(CategoryMapperForm::class, $mappingCategory, [
             'action' => $this->generateUrl('avito-board:admin.categories.beforenew'),
         ]);
 
@@ -81,11 +81,11 @@ final class NewController extends AbstractController
     )]
     public function new(Request $request, #[MapEntity] CategoryProduct $category, string $avitoCategory): Response
     {
-        $newDTO = new AvitoBoardMapperDTO();
+        $newDTO = new MapperSettingDTO();
         $newDTO->setLocalCategory($category);
         $newDTO->setAvitoCategory($avitoCategory);
 
-        $form = $this->createForm(AvitoBoardMapperForm::class, $newDTO);
+        $form = $this->createForm(MapperSettingForm::class, $newDTO);
         $form->handleRequest($request);
 
         return $this->render([

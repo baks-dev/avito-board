@@ -21,13 +21,13 @@ namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardCategoriesEventInterface;
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Event\AvitoBoardCategoriesEventUid;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementDTO;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\MapperElementDTO;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class AvitoBoardMapperDTO implements AvitoBoardCategoriesEventInterface
+final class MapperSettingDTO implements AvitoBoardCategoriesEventInterface
 {
     #[Assert\Uuid]
     private ?AvitoBoardCategoriesEventUid $id = null;
@@ -91,12 +91,12 @@ final class AvitoBoardMapperDTO implements AvitoBoardCategoriesEventInterface
         return $this->categories;
     }
 
-    public function addCategory(AvitoBoardMapperElementDTO $element): void
+    public function addCategory(MapperElementDTO $element): void
     {
         $this->categories->add($element);
     }
 
-    public function removeCategory(AvitoBoardMapperElementDTO $element): void
+    public function removeCategory(MapperElementDTO $element): void
     {
         $this->categories->removeElement($element);
     }
