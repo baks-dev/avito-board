@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryProvider;
 use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementForm;
@@ -53,26 +53,28 @@ final class AvitoBoardMapperForm extends AbstractType
 
             $form = $event->getForm();
 
-            /** @var AvitoBoardMapperDTO $newDTO */
-            $newDTO = $event->getData();
+            /** @var AvitoBoardMapperDTO $mapperDTO */
+            $mapperDTO = $event->getData();
 
             /**
              * Параметры продукта в системе (ТПб варианты, модификации)
              */
-            $propertyFields = $this->getProductParameters($newDTO->getLocalCategory());
+            $propertyFields = $this->getProductParameters($mapperDTO->getLocalCategory());
 
             /**
              * Массив теггированных элементов для соответствующей категории Авито
-             * @var list<AvitoBoardCategoryElementInterface>|null $elements
+             * @var list<AvitoBoardFeedElementInterface>|null $elements
              */
-            $elements = $this->categoryProvider->getElements($newDTO->getAvitoCategory());
+            $elements = $this->categoryProvider->getFeedElements($mapperDTO->getAvitoCategory());
 
             foreach ($elements as $element)
             {
+                dump($element->choices());
                 $elementDTO = new AvitoBoardMapperElementDTO();
-                $elementDTO->setType($element);
-                $newDTO->addCategory($elementDTO);
+                $elementDTO->setFeedElement($element);
+                $mapperDTO->addCategory($elementDTO);
             }
+            dd();
 
             $form->add('categories', CollectionType::class, [
                 'entry_type' => AvitoBoardMapperElementForm::class,
@@ -100,7 +102,7 @@ final class AvitoBoardMapperForm extends AbstractType
             'data_class' => AvitoBoardMapperDTO::class,
             'method' => 'POST',
             'attr' => ['class' => 'w-100'],
-        ], );
+        ]);
     }
 
     /**

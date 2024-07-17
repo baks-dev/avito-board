@@ -26,7 +26,7 @@ use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldU
  */
 interface AvitoBoardProductCategoriesMappingInterface
 {
-    public function getField(): ?CategoryProductSectionFieldUid;
+    public function getProductField(): ?CategoryProductSectionFieldUid;
 
     public function getDef(): ?string;
 }

@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Categories\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryProvider;
 use BaksDev\Products\Category\Repository\CategoryChoice\CategoryChoiceInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
@@ -61,10 +61,10 @@ final class MappingCategoryForm extends AbstractType
         $builder
             ->add('avitoCategory', ChoiceType::class, [
                 'choices' => $avitoCategories,
-                'choice_value' => static function (?AvitoBoardCategoryElementInterface $avitoCategories) {
+                'choice_value' => static function (?AvitoBoardFeedElementInterface $avitoCategories) {
                     return $avitoCategories?->getCategory();
                 },
-                'choice_label' => static function (AvitoBoardCategoryElementInterface $avitoCategories) {
+                'choice_label' => static function (AvitoBoardFeedElementInterface $avitoCategories) {
                     return $avitoCategories->getCategory() . ' / ' . $avitoCategories->getTitle();
                 },
                 'expanded' => false,

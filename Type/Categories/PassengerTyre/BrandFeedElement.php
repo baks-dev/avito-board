@@ -21,24 +21,45 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Avito\Board\Type\Categories;
+declare(strict_types=1);
 
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
 
-#[AutoconfigureTag('baks.avito.board.categories.type')]
-interface AvitoBoardCategoryElementInterface
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
+
+final class BrandFeedElement implements AvitoBoardFeedElementInterface
 {
-    public function getTitle(): string;
+    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
-    public function getCategory(): string;
+    public function getTitle(): string
+    {
+        return 'Легковые шины';
+    }
 
-    public function isRequired(): bool;
+    public function getCategory(): string
+    {
+        return self::ROOT_CATEGORY;
+    }
+
+    public function isRequired(): bool
+    {
+        return true;
+    }
 
     /** Массив допустимых значений */
-    public function choices(): ?array;
+    public function choices(): ?array
+    {
+        $brands = file_get_contents('https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml');
+        dd($brands);
+    }
 
-    /**
-     * Сортировка (чем выше число - тем первым в итерации будет значение)
-     */
-    public static function priority(): int;
+    public static function priority(): int
+    {
+        return 999;
+    }
+
+    public function getFeedElement(): string
+    {
+        return 'Address';
+    }
 }

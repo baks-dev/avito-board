@@ -19,7 +19,7 @@
 namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit;
 
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardCategoriesEventInterface;
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Event\AvitoBoardCategoriesEventUid;
 use BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Products\Category\Entity\CategoryProduct;
@@ -47,7 +47,6 @@ final class AvitoBoardMapperDTO implements AvitoBoardCategoriesEventInterface
 
     /**
      * Коллекция элементов формы с сопоставлением категорий для рендеринга в форме
-     * @var ArrayCollection<AvitoBoardCategoryElementInterface> $categories
      */
     #[Assert\Valid]
     private ArrayCollection $categories;
@@ -87,23 +86,18 @@ final class AvitoBoardMapperDTO implements AvitoBoardCategoriesEventInterface
         return $this->avitoCategory;
     }
 
-    /**
-     * @return ArrayCollection<AvitoBoardCategoryElementInterface>
-     */
     public function getCategories(): ArrayCollection
     {
         return $this->categories;
     }
 
-    public function addCategory(AvitoBoardMapperElementDTO $categoryDTO): void
+    public function addCategory(AvitoBoardMapperElementDTO $element): void
     {
-        $this->categories->add($categoryDTO);
-//        $this->categories->add($categoryDTO->getType());
+        $this->categories->add($element);
     }
 
-    public function removeCategory(AvitoBoardCategoryElementInterface $category): void
+    public function removeCategory(AvitoBoardMapperElementDTO $element): void
     {
-        $this->categories->removeElement($category);
+        $this->categories->removeElement($element);
     }
-
 }

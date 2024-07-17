@@ -25,9 +25,9 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 
-final class GoodsType implements AvitoBoardCategoryElementInterface
+final class GoodsType implements AvitoBoardFeedElementInterface
 {
     public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
@@ -57,7 +57,7 @@ final class GoodsType implements AvitoBoardCategoryElementInterface
         return 996;
     }
 
-    public function getElement(): string
+    public function getFeedElement(): string
     {
         return 'GoodsType';
     }

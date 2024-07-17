@@ -12,13 +12,13 @@ final readonly class AvitoBoardCategoryProvider
     ) {}
 
     /**
-     * @return list<AvitoBoardCategoryElementInterface>|null
+     * @return list<AvitoBoardFeedElementInterface>|null
      */
-    public function getElements(string $categoryType): ?array
+    public function getFeedElements(string $categoryType): ?array
     {
         $elements = null;
 
-        /** @var AvitoBoardCategoryElementInterface $category */
+        /** @var AvitoBoardFeedElementInterface $category */
         foreach ($this->categories as $category)
         {
             if ($category->getCategory() === $categoryType)
@@ -31,13 +31,13 @@ final readonly class AvitoBoardCategoryProvider
     }
 
     /**
-     * @return list<AvitoBoardCategoryElementInterface>|null
+     * @return list<AvitoBoardFeedElementInterface>|null
      */
     public function getCategories(): ?array
     {
         $categories = null;
 
-        /** @var AvitoBoardCategoryElementInterface $category */
+        /** @var AvitoBoardFeedElementInterface $category */
         foreach ($this->categories as $category)
         {
             $categories[$category->getTitle()] = $category;

@@ -19,52 +19,45 @@
 namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements;
 
 use BaksDev\Avito\Board\Entity\Categories\AvitoBoardProductCategoriesMappingInterface;
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class AvitoBoardMapperElementDTO implements AvitoBoardProductCategoriesMappingInterface
 {
     /**
-     * @TODO ???
-     * Тип характеристики (Параметр в запросе на апи)
+     * @TODO нужно понять, какое значение сохранять в БД
+     * Элемент для построения фида для Авито
      */
     #[Assert\NotBlank]
-    private ?AvitoBoardCategoryElementInterface $type = null;
+    private ?AvitoBoardFeedElementInterface $feedElement = null;
 
     /**
      * Связь на свойство продукта в категории
      */
     #[Assert\Uuid]
-    private ?CategoryProductSectionFieldUid $field = null;
+    private ?CategoryProductSectionFieldUid $productField = null;
 
-    /**
-     * @TODO ???
-     * По умолчанию
-     */
     private ?string $def = null;
 
-    public function getType(): ?AvitoBoardCategoryElementInterface
+    public function getFeedElement(): ?AvitoBoardFeedElementInterface
     {
-        return $this->type;
+        return $this->feedElement;
     }
 
-
-    public function setType(?AvitoBoardCategoryElementInterface $type): void
+    public function setFeedElement(?AvitoBoardFeedElementInterface $feedElement): void
     {
-        $this->type = $type;
+        $this->feedElement = $feedElement;
     }
 
-
-    public function getField(): ?CategoryProductSectionFieldUid
+    public function getProductField(): ?CategoryProductSectionFieldUid
     {
-        return $this->field;
+        return $this->productField;
     }
 
-
-    public function setField(?CategoryProductSectionFieldUid $field): void
+    public function setProductField(?CategoryProductSectionFieldUid $productField): void
     {
-        $this->field = $field;
+        $this->productField = $productField;
     }
 
     public function getDef(): ?string

@@ -21,44 +21,26 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Type\Categories;
 
-namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
-
-final class Id implements AvitoBoardFeedElementInterface
+#[AutoconfigureTag('baks.avito.board.categories.type')]
+interface AvitoBoardFeedElementInterface
 {
-    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public function getTitle(): string;
 
-    public function getTitle(): string
-    {
-        return 'Легковые шины';
-    }
+    public function getCategory(): string;
 
-    public function getCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
+    public function getFeedElement(): string;
 
-    public function isRequired(): bool
-    {
-        return true;
-    }
+    public function isRequired(): bool;
 
     /** Массив допустимых значений */
-    public function choices(): ?array
-    {
-        return null;
-    }
+    public function choices(): ?array;
 
-    public static function priority(): int
-    {
-        return 1000;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'Id';
-    }
+    /**
+     * Сортировка (чем выше число - тем первым в итерации будет значение)
+     */
+    public static function priority(): int;
 }

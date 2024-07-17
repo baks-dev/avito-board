@@ -51,17 +51,17 @@
 
         {% for category in form.categories %}
             <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
-                 style='background-color: {{ category.vars.data.type.isRequired ? '#fff2f2' : property.vars.data.field is null ? '#fffaef' : '#f8f8f8' }}'
+                 style='background-color: {{ category.vars.data.feedElement.isRequired ? '#fff2f2' : property.vars.data.field is null ? '#fffaef' : '#f8f8f8' }}'
             >
                 <div class="w-50">
-                    {{ form_label(category.field) }}
-                    {{ form_help(category.field) }}
+                    {{ form_label(category.def) }}
+                    {{ form_help(category.productField) }}
                 </div>
 
                 {# свойста для сопоставления #}
 
                 <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
-                    {{ form_widget(category.field, {
+                    {{ form_widget(category.productField, {
                         placeholder: 'Выберите поле из списка...',
                         attr: { 'data-select' : 'select2', class:  'mb-0'  }
                     }) }}

@@ -38,36 +38,31 @@ final class AvitoBoardMapperElementForm extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
 
-            /** @var AvitoBoardMapperElementDTO $data */
-            $data = $event->getData();
             $form = $event->getForm();
 
-            dump($data);
-
-            if ($data)
+            /** @var AvitoBoardMapperElementDTO $mapperElementDTO */
+            if ($mapperElementDTO = $event->getData())
             {
-                /** @var ArrayCollection<CategoryProductSectionFieldUid> $localProperties */
-                $localProperties = $options['property_fields'];
-
+                /** @var ArrayCollection<CategoryProductSectionFieldUid> $productField */
+                $productField = $options['property_fields'];
 
                 $form
-                    ->add('field', ChoiceType::class, [
-                        'choices' => $localProperties,
+                    ->add('productField', ChoiceType::class, [
+                        'choices' => $productField,
                         'choice_value' => function (?CategoryProductSectionFieldUid $field) {
                             return $field?->getValue();
                         },
                         'choice_label' => function (CategoryProductSectionFieldUid $field) {
                             return $field->getAttr();
                         },
-//                        'label' => $data->getTitle(),
-//                        'help' => $data->getTitle().'_desc',
+//                        'label' => $mapperElementDTO->getFeedElement()->getCategory(),
                         'expanded' => false,
                         'multiple' => false,
 //                        'translation_domain' => 'yandex-market-products.property',
                         'required' => false,
                     ]);
 
-                if ($choices = $data->getType()->choices())
+                if ($choices = $mapperElementDTO->getFeedElement()->choices())
                 {
                     $form
                         ->add('def', ChoiceType::class, [
@@ -78,24 +73,24 @@ final class AvitoBoardMapperElementForm extends AbstractType
                             'choice_label' => function ($choice) {
                                 return $choice;
                             },
+                            'label' => $mapperElementDTO->getFeedElement()->getFeedElement(),
                             'expanded' => false,
                             'multiple' => false,
                             'translation_domain' => 'yandex-market-products.property',
-//                            'data' => $data->getType()->getElement(),
-                            'required' => $data->getType()->isRequired(),
+//                            'mapperElementDTO' => $mapperElementDTO->getType()->getElement(),
+                            'required' => $mapperElementDTO->getFeedElement()->isRequired(),
                         ]);
 
                 }
                 else
                 {
                     $form->add('def', TextType::class, [
-                        'data' => $data->getType()->getElement(),
-                        'required' => $data->getType()->isRequired(),
+                        'data' => $mapperElementDTO->getFeedElement()->getFeedElement(),
+                        'label' => $mapperElementDTO->getFeedElement()->getFeedElement(),
+                        'required' => $mapperElementDTO->getFeedElement()->isRequired(),
                         'disabled' => true,
                     ]);
-
                 }
-
             }
         });
     }

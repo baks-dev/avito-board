@@ -25,11 +25,11 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Categories\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
 
-final class CategoryElement implements AvitoBoardCategoryElementInterface
+final class IdFeedElement implements AvitoBoardFeedElementInterface
 {
-    public const string CATEGORY_TYPE = 'Мужская одежда';
+    public const string ROOT_CATEGORY = 'Мужская одежда';
 
     public function getTitle(): string
     {
@@ -38,7 +38,7 @@ final class CategoryElement implements AvitoBoardCategoryElementInterface
 
     public function getCategory(): string
     {
-        return self::CATEGORY_TYPE;
+        return self::ROOT_CATEGORY;
     }
 
     public function isRequired(): bool
@@ -55,5 +55,10 @@ final class CategoryElement implements AvitoBoardCategoryElementInterface
     public static function priority(): int
     {
         return 610;
+    }
+
+    public function getFeedElement(): string
+    {
+        return 'Id';
     }
 }
