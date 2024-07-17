@@ -16,15 +16,17 @@
  *
  */
 
-namespace BaksDev\Yandex\Market\Products\Entity\Settings\Parameters;
+namespace BaksDev\Avito\Board\Entity\Categories;
 
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 
 /**
  * Интерфейс, который должны реализовывать DTO, через которые изменяется сущность
- * @see CategoryProductSectionField
+ * @see AvitoBoardProductCategoriesMapping
  */
 interface AvitoBoardProductCategoriesMappingInterface
 {
     public function getField(): ?CategoryProductSectionFieldUid;
+
+    public function getDef(): ?string;
 }

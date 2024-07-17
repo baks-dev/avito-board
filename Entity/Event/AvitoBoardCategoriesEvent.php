@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Entity\Event;
 
+use BaksDev\Avito\Board\Entity\Categories\AvitoBoardProductCategoriesMapping;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardCategoriesModify;
-use BaksDev\Avito\Board\Entity\Parameters\AvitoBoardProductCategoriesMapping;
-use BaksDev\Avito\Board\Entity\Parameters\AvitoProductCategoriesParameters;
-use BaksDev\Avito\Board\Entity\Properties\AvitoProductCategoriesProperties;
 use BaksDev\Avito\Board\Type\Event\AvitoBoardCategoriesEventUid;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Products\Category\Entity\CategoryProduct;
@@ -37,20 +35,6 @@ class AvitoBoardCategoriesEvent extends EntityEvent
     #[Assert\Uuid]
     #[ORM\Column(type: CategoryProductUid::TYPE)]
     private CategoryProductUid $category;
-
-    /**
-     * Свойства карточки ???
-     */
-    #[Assert\Valid]
-    #[ORM\OneToMany(targetEntity: AvitoProductCategoriesProperties::class, mappedBy: 'event', cascade: ['all'])]
-    private Collection $properties;
-
-    /**
-     * Свойства карточки ???
-     */
-    #[Assert\Valid]
-    #[ORM\OneToMany(targetEntity: AvitoProductCategoriesParameters::class, mappedBy: 'event', cascade: ['all'])]
-    private Collection $parameters;
 
     /**
      * Связь с характеристиками продукта от Авито

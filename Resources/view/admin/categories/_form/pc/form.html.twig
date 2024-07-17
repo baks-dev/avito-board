@@ -42,115 +42,41 @@
 
 </ul>
 
-{#<div class="tab-content">#}
+<div class="tab-content">
 
-{#    #}{# ОСНОВНЫЕ НАСТРОЙКИ #}
-{#    <div class="tab-pane fade show active" id="tab_parameter" role="tabpanel">#}
-{#        {% for property in form.property %}#}
+    {# ОСНОВНЫЕ НАСТРОЙКИ #}
 
-{#            <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"#}
-{#                    #}{#style='background-color: {{ property.vars.data.required ? '#fff2f2' : property.vars.data.field is null ? '#fffaef' : '#f8f8f8' }}'#}
-{#            >#}
-{#                <div class="w-50">#}
-{#                    {{ form_label(property.field) }}#}
-{#                    {{ form_help(property.field) }}#}
-{#                </div>#}
+    <div class="tab-pane fade show active" id="tab_parameter" role="tabpanel">
+        {#        {{ dd(form.categories) }} #}
 
+        {% for category in form.categories %}
+            <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
+                 style='background-color: {{ category.vars.data.type.isRequired ? '#fff2f2' : property.vars.data.field is null ? '#fffaef' : '#f8f8f8' }}'
+            >
+                <div class="w-50">
+                    {{ form_label(category.field) }}
+                    {{ form_help(category.field) }}
+                </div>
 
-{#                <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">#}
-{#                    {{ form_widget(property.field, {#}
-{#                        placeholder: 'Выберите поле из списка...',#}
-{#                        attr: { 'data-select' : 'select2', class:  'mb-0'  }#}
-{#                    }) }}#}
+                {# свойста для сопоставления #}
 
-{#                    {% if property.def is defined %}#}
-{#                        {{ form_widget(property.def, {#}
-{#                            placeholder: 'Выберите поле из списка...',#}
-{#                            attr: { 'placeholder' : 'по умолчанию' }#}
-{#                        }) }}#}
-{#                    {% endif %}#}
+                <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
+                    {{ form_widget(category.field, {
+                        placeholder: 'Выберите поле из списка...',
+                        attr: { 'data-select' : 'select2', class:  'mb-0'  }
+                    }) }}
 
+                    {{ form_widget(category.def, {
+                        placeholder: 'Выберите поле из списка...',
+                        attr: { 'placeholder' : 'по умолчанию' }
+                    }) }}
+                </div>
 
-{#                </div>#}
+            </div>
+        {% endfor %}
 
-{#            </div>#}
+    </div>
 
-{#        {% endfor %}#}
-{#    </div>#}
-
-{#    <div class="tab-pane fade" id="tab_property" role="tabpanel">#}
-{#        {% for parameters in form.parameters %}#}
-
-{#            <div class="d-flex gap-2">#}
-
-{#            <div class=" w-100 d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border" >#}
-
-
-
-{#                <div class="w-50">#}
-{#                    {{ form_label(parameters.field) }}#}
-{#                    #}{#{{ form_help(parameters.field) }}#}
-
-{#                    {% if parameters.vars.data.help %}#}
-
-
-{#                        {% set rand = random() %}#}
-
-{#                        <div>#}
-{#                            <a tabindex="0"#}
-{#                               id="{{ rand }}"#}
-{#                               class="small text-decoration-none"#}
-{#                               role="button"#}
-{#                               data-bs-container="body"#}
-{#                               data-bs-toggle="popover"#}
-{#                               data-bs-trigger="click"#}
-{#                               data-bs-placement="bottom"#}
-{#                            >#}
-{#                                Список ркеомендуемых значений#}
-{#                            </a>#}
-
-{#                            <div id="{{ rand }}-content" class="d-none mt-5">#}
-{#                                <div class="d-flex gap-3 align-items-center mb-1">#}
-{#                                <span>#}
-{#                                    {% for help in parameters.vars.data.help %}#}
-{#                                        {{ help }}<br>#}
-{#                                    {% endfor %}#}
-{#                                </span>#}
-{#                                </div>#}
-{#                            </div>#}
-
-{#                        </div>#}
-{#                    {% endif %}#}
-
-
-
-{#                </div>#}
-
-{#                <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">#}
-{#                    {{ form_widget(parameters.field, {#}
-{#                        placeholder: 'Выберите поле из списка...',#}
-{#                        attr: { 'data-select' : 'select2', class:  'mb-0'  }#}
-{#                    }) }}#}
-{#                </div>#}
-
-
-{#            </div>#}
-
-
-{#            #}{#{% if parameters.default is defined %}#}
-{#                <div class="w-50 p-3 mb-1 rounded-3 border" >#}
-{#                {{ form_widget(parameters.default, {#}
-{#                    placeholder: 'Рекомендуемые значения',#}
-{#                    attr: { 'placeholder' : 'по умолчанию' }#}
-{#                }) }}#}
-{#                </div>#}
-{#            {% endif %}#}
-{##}
-
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
-
-{#</div>#}
+</div>
 
 

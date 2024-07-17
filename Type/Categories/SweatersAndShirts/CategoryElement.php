@@ -23,22 +23,22 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Categories\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
 
-final class Category implements AvitoBoardCategoryInterface
+final class CategoryElement implements AvitoBoardCategoryElementInterface
 {
-    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public const string CATEGORY_TYPE = 'Мужская одежда';
 
     public function getTitle(): string
     {
-        return 'Легковые шины';
+        return 'Кофты и футболки';
     }
 
     public function getCategory(): string
     {
-        return self::ROOT_CATEGORY;
+        return self::CATEGORY_TYPE;
     }
 
     public function isRequired(): bool
@@ -47,13 +47,13 @@ final class Category implements AvitoBoardCategoryInterface
     }
 
     /** Массив допустимых значений */
-    public function choices(): array
+    public function choices(): ?array
     {
-        return ['Запчасти и аксессуары'];
+        return null;
     }
 
     public static function priority(): int
     {
-        return 998;
+        return 610;
     }
 }

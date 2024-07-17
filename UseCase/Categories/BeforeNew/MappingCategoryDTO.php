@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Categories\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -30,5 +30,5 @@ final class MappingCategoryDTO
 
     // @TODO заглушка для категорий от Авито
     #[Assert\NotBlank]
-    public ?AvitoBoardCategoryInterface $avitoCategory = null;
+    public ?AvitoBoardCategoryElementInterface $avitoCategory = null;
 }

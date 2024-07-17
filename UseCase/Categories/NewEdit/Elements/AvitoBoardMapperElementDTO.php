@@ -16,20 +16,21 @@
  *
  */
 
-namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit;
+namespace BaksDev\Avito\Board\UseCase\Categories\NewEdit\Elements;
 
+use BaksDev\Avito\Board\Entity\Categories\AvitoBoardProductCategoriesMappingInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
-use BaksDev\Yandex\Market\Products\Entity\Settings\Property\YaMarketProductsSettingsPropertyInterface;
-use BaksDev\Yandex\Market\Products\Type\Settings\Property\YaMarketProductProperty;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class AvitoBoardElementDTO implements YaMarketProductsSettingsPropertyInterface
+final class AvitoBoardMapperElementDTO implements AvitoBoardProductCategoriesMappingInterface
 {
     /**
+     * @TODO ???
      * Тип характеристики (Параметр в запросе на апи)
      */
     #[Assert\NotBlank]
-    private ?YaMarketProductProperty $type = null;
+    private ?AvitoBoardCategoryElementInterface $type = null;
 
     /**
      * Связь на свойство продукта в категории
@@ -38,18 +39,18 @@ final class AvitoBoardElementDTO implements YaMarketProductsSettingsPropertyInte
     private ?CategoryProductSectionFieldUid $field = null;
 
     /**
+     * @TODO ???
      * По умолчанию
      */
     private ?string $def = null;
 
-
-    public function getType(): ?YaMarketProductProperty
+    public function getType(): ?AvitoBoardCategoryElementInterface
     {
         return $this->type;
     }
 
 
-    public function setType(YaMarketProductProperty $type): void
+    public function setType(?AvitoBoardCategoryElementInterface $type): void
     {
         $this->type = $type;
     }
@@ -66,9 +67,6 @@ final class AvitoBoardElementDTO implements YaMarketProductsSettingsPropertyInte
         $this->field = $field;
     }
 
-    /**
-     * Default
-     */
     public function getDef(): ?string
     {
         return $this->def;
@@ -79,5 +77,4 @@ final class AvitoBoardElementDTO implements YaMarketProductsSettingsPropertyInte
         $this->def = $default;
         return $this;
     }
-
 }

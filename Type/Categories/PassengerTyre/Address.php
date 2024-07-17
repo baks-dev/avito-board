@@ -25,9 +25,9 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryInterface;
+use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryElementInterface;
 
-final class Address implements AvitoBoardCategoryInterface
+final class Address implements AvitoBoardCategoryElementInterface
 {
     public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
@@ -55,5 +55,10 @@ final class Address implements AvitoBoardCategoryInterface
     public static function priority(): int
     {
         return 999;
+    }
+
+    public function getElement(): string
+    {
+        return 'Address';
     }
 }

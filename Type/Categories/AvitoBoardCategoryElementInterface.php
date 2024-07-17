@@ -21,39 +21,24 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Type\Categories;
 
-namespace BaksDev\Avito\Board\Type\Categories\SweatersAndShirts;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryInterface;
-
-final class Category implements AvitoBoardCategoryInterface
+#[AutoconfigureTag('baks.avito.board.categories.type')]
+interface AvitoBoardCategoryElementInterface
 {
-    public const string CATEGORY_TYPE = 'Мужская одежда';
+    public function getTitle(): string;
 
-    public function getTitle(): string
-    {
-        return 'Кофты и футболки';
-    }
+    public function getCategory(): string;
 
-    public function getCategory(): string
-    {
-        return self::CATEGORY_TYPE;
-    }
-
-    public function isRequired(): bool
-    {
-        return true;
-    }
+    public function isRequired(): bool;
 
     /** Массив допустимых значений */
-    public function choices(): ?array
-    {
-        return null;
-    }
+    public function choices(): ?array;
 
-    public static function priority(): int
-    {
-        return 610;
-    }
+    /**
+     * Сортировка (чем выше число - тем первым в итерации будет значение)
+     */
+    public static function priority(): int;
 }

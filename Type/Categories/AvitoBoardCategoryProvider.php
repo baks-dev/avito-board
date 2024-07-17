@@ -2,22 +2,23 @@
 
 namespace BaksDev\Avito\Board\Type\Categories;
 
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class AvitoBoardCategoryProvider
 {
     public function __construct(
-        #[TaggedIterator('baks.avito.board.categories.type', defaultPriorityMethod: 'priority')] private iterable $categories,
+        #[AutowireIterator('baks.avito.board.categories.type', defaultPriorityMethod: 'priority')]
+        private iterable $categories,
     ) {}
 
     /**
-     * @return list<AvitoBoardCategoryInterface>|null
+     * @return list<AvitoBoardCategoryElementInterface>|null
      */
     public function getElements(string $categoryType): ?array
     {
         $elements = null;
 
-        /** @var AvitoBoardCategoryInterface $category */
+        /** @var AvitoBoardCategoryElementInterface $category */
         foreach ($this->categories as $category)
         {
             if ($category->getCategory() === $categoryType)
@@ -30,13 +31,13 @@ final readonly class AvitoBoardCategoryProvider
     }
 
     /**
-     * @return list<AvitoBoardCategoryInterface>|null
+     * @return list<AvitoBoardCategoryElementInterface>|null
      */
     public function getCategories(): ?array
     {
         $categories = null;
 
-        /** @var AvitoBoardCategoryInterface $category */
+        /** @var AvitoBoardCategoryElementInterface $category */
         foreach ($this->categories as $category)
         {
             $categories[$category->getTitle()] = $category;

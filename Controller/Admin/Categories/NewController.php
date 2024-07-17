@@ -23,10 +23,10 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Categories;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardCategoryProvider;
 use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\MappingCategoryDTO;
 use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\MappingCategoryForm;
-use BaksDev\Avito\Board\UseCase\Categories\NewEdit\AvitoBoardCategoriesMappingForm;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\AvitoBoardMapperDTO;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\AvitoBoardMapperForm;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Products\Category\Entity\CategoryProduct;
@@ -79,21 +79,17 @@ final class NewController extends AbstractController
         requirements: ['category' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'],
         methods: ['GET', 'POST',]
     )]
-    public function new(
-        Request                      $request,
-        #[MapEntity] CategoryProduct $category,
-        AvitoBoardCategoryProvider   $categoryProvider,
-        string                       $avitoCategory,
-    ): Response {
+    public function new(Request $request, #[MapEntity] CategoryProduct $category, string $avitoCategory): Response
+    {
+        $newDTO = new AvitoBoardMapperDTO();
+        $newDTO->setLocalCategory($category);
+        $newDTO->setAvitoCategory($avitoCategory);
 
-        $elements = $categoryProvider->getElements($avitoCategory);
+        $form = $this->createForm(AvitoBoardMapperForm::class, $newDTO);
+        $form->handleRequest($request);
 
-        $form = $this->createForm(AvitoBoardCategoriesMappingForm::class, $elements, [
-            'action' => $this->generateUrl('avito-board:admin.categories.beforenew'),
+        return $this->render([
+            'form' => $form->createView()
         ]);
-        dump($form);
-
-        dd();
-        return new Response();
     }
 }

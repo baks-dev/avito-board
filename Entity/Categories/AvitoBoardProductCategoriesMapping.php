@@ -16,11 +16,11 @@
  *
  */
 
-namespace BaksDev\Avito\Board\Entity\Parameters;
+namespace BaksDev\Avito\Board\Entity\Categories;
 
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardCategoriesEvent;
 use BaksDev\Core\Entity\EntityEvent;
-use BaksDev\Yandex\Market\Products\Entity\Settings\Parameters\AvitoBoardProductCategoriesMappingInterface;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
@@ -41,20 +41,26 @@ class AvitoBoardProductCategoriesMapping extends EntityEvent
     private AvitoBoardCategoriesEvent $event;
 
     /**
-     * Наименование характеристики от Авито
+     * Наименование категории от Авито
      */
     #[Assert\NotBlank]
     #[ORM\Id]
     #[ORM\Column(type: Types::STRING)]
     private string $type;
 
-//    /**
-//     * Связь на свойство продукта в категории
-//     */
-//    #[Assert\NotBlank]
-//    #[Assert\Uuid]
-//    #[ORM\Column(type: CategoryProductSectionFieldUid::TYPE)]
-//    private CategoryProductSectionFieldUid $field;
+    /**
+     * Связь на свойство продукта в категории
+     */
+    #[Assert\NotBlank]
+    #[Assert\Uuid]
+    #[ORM\Column(type: CategoryProductSectionFieldUid::TYPE)]
+    private CategoryProductSectionFieldUid $productField;
+
+    /**
+     * Значение по умолчанию
+     */
+    #[ORM\Column(type: Types::STRING, nullable: true)]
+    private ?string $def = null;
 
     public function __construct(AvitoBoardCategoriesEvent $event)
     {
