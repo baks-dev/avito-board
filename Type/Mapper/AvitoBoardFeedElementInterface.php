@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,30 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Avito\Board\Type\Mapper;
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardType;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardUid;
-use Symfony\Config\DoctrineConfig;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-return static function (DoctrineConfig $doctrine): void {
+#[AutoconfigureTag('baks.avito.board.elements')]
+interface AvitoBoardFeedElementInterface
+{
+    public function getRootCategory(): string;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
+    public function getSubCategory(): string;
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
+    public function getFeedElement(): string;
 
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+    public function isRequired(): bool;
+
+    /** Массив допустимых значений */
+    public function choices(): ?array;
+
+    /**
+     * Сортировка (чем выше число - тем первым в итерации будет значение)
+     */
+    public static function priority(): int;
+
+    public function isInput(): bool;
+
+    public function help(): ?string;
+}

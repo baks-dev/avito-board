@@ -2,7 +2,6 @@
 
 namespace BaksDev\Avito\Board\Repository\AllPropertiesByCategory;
 
-use BaksDev\Avito\Board\Repository\AllPropertiesByCategory\AllPropertiesByCategoryInterface;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\Core\Type\Device\Device;
 use BaksDev\Core\Type\Device\Devices\Desktop;

@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,54 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardType;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardUid;
-use Symfony\Config\DoctrineConfig;
+namespace BaksDev\Avito\Board\Type\Mapper\PassengerTyre;
 
-return static function (DoctrineConfig $doctrine): void {
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
+final class Description implements AvitoBoardFeedElementInterface
+{
+    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
+    public function getSubCategory(): string
+    {
+        return 'Легковые шины';
+    }
 
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+    public function getRootCategory(): string
+    {
+        return self::ROOT_CATEGORY;
+    }
+
+    public function isRequired(): bool
+    {
+        return true;
+    }
+
+    public function choices(): ?array
+    {
+        return null;
+    }
+
+    public static function priority(): int
+    {
+        return 997;
+    }
+
+    public function getFeedElement(): string
+    {
+        return 'Description';
+    }
+
+    public function isInput(): bool
+    {
+        return false;
+    }
+
+    public function help(): ?string
+    {
+        return null;
+    }
+
+}

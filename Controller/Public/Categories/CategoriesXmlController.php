@@ -5,7 +5,6 @@ namespace BaksDev\Avito\Board\Controller\Public\Categories;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Products\Category\Repository\AllCategoryByMenu\AllCategoryByMenuInterface;
 use BaksDev\Products\Product\Repository\AllProductsByCategory\AllProductsByCategoryInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,9 +12,8 @@ use Symfony\Component\Routing\Attribute\Route;
 #[AsController]
 class CategoriesXmlController extends AbstractController
 {
-    #[Route('/avito-board/categories.xml', name: 'export.products', methods: ['GET'])]
+    #[Route('/avito-board/categories.xml', name: 'public.export.products', methods: ['GET'])]
     public function products(
-        Request                        $request,
         AllCategoryByMenuInterface     $activeCategory,
         AllProductsByCategoryInterface $productsByCategory
     ): Response {
@@ -23,10 +21,12 @@ class CategoriesXmlController extends AbstractController
         $category = $activeCategory->findAll();
         $products = $productsByCategory->fetchAllProductByCategory();
 
+        $product = [$products[0]];
+
         $response = $this->render(
             [
                 'category' => $category,
-                'products' => $products,
+                'products' => $product,
             ],
             file: 'export.html.twig'
         );

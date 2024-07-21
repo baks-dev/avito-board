@@ -53,10 +53,19 @@
             <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
                  style='background-color: {{ category.vars.data.feedElement.isRequired ? '#fff2f2' : property.vars.data.field is null ? '#fffaef' : '#f8f8f8' }}'
             >
+                {% set help = category.def.vars.help %}
+
                 <div class="w-50">
-                    {{ form_label(category.def) }}
-                    {{ form_help(category.productField) }}
+                        {{ form_label(category.def) }}
+
+                    <div>
+                        {% if help is not null %}
+                            <a href="{{ help }}" target="_blank">Список значений по умолчанию</a>
+                        {% endif %}
+
+                    </div>
                 </div>
+
 
                 {# свойста для сопоставления #}
 

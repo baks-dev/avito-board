@@ -21,26 +21,14 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardType;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardUid;
-use Symfony\Config\DoctrineConfig;
+namespace BaksDev\Avito\Board\Messenger\Settings;
 
-return static function (DoctrineConfig $doctrine): void {
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
-
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+#[AsMessageHandler]
+final class AvitoBoardSettingsHandlerNull
+{
+    public function __invoke(AvitoBoardSettingsMessage $message): void {}
+}

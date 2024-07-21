@@ -23,10 +23,12 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Categories;
 
+use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\CategoryMapperDTO;
 use BaksDev\Avito\Board\UseCase\Categories\BeforeNew\CategoryMapperForm;
 use BaksDev\Avito\Board\UseCase\Categories\NewEdit\MapperSettingDTO;
 use BaksDev\Avito\Board\UseCase\Categories\NewEdit\MapperSettingForm;
+use BaksDev\Avito\Board\UseCase\Categories\NewEdit\MapperSettingsHandler;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use BaksDev\Products\Category\Entity\CategoryProduct;
@@ -62,7 +64,7 @@ final class NewController extends AbstractController
                 'avito-board:admin.categories.new',
                 [
                     'category' => $mappingCategory->localCategory,
-                    'avitoCategory' => $mappingCategory->avitoCategory->getCategory(),
+                    'avitoCategory' => $mappingCategory->avitoCategory->getRootCategory(),
                 ]
             );
         }
@@ -79,14 +81,35 @@ final class NewController extends AbstractController
         requirements: ['category' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'],
         methods: ['GET', 'POST',]
     )]
-    public function new(Request $request, #[MapEntity] CategoryProduct $category, string $avitoCategory): Response
-    {
+    public function new(
+        Request                      $request,
+        MapperSettingsHandler        $handler,
+        #[MapEntity] CategoryProduct $category,
+        string                       $avitoCategory
+    ): Response {
         $newDTO = new MapperSettingDTO();
         $newDTO->setLocalCategory($category);
         $newDTO->setAvitoCategory($avitoCategory);
 
         $form = $this->createForm(MapperSettingForm::class, $newDTO);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $form->has('categories_mapping'))
+        {
+            $this->refreshTokenForm($form);
+            $handle = $handler->handle($newDTO);
+
+            if($handle instanceof AvitoBoard)
+            {
+                $this->addFlash('page.new', 'success.new', 'avito-board.admin');
+
+                return $this->redirectToRoute('avito-board:admin.categories.index');
+            }
+
+            $this->addFlash('page.new', 'danger.new', 'avito-board.admin');
+
+            return $this->redirectToReferer();
+        }
 
         return $this->render([
             'form' => $form->createView()
