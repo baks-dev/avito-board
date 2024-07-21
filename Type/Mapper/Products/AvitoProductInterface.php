@@ -23,41 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Product;
+namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
-final class SweatersAndShirts implements AvitoProductInterface
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.avito.board.products')]
+interface AvitoProductInterface
 {
-    public function getCategory(): string
-    {
-        return 'Одежда, обувь, аксессуары';
-    }
+    public function category(): string;
 
-    public function getGoodsType(): string
-    {
-        return 'Мужская одежда';
-    }
+    public function goodsType(): string;
 
-    public static function priority(): int
-    {
-        return 996;
-    }
+    public function requireFeedElements(): array;
 
-    public function getRequireFeedElements(): array
-    {
-        return [
-            'Id',
-            'Address',
-            'Title',
-            'Description',
-            'Images',
-            'Category',
-            'GoodsType',
-            'Condition',
-            'AdType',
-            'Brand',
-            'Apparel',
-            'Size',
-            'GoodsSubType',
-        ];
-    }
+    public function link(string $element);
+
+    public static function priority(): int;
 }

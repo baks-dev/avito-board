@@ -23,52 +23,9 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Product;
+namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
-final class PassengerTyre implements AvitoProductInterface
+interface PassengerTyreProductInterface extends AvitoProductInterface
 {
-    public function getCategory(): string
-    {
-        return 'Запчасти и аксессуары';
-    }
-
-    public function getGoodsType(): string
-    {
-        return 'Шины, диски и колёса';
-    }
-
-    public function getProductType(): string
-    {
-        return 'Легковые шины';
-    }
-
-    public static function priority(): int
-    {
-        return 996;
-    }
-
-    public function getRequireFeedElements(): array
-    {
-        return [
-            'Id',
-            'Address',
-            'Category',
-            'Description',
-            'GoodsType',
-            'AdType',
-            'ProductType',
-            'Brand',
-            'Model',
-            'TireSectionWidth',
-            'RimDiameter',
-            'TireAspectRatio',
-            'TireType',
-            'Quantity',
-            'ResidualTread',
-            'BackRimDiameter',
-            'BackTireAspectRatio',
-            'BackTireSectionWidth',
-            'Condition',
-        ];
-    }
+    public function productType(): string;
 }

@@ -2,7 +2,7 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper;
 
-use BaksDev\Avito\Board\Type\Mapper\Product\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
@@ -60,7 +60,7 @@ final readonly class AvitoBoardMapperProvider
         /** @var AvitoProductInterface $category */
         foreach ($this->categories as $category)
         {
-            dump($category);
+            dump($category->requireFeedElements());
 
         }
 

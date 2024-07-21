@@ -23,33 +23,31 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Element;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-final class TitleFeedElement
+final class TireTypeFeedElement
 {
+    public const string FEED_ELEMENT = 'TireType';
+
+    public const string FEED_ELEMENT_DESC = 'Сезонность шин или колес';
+
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
+    public function isChoices(): bool
     {
-        return ['Запчасти и аксессуары'];
+        return is_array($this->default());
     }
 
-    public static function priority(): int
+    public function default(): array
     {
-        return 998;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'Category';
-    }
-
-    public function help(): ?string
-    {
-        return null;
+        return [
+            'Всесезонные',
+            'Зимние нешипованные',
+            'Зимние шипованные',
+            'Летние',
+        ];
     }
 }

@@ -23,33 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Element;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-final class CategoryFeedElement
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+
+final readonly class GoodsTypeFeedElement
 {
+    public const string FEED_ELEMENT = 'GoodsType';
+
+    public const string FEED_ELEMENT_DESC = 'Вид товара';
+
+    public function __construct(
+        private AvitoProductInterface $product,
+    ) {}
+
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
+    public function isChoices(): bool
     {
-        return [];
+        return is_array($this->product->goodsType());
     }
 
-    public static function priority(): int
+    public function default(): string
     {
-        return 998;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'Category';
-    }
-
-    public function help(): ?string
-    {
-        return null;
+        return $this->product->goodsType();
     }
 }

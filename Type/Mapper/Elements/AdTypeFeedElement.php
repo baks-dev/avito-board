@@ -23,36 +23,29 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Element;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 final class AdTypeFeedElement
 {
+    public const string FEED_ELEMENT = 'AdType';
+
+    public const string FEED_ELEMENT_DESC = 'Вид объявления';
+
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
+    public function isChoices(): bool
+    {
+        return is_array($this->default());
+    }
+
+    public function default(): array
     {
         return [
             'Товар приобретен на продажу',
             'Товар от производителя',
         ];
-    }
-
-    public static function priority(): int
-    {
-        return 998;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'AdType';
-    }
-
-    public function help(): ?string
-    {
-        return null;
     }
 }

@@ -23,33 +23,37 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Element;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-final class GoodsTypeFeedElement
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyreProductInterface;
+
+final readonly class TireSectionWidthFeedElement
 {
+    public const string FEED_ELEMENT = 'TireSectionWidth';
+
+    public const string FEED_ELEMENT_DESC = 'Ширина профиля шины';
+
+    public function __construct(
+        private PassengerTyreProductInterface $product,
+    ) {}
+
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
+    public function isChoices(): bool
     {
-        return ['Запчасти и аксессуары'];
+        return is_array($this->default());
     }
 
-    public static function priority(): int
-    {
-        return 998;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'GoodsType';
-    }
-
-    public function help(): ?string
+    public function default(): null
     {
         return null;
+    }
+
+    public function link(): string
+    {
+        return $this->product->link(self::FEED_ELEMENT);
     }
 }
