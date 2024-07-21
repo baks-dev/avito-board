@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Entity\Event;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapperSetting;
+use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapper;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModify;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\Common\Collections\Collection;
@@ -46,8 +46,8 @@ class AvitoBoardEvent extends EntityEvent
      * Связь с характеристиками продукта от Авито
      */
     #[Assert\Valid]
-    #[ORM\OneToMany(targetEntity: AvitoBoardMapperSetting::class, mappedBy: 'event', cascade: ['all'])]
-    private Collection $settings;
+    #[ORM\OneToMany(targetEntity: AvitoBoardMapper::class, mappedBy: 'event', cascade: ['all'])]
+    private Collection $mapperSetting;
 
     public function __construct()
     {
@@ -81,7 +81,9 @@ class AvitoBoardEvent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    // магический метод гидрирования DTO с помощью рефлексии
+    /**
+     * @TODO добавить описание поведения
+     */
     public function setEntity($dto): mixed
     {
         if ($dto instanceof AvitoBoardEventInterface)
@@ -97,7 +99,9 @@ class AvitoBoardEvent extends EntityEvent
         return $this->id;
     }
 
-    // сеттер для сущности, к которому относится данное событие
+    /**
+     * Сеттер для корневой сущности, к которой относится данное событие
+     */
     public function setMain(AvitoBoard|CategoryProductUid $main): void
     {
         $this->category = $main instanceof AvitoBoard ? $main->getId() : $main;

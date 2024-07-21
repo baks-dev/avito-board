@@ -1,17 +1,17 @@
 <?php
 /*
  *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *  
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *  
+ *
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *  
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,41 +23,40 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board;
+namespace BaksDev\Avito\Board\Messenger\Mapper;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
+final readonly class AvitoBoardMessage
 {
-    public const NAMESPACE = __NAMESPACE__.'\\';
+    public function __construct(
+        private CategoryProductUid  $id,
+        private AvitoBoardEventUid  $event,
+        private ?AvitoBoardEventUid $last = null,
+    ) {}
 
-    public const PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    /**
+     * Идентификатор
+     */
+    public function getId(): CategoryProductUid
     {
-        $services = $container->services()
-            ->defaults()
-            ->public()
-            ->autowire()
-            ->autoconfigure();
+        return $this->id;
+    }
 
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
+    /**
+     * Идентификатор текущего события
+     */
+    public function getCurrentEvent(): AvitoBoardEventUid
+    {
+        return $this->event;
+    }
 
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\Categories\\',
-            self::PATH.'Type/Mapper/Categories'
-        );
+    /**
+     * Идентификатор предыдущего события
+     */
+    public function getPreviousEvent(): ?AvitoBoardEventUid
+    {
+        return $this->last;
     }
 }

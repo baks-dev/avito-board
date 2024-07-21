@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Entity;
 
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\ORM\Mapping as ORM;
