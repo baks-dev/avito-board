@@ -2,65 +2,38 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper;
 
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * @see AvitoBoardFeedElementInterface
- * @see AvitoProductInterface
+ * @see PassengerTyreProductInterface
+ * @see SweatersAndShirtsProductInterface
+ * @see AvitoFeedElementInterface
  */
 final readonly class AvitoBoardMapperProvider
 {
     public function __construct(
-        #[AutowireIterator('baks.avito.board.elements', defaultPriorityMethod: 'priority')]
-        private iterable $feedElements,
-        #[AutowireIterator('baks.avito.board.products', defaultPriorityMethod: 'priority')]
-        private iterable $categories,
+        #[AutowireIterator('baks.avito.board.products')] private iterable $products,
+        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
     ) {}
 
-    /**
-     * @return list<AvitoBoardFeedElementInterface>|null
-     */
-    public function getFeedElements(string $categoryType): ?array
+    /** @return list<AvitoProductInterface> */
+    public function getProducts(): array
+    {
+        return iterator_to_array($this->products);
+    }
+
+    /** @return list<AvitoFeedElementInterface> */
+    public function getElements(string $productCategory): ?array
     {
         $elements = null;
 
-        /** @var AvitoBoardFeedElementInterface $element */
-        foreach ($this->feedElements as $element)
+        /** @var AvitoProductInterface $product */
+        foreach ($this->products as $product)
         {
-            if ($element->getRootCategory() === $categoryType)
-            {
-                $elements[] = $element;
-            }
-        }
 
-        return $elements;
-    }
-
-    /**
-     * @return list<AvitoBoardFeedElementInterface>|null
-     */
-    public function getCategories(): ?array
-    {
-        $categories = null;
-
-        /** @var AvitoBoardFeedElementInterface $category */
-        foreach ($this->feedElements as $category)
-        {
-            $categories[$category->getSubCategory()] = $category;
-        }
-
-        return $categories;
-    }
-
-    public function getElements(string $categoryType): ?array
-    {
-        $elements = null;
-
-        /** @var AvitoProductInterface $category */
-        foreach ($this->categories as $category)
-        {
-            dump($category->requireFeedElements());
+            dump($element);
 
         }
 

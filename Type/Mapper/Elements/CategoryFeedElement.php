@@ -27,14 +27,19 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-final readonly class CategoryFeedElement
+/**
+ * Категория объявления.
+ *
+ * Элемент обязателен для всех продуктов Авито
+ */
+final readonly class CategoryFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'Category';
 
     public const string FEED_ELEMENT_DESC = 'Категория объявления';
 
     public function __construct(
-        private AvitoProductInterface $product,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isRequired(): bool
@@ -42,13 +47,18 @@ final readonly class CategoryFeedElement
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): null
     {
-        return is_array($this->product->category());
+        return null;
     }
 
     public function default(): string
     {
         return $this->product->category();
+    }
+
+    public static function priority(): int
+    {
+        return 997;
     }
 }

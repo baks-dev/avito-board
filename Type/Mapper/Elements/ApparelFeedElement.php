@@ -23,57 +23,37 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-final class Brand implements AvitoBoardFeedElementInterface
+final readonly class ApparelFeedElement implements AvitoFeedElementInterface
 {
-    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public const string FEED_ELEMENT = 'Apparel';
 
-    public function getSubCategory(): string
-    {
-        return 'Легковые шины';
-    }
+    public const string FEED_ELEMENT_DESC = 'Тип товара';
 
-    public function getRootCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
-
-    public function getCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
+    public function __construct(
+        private ?SweatersAndShirtsProductInterface $product = null,
+    ) {}
 
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
+    public function choices(): null
     {
         return null;
     }
 
+    public function default(): string
+    {
+        return $this->product->apparel();
+    }
+
     public static function priority(): int
     {
-        return 999;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'Brand';
-    }
-
-    public function isInput(): bool
-    {
-        return false;
-    }
-
-    public function help(): ?string
-    {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml';
+        return 799;
     }
 }

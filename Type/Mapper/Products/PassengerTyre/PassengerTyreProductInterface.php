@@ -21,54 +21,13 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre;
 
-namespace BaksDev\Avito\Board\Type\Mapper\PassengerTyre;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
-
-final class Category implements AvitoBoardFeedElementInterface
+interface PassengerTyreProductInterface extends AvitoProductInterface
 {
-    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public function productType(): string;
 
-    public function getSubCategory(): string
-    {
-        return 'Легковые шины';
-    }
-
-    public function getRootCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
-
-    public function isRequired(): bool
-    {
-        return true;
-    }
-
-    /** Массив допустимых значений */
-    public function choices(): ?array
-    {
-        return ['Запчасти и аксессуары'];
-    }
-
-    public static function priority(): int
-    {
-        return 998;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'Category';
-    }
-
-    public function isInput(): bool
-    {
-        return false;
-    }
-
-    public function help(): ?string
-    {
-        return null;
-    }
+    public function tireType(): array;
 }

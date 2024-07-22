@@ -23,53 +23,37 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
-
-final class GoodsType implements AvitoBoardFeedElementInterface
+/**
+ * Полный адрес объекта — строка до 256 символов.
+ * Является альтернативой параметрам Latitude, Longitude
+ *
+ * Элемент обязателен для всех продуктов Авито
+ */
+final readonly class AddressFeedElement implements AvitoFeedElementInterface
 {
-    public const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public const string FEED_ELEMENT = 'Address';
 
-    public function getSubCategory(): string
-    {
-        return 'Легковые шины';
-    }
-
-    public function getRootCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
+    public const string FEED_ELEMENT_DESC = 'Полный адрес объекта';
 
     public function isRequired(): bool
     {
         return true;
     }
 
-    /** Массив допустимых значений */
-    public function choices(): ?array
-    {
-        return ['Шины, диски и колёса'];
-    }
-
-    public static function priority(): int
-    {
-        return 996;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'GoodsType';
-    }
-
-    public function isInput(): bool
-    {
-        return false;
-    }
-
-    public function help(): ?string
+    public function choices(): null
     {
         return null;
     }
 
+    public function default(): null
+    {
+        return null;
+    }
+
+    public static function priority(): int
+    {
+        return 999;
+    }
 }

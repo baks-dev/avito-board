@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,5 +29,5 @@ final class CategoryMapperDTO
     public ?CategoryProductUid $localCategory = null;
 
     #[Assert\NotBlank]
-    public ?AvitoBoardFeedElementInterface $avitoCategory = null;
+    public ?AvitoProductInterface $avitoCategory = null;
 }

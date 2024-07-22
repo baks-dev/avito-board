@@ -65,18 +65,17 @@ final class MapperForm extends AbstractType
              * Массив теггированных элементов для соответствующей категории Авито
              * @var list<AvitoBoardFeedElementInterface>|null $elements
              */
-            $elements = $this->mapperProvider->getFeedElements($mapperDTO->getAvitoCategory());
+            $elements = $this->mapperProvider->getElements($mapperDTO->getAvitoCategory());
 
-            dump($this->mapperProvider->getElements($mapperDTO->getAvitoCategory()));
-
-
-            dd();
             foreach ($elements as $element)
             {
+                if($element) {
+
                 $mapperElementDTO = new MapperElementDTO();
                 $mapperElementDTO->setFeedElement($element);
                 $mapperElementDTO->setProductFields($productFields);
                 $mapperDTO->addMapperSetting($mapperElementDTO);
+                }
             }
 
             $form->add('mapperSetting', CollectionType::class, [

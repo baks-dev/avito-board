@@ -27,14 +27,20 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-final readonly class GoodsTypeFeedElement
+/**
+ * Вид товара.
+ * Одно из значений
+ *
+ * Элемент обязательный для всех продуктов Авито
+ */
+final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'GoodsType';
 
     public const string FEED_ELEMENT_DESC = 'Вид товара';
 
     public function __construct(
-        private AvitoProductInterface $product,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isRequired(): bool
@@ -42,13 +48,18 @@ final readonly class GoodsTypeFeedElement
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): null
     {
-        return is_array($this->product->goodsType());
+        return null;
     }
 
     public function default(): string
     {
         return $this->product->goodsType();
+    }
+
+    public static function priority(): int
+    {
+        return 995;
     }
 }

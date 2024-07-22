@@ -23,23 +23,50 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Products;
+namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AdTypeFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\BrandFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\CategoryFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\GoodsTypeFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\ModelFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\ProductTypeFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\TireSectionWidthFeedElement;
-
-final readonly class PassengerTyre implements PassengerTyreProductInterface
+final readonly class PassengerTyreProduct implements PassengerTyreProductInterface
 {
+    private const string PRODUCT = 'Легковые шины';
+
     private const array LINKS = [
         'Brand' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml',
         'Model' => 'https://autoload.avito.ru/format/tyres_make.xml',
         'TireSectionWidth' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml',
     ];
+
+    public function requireFeedElements(): array
+    {
+        return [];
+
+        //        return [];
+        //        return [
+        //            'Id' => false,
+        //            'Address' => false,
+        //            'Description' => false,
+        //            'Quantity' => false,
+        //            'Condition' => false,
+        //            'Category' => new CategoryFeedElement($this),
+        //            'GoodsType' => new GoodsTypeFeedElement($this),
+        //            'AdType' => new AdTypeFeedElement(),
+        //            'ProductType' => new ProductTypeFeedElement($this),
+        //            'Brand' => new BrandFeedElement($this),
+        //            'Model' => new ModelFeedElement($this),
+        //            'TireSectionWidth' => new TireSectionWidthFeedElement($this),
+        //            'RimDiameter',
+        //            'TireAspectRatio',
+        //            'TireType',
+        //            'ResidualTread',
+        //            'BackRimDiameter',
+        //            'BackTireAspectRatio',
+        //            'BackTireSectionWidth',
+        //        ];
+    }
+
+    public function product(): string
+    {
+        return self::PRODUCT;
+    }
 
     public function category(): string
     {
@@ -53,41 +80,32 @@ final readonly class PassengerTyre implements PassengerTyreProductInterface
 
     public function productType(): string
     {
-        return 'Легковые шины';
+        return self::PRODUCT;
     }
 
-    public function requireFeedElements(): array
+    public function tireType(): array
     {
         return [
-            'Id',
-            'Address',
-            'Category' => CategoryFeedElement::class,
-            'Description',
-            'GoodsType' => GoodsTypeFeedElement::class,
-            'AdType' => AdTypeFeedElement::class,
-            'ProductType' => ProductTypeFeedElement::class,
-            'Brand' => BrandFeedElement::class,
-            'Model' => ModelFeedElement::class,
-            'TireSectionWidth' => TireSectionWidthFeedElement::class,
-            'RimDiameter',
-            'TireAspectRatio',
-            'TireType',
-            'Quantity',
-            'ResidualTread',
-            'BackRimDiameter',
-            'BackTireAspectRatio',
-            'BackTireSectionWidth',
-            'Condition',
+            'Всесезонные',
+            'Зимние нешипованные',
+            'Зимние шипованные',
+            'Летние',
         ];
     }
+
 
     public function link(string $element): string
     {
         return self::LINKS[$element];
     }
 
-    public static function priority(): int
+    public function isEqualsCategory(string $product): bool
     {
-        return 996;
+        return self::PRODUCT === $product;
+    }
+
+    public function __toString(): string
+    {
+        return sprintf('%s / %s / %s', $this->category(), $this->goodsType(), $this->productType());
     }
 }

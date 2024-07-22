@@ -25,29 +25,35 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-final class TireTypeFeedElement
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+
+final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'TireType';
 
     public const string FEED_ELEMENT_DESC = 'Сезонность шин или колес';
+
+    public function __construct(
+        private ?PassengerTyreProductInterface $product = null,
+    ) {}
 
     public function isRequired(): bool
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): array
     {
-        return is_array($this->default());
+        return $this->product->tireType();
     }
 
-    public function default(): array
+    public function default(): null
     {
-        return [
-            'Всесезонные',
-            'Зимние нешипованные',
-            'Зимние шипованные',
-            'Летние',
-        ];
+        return null;
+    }
+
+    public static function priority(): int
+    {
+        return 897;
     }
 }

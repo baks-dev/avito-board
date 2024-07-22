@@ -23,9 +23,37 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Products;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-interface PassengerTyreProductInterface extends AvitoProductInterface
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+
+final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterface
 {
-    public function productType(): string;
+    public const string FEED_ELEMENT = 'GoodsSubType';
+
+    public const string FEED_ELEMENT_DESC = 'Тип одежды, обуви, аксессуаров';
+
+    public function __construct(
+        private ?SweatersAndShirtsProductInterface $product = null,
+    ) {}
+
+    public function isRequired(): bool
+    {
+        return true;
+    }
+
+    public function choices(): array
+    {
+        return $this->product->goodsSubType();
+    }
+
+    public function default(): null
+    {
+        return null;
+    }
+
+    public static function priority(): int
+    {
+        return 798;
+    }
 }

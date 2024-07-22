@@ -19,11 +19,10 @@
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapperInterface;
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
-
 
 /**
  * @see AvitoBoardMapper
@@ -31,10 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class MapperElementDTO implements AvitoBoardMapperInterface
 {
     /**
-     * Элемент для построения фида для Авито
+     * Элемент соответствия для построения фида для Авито
      */
     #[Assert\NotBlank]
-    private ?AvitoBoardFeedElementInterface $feedElement = null;
+    private ?AvitoFeedElementInterface $feedElement = null;
 
     /**
      * Связь на свойство продукта в категории
@@ -49,12 +48,12 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
     /** @var ArrayCollection<CategoryProductSectionFieldUid> */
     private ArrayCollection $productFields;
 
-    public function getFeedElement(): ?AvitoBoardFeedElementInterface
+    public function getFeedElement(): ?AvitoFeedElementInterface
     {
         return $this->feedElement;
     }
 
-    public function setFeedElement(?AvitoBoardFeedElementInterface $feedElement): void
+    public function setFeedElement(?AvitoFeedElementInterface $feedElement): void
     {
         $this->feedElement = $feedElement;
     }

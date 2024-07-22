@@ -21,30 +21,13 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Avito\Board\Type\Mapper;
+namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-#[AutoconfigureTag('baks.avito.board.elements')]
-interface AvitoBoardFeedElementInterface
+interface SweatersAndShirtsProductInterface extends AvitoProductInterface
 {
-    public function getRootCategory(): string;
+    public function apparel(): string;
 
-    public function getSubCategory(): string;
-
-    public function getFeedElement(): string;
-
-    public function isRequired(): bool;
-
-    /** Массив допустимых значений */
-    public function choices(): ?array;
-
-    /**
-     * Сортировка (чем выше число - тем первым в итерации будет значение)
-     */
-    public static function priority(): int;
-
-    public function isInput(): bool;
-
-    public function help(): ?string;
+    public function goodsSubType(): array;
 }

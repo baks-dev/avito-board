@@ -25,16 +25,16 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-final readonly class ProductTypeFeedElement
+final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'ProductType';
 
     public const string FEED_ELEMENT_DESC = 'Тип товара';
 
     public function __construct(
-        private PassengerTyreProductInterface $product,
+        private ?PassengerTyreProductInterface $product = null,
     ) {}
 
     public function isRequired(): bool
@@ -42,13 +42,18 @@ final readonly class ProductTypeFeedElement
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): null
     {
-        return is_array($this->product->productType());
+        return null;
     }
 
     public function default(): string
     {
         return $this->product->productType();
+    }
+
+    public static function priority(): int
+    {
+        return 899;
     }
 }

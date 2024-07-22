@@ -18,8 +18,8 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Products\Category\Repository\CategoryChoice\CategoryChoiceInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Form\AbstractType;
@@ -56,16 +56,16 @@ final class CategoryMapperForm extends AbstractType
         /**
          * Получаем список категории Avito
          */
-        $avitoCategories = $this->mapperProvider->getCategories();
+        $avitoProducts = $this->mapperProvider->getProducts();
 
         $builder
             ->add('avitoCategory', ChoiceType::class, [
-                'choices' => $avitoCategories,
-                'choice_value' => static function (?AvitoBoardFeedElementInterface $avitoCategories) {
-                    return $avitoCategories?->getRootCategory();
+                'choices' => $avitoProducts,
+                'choice_value' => static function (?AvitoProductInterface $avitoCategories) {
+                    return $avitoCategories?->product();
                 },
-                'choice_label' => static function (AvitoBoardFeedElementInterface $avitoCategories) {
-                    return $avitoCategories->getRootCategory() . ' / ' . $avitoCategories->getSubCategory();
+                'choice_label' => static function (AvitoProductInterface $avitoCategories) {
+                    return $avitoCategories;
                 },
                 'expanded' => false,
                 'multiple' => false,

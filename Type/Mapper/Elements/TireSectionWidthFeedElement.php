@@ -25,16 +25,16 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-final readonly class TireSectionWidthFeedElement
+final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'TireSectionWidth';
 
     public const string FEED_ELEMENT_DESC = 'Ширина профиля шины';
 
     public function __construct(
-        private PassengerTyreProductInterface $product,
+        private ?PassengerTyreProductInterface $product = null,
     ) {}
 
     public function isRequired(): bool
@@ -42,9 +42,9 @@ final readonly class TireSectionWidthFeedElement
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): null
     {
-        return is_array($this->default());
+        return null;
     }
 
     public function default(): null
@@ -55,5 +55,10 @@ final readonly class TireSectionWidthFeedElement
     public function link(): string
     {
         return $this->product->link(self::FEED_ELEMENT);
+    }
+
+    public static function priority(): int
+    {
+        return 898;
     }
 }

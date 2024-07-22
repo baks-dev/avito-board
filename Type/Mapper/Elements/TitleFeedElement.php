@@ -23,58 +23,38 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Categories\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Categories\AvitoBoardFeedElementInterface;
-
-final class DateEnd implements AvitoBoardFeedElementInterface
+/**
+ * Название объявления — строка до 50 символов.
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
+ *
+ * Элемент обязателен для продуктов:
+ * - Кофты и футболки
+ */
+final readonly class TitleFeedElement implements AvitoFeedElementInterface
 {
-    private const string ROOT_CATEGORY = 'Шины, диски и колёса';
+    public const string FEED_ELEMENT = 'Title';
 
-    private const string SUB_CATEGORY = 'Легковые шины';
+    public const string FEED_ELEMENT_DESC = 'Название объявления';
 
-    public function getRootCategory(): string
-    {
-        return self::ROOT_CATEGORY;
-    }
-
-    public function getSubCategory(): string
-    {
-        return self::SUB_CATEGORY;
-    }
-
-    public function getFeedElement(): string
-    {
-        return 'DateEnd';
-    }
-
-    /**
-     * Не обязательный параметр для Авито АПИ
-     */
     public function isRequired(): bool
     {
         return true;
     }
 
-    public function choices(): ?array
+    public function choices(): null
+    {
+        return null;
+    }
+
+    public function default(): null
     {
         return null;
     }
 
     public static function priority(): int
     {
-        return 95;
+        return 998;
     }
-
-    public function isInput(): bool
-    {
-        return true;
-    }
-
-    public function help(): ?string
-    {
-        return null;
-    }
-
-
 }

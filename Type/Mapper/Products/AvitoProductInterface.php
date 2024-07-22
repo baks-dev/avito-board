@@ -21,8 +21,6 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
-
 namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -30,13 +28,15 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('baks.avito.board.products')]
 interface AvitoProductInterface
 {
+    public function product(): string;
+
     public function category(): string;
 
     public function goodsType(): string;
 
     public function requireFeedElements(): array;
 
-    public function link(string $element);
+    public function link(string $element): string;
 
-    public static function priority(): int;
+    public function isEqualsCategory(string $product): bool;
 }

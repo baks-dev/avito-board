@@ -68,19 +68,19 @@ final class MapperElementForm extends AbstractType
                             'choice_label' => function (string $choice) {
                                 return $choice;
                             },
-                            'label' => $mapperElementDTO->getFeedElement()->getFeedElement(),
+                            'label' => $element,
                             'expanded' => false,
                             'multiple' => false,
                             'translation_domain' => 'avito-board.settings',
-                            'help' => $mapperElementDTO->getFeedElement()->help(),
+                            'help' => $element,
                             'required' => false,
                         ]);
                 }
                 else
                 {
                     $form->add('def', TextType::class, [
-                        'label' => $mapperElementDTO->getFeedElement()->getFeedElement(),
-                        'help' => $mapperElementDTO->getFeedElement()->help(),
+                        'label' => $element,
+                        'help' => $element,
                         'required' => false,
                         'translation_domain' => 'avito-board.settings',
                     ]);

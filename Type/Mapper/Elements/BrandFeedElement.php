@@ -27,14 +27,20 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-final readonly class BrandFeedElement
+/**
+ *  Бренд.
+ *  Одно из значений
+ *
+ * Элемент общий для всех продуктов Авито
+ */
+final readonly class BrandFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'Brand';
 
     public const string FEED_ELEMENT_DESC = 'Бренд';
 
     public function __construct(
-        private AvitoProductInterface $product,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isRequired(): bool
@@ -42,9 +48,9 @@ final readonly class BrandFeedElement
         return true;
     }
 
-    public function isChoices(): bool
+    public function choices(): null
     {
-        return is_array($this->default());
+        return null;
     }
 
     public function default(): null
@@ -55,5 +61,10 @@ final readonly class BrandFeedElement
     public function link(): string
     {
         return $this->product->link(self::FEED_ELEMENT);
+    }
+
+    public static function priority(): int
+    {
+        return 994;
     }
 }
