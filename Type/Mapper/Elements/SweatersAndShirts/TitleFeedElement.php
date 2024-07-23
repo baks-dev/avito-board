@@ -23,18 +23,27 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
+/**
+ * Название объявления — строка до 50 символов.
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
+ *
+ * Элемент обязателен для продуктов:
+ * - Кофты и футболки
+ */
+final readonly class TitleFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'TireType';
+    public const string FEED_ELEMENT = 'Title';
 
-    public const string FEED_ELEMENT_DESC = 'Сезонность шин или колес';
+    public const string LABEL = 'Название объявления';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -47,33 +56,28 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): array
-    {
-        return $this->product->tireType();
-    }
-
-    public function value(): null
+    public function choices(): null
     {
         return null;
     }
 
-    public function productType(): string
+    public function data(): null
     {
-        return $this->product->getProduct()->value;
+        return null;
+    }
+
+    public function product(): ?AvitoBoardProductEnum
+    {
+        return $this->product->getProduct();
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
+        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public static function priority(): int
-    {
-        return 897;
     }
 }

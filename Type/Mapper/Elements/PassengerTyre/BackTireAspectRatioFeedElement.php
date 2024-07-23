@@ -23,28 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
 /**
- * Категория объявления.
+ * Высота профиля шины задней оси.
  *
- * Элемент общий для всех продуктов Авито
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
  */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string FEED_ELEMENT = 'BackTireAspectRatio';
 
-    public const string LABEL = 'Категория объявления';
+    public const string LABEL = 'Высота профиля шины задней оси';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTyreProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -57,23 +61,27 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function data(): ?string
-    {
-        return $this->product->category();
-    }
-
-    public function product(): null
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see TireAspectRatioFeedElement
+     */
+    public function data(): null
     {
         return null;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function product(): ?AvitoBoardProductEnum
+    {
+        return $this->product->getProduct();
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
     }
 }

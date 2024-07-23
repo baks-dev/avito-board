@@ -35,6 +35,8 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
         'Brand' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml',
         'Model' => 'https://autoload.avito.ru/format/tyres_make.xml',
         'TireSectionWidth' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml',
+        'TireAspectRatio' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml',
+        'RimDiameter' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/733/values-xml',
     ];
 
     public function __construct(
@@ -48,14 +50,15 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
         /** @var AvitoFeedElementInterface $element */
         foreach ($this->elements as $element)
         {
-            if ($element->productType() === AvitoBoardProductEnum::PassengerTyre->value)
-            {
-                $elements[] = $element;
-            }
-
-            if ($element->productType() === null)
+            if ($element->product() === null)
             {
                 $elements[] = new $element($this);
+            }
+
+            if ($element->product() instanceof AvitoBoardProductEnum &&
+                $element->product()->value === AvitoBoardProductEnum::PassengerTyre->value)
+            {
+                $elements[] = $element;
             }
         }
 
@@ -95,6 +98,11 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
             'Зимние шипованные',
             'Летние',
         ];
+    }
+
+    public function condition(): string
+    {
+        return 'Новое';
     }
 
     public function help(string $element): ?string

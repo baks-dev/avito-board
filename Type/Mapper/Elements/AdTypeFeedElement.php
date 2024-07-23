@@ -37,7 +37,7 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'AdType';
 
-    public const string FEED_ELEMENT_DESC = 'Вид объявления';
+    public const string LABEL = 'Вид объявления';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -58,28 +58,23 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function value(): string
+    public function data(): string
     {
         return 'Товар приобретен на продажу';
     }
 
-    public function productType(): null
+    public function product(): null
     {
         return null;
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
+        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public static function priority(): int
-    {
-        return 996;
     }
 }

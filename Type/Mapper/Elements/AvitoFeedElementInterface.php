@@ -23,6 +23,7 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.elements')]
@@ -34,13 +35,11 @@ interface AvitoFeedElementInterface
 
     public function choices(): null|array;
 
-    public function value(): null|string;
+    public function data(): null|string;
 
     public function label(): string;
 
     public function help(): null|string;
 
-    public function productType(): null|string;
-
-    public static function priority(): int;
+    public function product(): null|AvitoBoardProductEnum;
 }

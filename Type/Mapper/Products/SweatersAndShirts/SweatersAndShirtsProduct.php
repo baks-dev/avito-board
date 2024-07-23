@@ -46,14 +46,15 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         /** @var AvitoFeedElementInterface $element */
         foreach ($this->elements as $element)
         {
-            if ($element->productType() === AvitoBoardProductEnum::SweatersAndShirts->value)
-            {
-                $elements[] = $element;
-            }
-
-            if ($element->productType() === null)
+            if ($element->product() === null)
             {
                 $elements[] = new $element($this);
+            }
+
+            if ($element->product() instanceof AvitoBoardProductEnum &&
+                $element->product()->value === AvitoBoardProductEnum::SweatersAndShirts->value)
+            {
+                $elements[] = $element;
             }
         }
 
@@ -98,6 +99,11 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
             'Кардиган',
             'Кофта',
         ];
+    }
+
+    public function condition(): string
+    {
+        return 'Новое с биркой';
     }
 
     public function help(string $element): ?string

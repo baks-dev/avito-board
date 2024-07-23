@@ -69,7 +69,7 @@ final class MapperForm extends AbstractType
 
             foreach ($elements as $element)
             {
-                if($element->isMapping())
+                if ($element->isMapping())
                 {
                     $mapperElementDTO = new MapperElementDTO();
                     $mapperElementDTO->setFeedElement($element);
@@ -100,10 +100,10 @@ final class MapperForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-                'data_class' => MapperDTO::class,
-                'method' => 'POST',
-                'attr' => ['class' => 'w-100'],
-            ]);
+            'data_class' => MapperDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
     }
 
     /**

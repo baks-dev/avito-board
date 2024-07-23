@@ -23,15 +23,17 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-final readonly class ApparelFeedElement implements AvitoFeedElementInterface
+final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Apparel';
+    public const string FEED_ELEMENT = 'GoodsSubType';
 
-    public const string FEED_ELEMENT_DESC = 'Тип товара';
+    public const string LABEL = 'Тип одежды, обуви, аксессуаров';
 
     public function __construct(
         private ?SweatersAndShirtsProductInterface $product = null,
@@ -47,33 +49,28 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): null
+    public function choices(): array
+    {
+        return $this->product->goodsSubType();
+    }
+
+    public function data(): null
     {
         return null;
     }
 
-    public function value(): string
+    public function product(): ?AvitoBoardProductEnum
     {
-        return $this->product->apparel();
-    }
-
-    public function productType(): string
-    {
-        return $this->product->getProduct()->value;
+        return $this->product->getProduct();
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
+        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public static function priority(): int
-    {
-        return 799;
     }
 }

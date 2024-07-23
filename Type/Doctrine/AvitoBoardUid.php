@@ -9,7 +9,7 @@ use BaksDev\Core\Type\UidType\Uid;
 final class AvitoBoardUid extends Uid
 {
     /** Тестовый идентификатор */
-    public const string TEST = 'd8922dec-89c1-47ec-af0c-18eede123f46';
+    public const string TEST = '3beab64b-fb0f-4cd0-a5ab-e619b29ac02d';
 
     public const string TYPE = 'avito_board';
 }

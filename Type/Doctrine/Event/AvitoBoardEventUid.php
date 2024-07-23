@@ -11,5 +11,5 @@ final class AvitoBoardEventUid extends Uid
     /** Тестовый идентификатор */
     public const string TEST = 'eb99bb14-ebf2-4d5d-8698-51c511768b43';
 
-    public const string TYPE = 'avito_board_categories_event';
+    public const string TYPE = 'avito_board_event';
 }

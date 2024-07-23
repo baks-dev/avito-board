@@ -23,15 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
+/**
+ * Остаточная глубина протектора шины.
+ *
+ * Может принимать значения от 1 до 50 включительно, измеряется в миллиметрах (мм)
+ * В диапазоне 1-10 мм включительно можно использовать дробные значения.
+ *
+ * Применимо, если в поле Condition указано значение 'Б/у'
+ */
+final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'ProductType';
+    public const string FEED_ELEMENT = 'ResidualTread';
 
-    public const string FEED_ELEMENT_DESC = 'Тип товара';
+    public const string LABEL = 'Остаточная глубина протектора шины';
 
     public function __construct(
         private ?PassengerTyreProductInterface $product = null,
@@ -39,7 +49,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -52,19 +62,12 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function value(): string
+    /**
+     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
+     */
+    public function data(): string
     {
-        return $this->product->productType();
-    }
-
-    public function productType(): string
-    {
-        return $this->product->getProduct()->value;
-    }
-
-    public function label(): string
-    {
-        return self::FEED_ELEMENT_DESC;
+        return '10';
     }
 
     public function help(): ?string
@@ -72,8 +75,13 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return $this->product->help(self::FEED_ELEMENT);
     }
 
-    public static function priority(): int
+    public function product(): ?AvitoBoardProductEnum
     {
-        return 899;
+        return $this->product->getProduct();
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
     }
 }

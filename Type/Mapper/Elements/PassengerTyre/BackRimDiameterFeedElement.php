@@ -23,15 +23,24 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInterface
+/**
+ * Диаметр задней оси, дюймы.
+ *
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
+ */
+final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'TireSectionWidth';
+    public const string FEED_ELEMENT = 'BackRimDiameter';
 
-    public const string FEED_ELEMENT_DESC = 'Ширина профиля шины';
+    public const string LABEL = 'Диаметр задней оси, дюймы';
 
     public function __construct(
         private ?PassengerTyreProductInterface $product = null,
@@ -39,7 +48,7 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -52,9 +61,13 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return null;
     }
 
-    public function value(): null
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see RimDiameterFeedElement
+     */
+    public function data(): string
     {
-        return null;
+        return '10';
     }
 
     public function help(): ?string
@@ -62,18 +75,13 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return $this->product->help(self::FEED_ELEMENT);
     }
 
-    public function productType(): string
+    public function product(): ?AvitoBoardProductEnum
     {
-        return $this->product->getProduct()->value;
+        return $this->product->getProduct();
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
-    }
-
-    public static function priority(): int
-    {
-        return 898;
+        return self::LABEL;
     }
 }

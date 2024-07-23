@@ -69,7 +69,7 @@ final class MapperElementForm extends AbstractType
                                 return $choice;
                             },
                             'label' => $element->label(),
-                            'help' => $element->label(),
+                            'help' => $element->help(),
                             'expanded' => false,
                             'multiple' => false,
                             'translation_domain' => 'avito-board.settings',
@@ -79,7 +79,7 @@ final class MapperElementForm extends AbstractType
                 else
                 {
                     $form->add('def', TextType::class, [
-                        'data' => $element->value(),
+                        'data' => $element->data(),
                         'label' => $element->label(),
                         'help' => $element->help(),
                         'translation_domain' => 'avito-board.settings',

@@ -37,7 +37,7 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'Brand';
 
-    public const string FEED_ELEMENT_DESC = 'Бренд';
+    public const string LABEL = 'Бренд';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -58,9 +58,9 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function value(): null
+    public function data(): ?string
     {
-        return null;
+        return 'ожидает добавления в параметры товара';
     }
 
     public function help(): ?string
@@ -68,18 +68,13 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
         return $this->product->help(self::FEED_ELEMENT);
     }
 
-    public function productType(): null
+    public function product(): null
     {
         return null;
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
-    }
-
-    public static function priority(): int
-    {
-        return 994;
+        return self::LABEL;
     }
 }

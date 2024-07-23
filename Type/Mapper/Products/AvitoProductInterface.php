@@ -41,6 +41,8 @@ interface AvitoProductInterface
 
     public function goodsType(): string;
 
+    public function condition(): string;
+
     public function help(string $element): null|string;
 
     public function isEqualProduct(string $product): bool;

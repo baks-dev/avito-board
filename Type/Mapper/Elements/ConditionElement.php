@@ -28,24 +28,16 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
 /**
- * Это уникальный идентификатор, который вы присваиваете каждому объявлению в файле.
+ * Состояние
  *
- * Он помогает Авито распознавать объявления от загрузки к загрузке.
- * Идентификаторы не должны повторяться и их нельзя менять — тогда вы избежите блокировок и других ошибок.
- * Присвоить Id можно двумя способами:
- * 1) Если вы создаёте свой файл или используете шаблон Авито, придумайте Id самостоятельно.
- * Заранее подумайте над правилами, по которым будете составлять его, — так будет проще добавлять новые Id.
- * Например, можно использовать нумерацию по порядку.
- * 2) Если вы работаете в CRM, ERP или другой системе, там есть идентификатор товара или объявления. Можно использовать его.
- * Id может состоять из цифр, русских и английских букв, а также символов , \ / ( ) [  ] - =. Всего — не более 100 знаков.
- *
- * Элемент обязателен для всех продуктов Авито
+ * Элемент обязателен для всех продуктов Авито:
+ * - Легковые шины
  */
-final readonly class IdFeedElement implements AvitoFeedElementInterface
+final readonly class ConditionElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Id';
+    public const string FEED_ELEMENT = 'Condition';
 
-    private const string LABEL = 'Идентификатор';
+    private const string LABEL = 'Состояние';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -66,9 +58,9 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function data(): null
+    public function data(): ?string
     {
-        return null;
+        return $this->product->condition();
     }
 
     public function product(): null

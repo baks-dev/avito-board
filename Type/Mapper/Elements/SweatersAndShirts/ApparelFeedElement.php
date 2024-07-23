@@ -23,23 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-/**
- * Категория объявления.
- *
- * Элемент общий для всех продуктов Авито
- */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class ApparelFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string FEED_ELEMENT = 'Apparel';
 
-    public const string LABEL = 'Категория объявления';
+    public const string LABEL = 'Тип товара';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -57,14 +54,14 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function data(): ?string
+    public function data(): string
     {
-        return $this->product->category();
+        return $this->product->apparel();
     }
 
-    public function product(): null
+    public function product(): ?AvitoBoardProductEnum
     {
-        return null;
+        return $this->product->getProduct();
     }
 
     public function label(): string

@@ -36,7 +36,7 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'Model';
 
-    public const string FEED_ELEMENT_DESC = 'Модель';
+    public const string LABEL = 'Модель';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -57,7 +57,7 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function value(): null
+    public function data(): null
     {
         return null;
     }
@@ -67,18 +67,13 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return $this->product->help(self::FEED_ELEMENT);
     }
 
-    public function productType(): null
+    public function product(): null
     {
         return null;
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
-    }
-
-    public static function priority(): int
-    {
-        return 900;
+        return self::LABEL;
     }
 }

@@ -37,7 +37,7 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'Address';
 
-    public const string FEED_ELEMENT_DESC = 'Полный адрес объекта';
+    public const string LABEL = 'Полный адрес объекта';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -58,28 +58,23 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function value(): null
+    public function data(): null
     {
         return null;
     }
 
-    public function productType(): null
+    public function product(): null
     {
         return null;
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
+        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public static function priority(): int
-    {
-        return 999;
     }
 }

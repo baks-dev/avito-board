@@ -23,23 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-/**
- * Категория объявления.
- *
- * Элемент общий для всех продуктов Авито
- */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string FEED_ELEMENT = 'RimDiameter';
 
-    public const string LABEL = 'Категория объявления';
+    public const string LABEL = 'Диаметр, дюймы';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTyreProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -57,23 +54,23 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function data(): ?string
-    {
-        return $this->product->category();
-    }
-
-    public function product(): null
+    public function data(): null
     {
         return null;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function product(): ?AvitoBoardProductEnum
+    {
+        return $this->product->getProduct();
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
     }
 }

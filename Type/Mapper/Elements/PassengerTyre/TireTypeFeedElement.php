@@ -23,18 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
 
-final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterface
+final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'GoodsSubType';
+    public const string FEED_ELEMENT = 'TireType';
 
-    public const string FEED_ELEMENT_DESC = 'Тип одежды, обуви, аксессуаров';
+    public const string LABEL = 'Сезонность шин или колес';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private ?PassengerTyreProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -49,31 +51,26 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
 
     public function choices(): array
     {
-        return $this->product->goodsSubType();
+        return $this->product->tireType();
     }
 
-    public function value(): null
+    public function data(): null
     {
         return null;
     }
 
-    public function productType(): string
+    public function product(): ?AvitoBoardProductEnum
     {
-        return $this->product->getProduct()->value;
+        return $this->product->getProduct();
     }
 
     public function label(): string
     {
-        return self::FEED_ELEMENT_DESC;
+        return self::LABEL;
     }
 
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public static function priority(): int
-    {
-        return 798;
     }
 }
