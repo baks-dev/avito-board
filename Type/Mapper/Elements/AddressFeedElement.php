@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+
 /**
  * Полный адрес объекта — строка до 256 символов.
  * Является альтернативой параметрам Latitude, Longitude
@@ -37,6 +39,15 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
 
     public const string FEED_ELEMENT_DESC = 'Полный адрес объекта';
 
+    public function __construct(
+        private ?AvitoProductInterface $product = null,
+    ) {}
+
+    public function isMapping(): bool
+    {
+        return false;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -47,9 +58,24 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): null
+    public function value(): null
     {
         return null;
+    }
+
+    public function productType(): null
+    {
+        return null;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

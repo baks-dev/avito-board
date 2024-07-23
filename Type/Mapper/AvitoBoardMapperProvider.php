@@ -9,13 +9,11 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 /**
  * @see PassengerTyreProductInterface
  * @see SweatersAndShirtsProductInterface
- * @see AvitoFeedElementInterface
  */
 final readonly class AvitoBoardMapperProvider
 {
     public function __construct(
         #[AutowireIterator('baks.avito.board.products')] private iterable $products,
-        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
     ) {}
 
     /** @return list<AvitoProductInterface> */
@@ -24,20 +22,20 @@ final readonly class AvitoBoardMapperProvider
         return iterator_to_array($this->products);
     }
 
-    /** @return list<AvitoFeedElementInterface> */
-    public function getElements(string $productCategory): ?array
+    /**
+     * @return list<AvitoFeedElementInterface>
+     */
+    public function getFeedElements(string $productCategory): array
     {
-        $elements = null;
-
         /** @var AvitoProductInterface $product */
         foreach ($this->products as $product)
         {
-
-            dump($element);
-
+            if ($product->isEqualProduct($productCategory))
+            {
+                return $product->getElements();
+            }
         }
 
-        dd();
-        return $elements;
+        throw new \Exception('Avito elements not found');
     }
 }

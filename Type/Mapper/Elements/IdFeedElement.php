@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+
 /**
  * Это уникальный идентификатор, который вы присваиваете каждому объявлению в файле.
  *
@@ -45,6 +47,12 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
 
     public const string FEED_ELEMENT_DESC = 'Идентификатор';
 
+    private const string LABEL = 'Идентификатор';
+
+    public function __construct(
+        private ?AvitoProductInterface $product = null,
+    ) {}
+
     public function isMapping(): bool
     {
         return false;
@@ -60,9 +68,24 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): null
+    public function value(): null
     {
         return null;
+    }
+
+    public function productType(): null
+    {
+        return null;
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

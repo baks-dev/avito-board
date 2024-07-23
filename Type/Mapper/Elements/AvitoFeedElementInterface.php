@@ -28,14 +28,19 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('baks.avito.board.elements')]
 interface AvitoFeedElementInterface
 {
+    public function isMapping(): bool;
+
     public function isRequired(): bool;
 
     public function choices(): null|array;
 
-    /**
-     * если null, то значение по умолчанию не установленно и значение берется из базы
-     */
-    public function default(): null|string;
+    public function value(): null|string;
+
+    public function label(): string;
+
+    public function help(): null|string;
+
+    public function productType(): null|string;
 
     public static function priority(): int;
 }

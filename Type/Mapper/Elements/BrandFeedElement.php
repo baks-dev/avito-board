@@ -43,6 +43,11 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
         private ?AvitoProductInterface $product = null,
     ) {}
 
+    public function isMapping(): bool
+    {
+        return true;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -53,14 +58,24 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): null
+    public function value(): null
     {
         return null;
     }
 
-    public function link(): string
+    public function help(): ?string
     {
-        return $this->product->link(self::FEED_ELEMENT);
+        return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function productType(): null
+    {
+        return null;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
     }
 
     public static function priority(): int

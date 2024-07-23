@@ -25,47 +25,51 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+
 final readonly class PassengerTyreProduct implements PassengerTyreProductInterface
 {
-    private const string PRODUCT = 'Легковые шины';
-
     private const array LINKS = [
         'Brand' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml',
         'Model' => 'https://autoload.avito.ru/format/tyres_make.xml',
         'TireSectionWidth' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml',
     ];
 
-    public function requireFeedElements(): array
-    {
-        return [];
+    public function __construct(
+        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
+    ) {}
 
-        //        return [];
-        //        return [
-        //            'Id' => false,
-        //            'Address' => false,
-        //            'Description' => false,
-        //            'Quantity' => false,
-        //            'Condition' => false,
-        //            'Category' => new CategoryFeedElement($this),
-        //            'GoodsType' => new GoodsTypeFeedElement($this),
-        //            'AdType' => new AdTypeFeedElement(),
-        //            'ProductType' => new ProductTypeFeedElement($this),
-        //            'Brand' => new BrandFeedElement($this),
-        //            'Model' => new ModelFeedElement($this),
-        //            'TireSectionWidth' => new TireSectionWidthFeedElement($this),
-        //            'RimDiameter',
-        //            'TireAspectRatio',
-        //            'TireType',
-        //            'ResidualTread',
-        //            'BackRimDiameter',
-        //            'BackTireAspectRatio',
-        //            'BackTireSectionWidth',
-        //        ];
+    public function getElements(): array
+    {
+        $elements = null;
+
+        /** @var AvitoFeedElementInterface $element */
+        foreach ($this->elements as $element)
+        {
+            if ($element->productType() === AvitoBoardProductEnum::PassengerTyre->value)
+            {
+                $elements[] = $element;
+            }
+
+            if ($element->productType() === null)
+            {
+                $elements[] = new $element($this);
+            }
+        }
+
+        if (null === $elements)
+        {
+            throw new \Exception();
+        }
+
+        return $elements;
     }
 
-    public function product(): string
+    public function getProduct(): AvitoBoardProductEnum
     {
-        return self::PRODUCT;
+        return AvitoBoardProductEnum::PassengerTyre;
     }
 
     public function category(): string
@@ -80,7 +84,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
 
     public function productType(): string
     {
-        return self::PRODUCT;
+        return 'Легковые шины';
     }
 
     public function tireType(): array
@@ -93,15 +97,19 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
         ];
     }
 
-
-    public function link(string $element): string
+    public function help(string $element): ?string
     {
+        if(false === isset(self::LINKS[$element]))
+        {
+            return null;
+        };
+
         return self::LINKS[$element];
     }
 
-    public function isEqualsCategory(string $product): bool
+    public function isEqualProduct(string $product): bool
     {
-        return self::PRODUCT === $product;
+        return AvitoBoardProductEnum::PassengerTyre->value === $product;
     }
 
     public function __toString(): string

@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+
 /**
  * Название объявления — строка до 50 символов.
  * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
@@ -38,6 +40,15 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
 
     public const string FEED_ELEMENT_DESC = 'Название объявления';
 
+    public function __construct(
+        private ?SweatersAndShirtsProductInterface $product = null,
+    ) {}
+
+    public function isMapping(): bool
+    {
+        return true;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -48,9 +59,24 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): null
+    public function value(): null
     {
         return null;
+    }
+
+    public function productType(): string
+    {
+        return $this->product->getProduct()->value;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

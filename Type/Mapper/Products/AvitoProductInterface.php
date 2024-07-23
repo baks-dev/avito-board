@@ -23,20 +23,25 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.products')]
 interface AvitoProductInterface
 {
-    public function product(): string;
+    public function getProduct(): AvitoBoardProductEnum;
+
+    /**
+     * @return list<AvitoFeedElementInterface>
+     */
+    public function getElements(): array;
 
     public function category(): string;
 
     public function goodsType(): string;
 
-    public function requireFeedElements(): array;
+    public function help(string $element): null|string;
 
-    public function link(string $element): string;
-
-    public function isEqualsCategory(string $product): bool;
+    public function isEqualProduct(string $product): bool;
 }

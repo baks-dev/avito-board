@@ -25,38 +25,49 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+
 final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProductInterface
 {
-    private const string PRODUCT = 'Кофты и футболки';
-
     private const array LINKS = [
         'Brand' => 'https://autoload.avito.ru/format/brendy_fashion.xml',
     ];
 
-    public function requireFeedElements(): array
-    {
-        return [];
+    public function __construct(
+        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
+    ) {}
 
-        //        return [
-        //            'Id' => false,
-        //            'Address' => false,
-        //            'Title' => false,
-        //            'Description' => false,
-        //            'Condition' => false,
-        //            'Images' => false,
-        //            'Size' => false,
-        //            'Category' => new CategoryFeedElement($this),
-        //            'GoodsType' => new GoodsTypeFeedElement($this),
-        //            'AdType' => new AdTypeFeedElement(),
-        //            'Brand' => new BrandFeedElement($this),
-        //            'Apparel' => new ApparelFeedElement($this),
-        //            'GoodsSubType' => new GoodsSubTypeFeedElement($this),
-        //        ];
+    public function getElements(): array
+    {
+        $elements = null;
+
+        /** @var AvitoFeedElementInterface $element */
+        foreach ($this->elements as $element)
+        {
+            if ($element->productType() === AvitoBoardProductEnum::SweatersAndShirts->value)
+            {
+                $elements[] = $element;
+            }
+
+            if ($element->productType() === null)
+            {
+                $elements[] = new $element($this);
+            }
+        }
+
+        if (null === $elements)
+        {
+            throw new \Exception();
+        }
+
+        return $elements;
     }
 
-    public function product(): string
+    public function getProduct(): AvitoBoardProductEnum
     {
-        return self::PRODUCT;
+        return AvitoBoardProductEnum::SweatersAndShirts;
     }
 
     public function category(): string
@@ -71,7 +82,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
 
     public function apparel(): string
     {
-        return self::PRODUCT;
+        return 'Кофты и футболки';
     }
 
     public function goodsSubType(): array
@@ -89,14 +100,19 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         ];
     }
 
-    public function link(string $element): string
+    public function help(string $element): ?string
     {
+        if(false === isset(self::LINKS[$element]))
+        {
+            return null;
+        };
+
         return self::LINKS[$element];
     }
 
-    public function isEqualsCategory(string $product): bool
+    public function isEqualProduct(string $product): bool
     {
-        return self::PRODUCT === $product;
+        return AvitoBoardProductEnum::SweatersAndShirts->value === $product;
     }
 
     public function __toString(): string

@@ -25,17 +25,28 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+
 /**
  * Вид объявления.
  * В случае, если вид объявления не указан, будет установлено значение по умолчанию — "Товар приобретен на продажу"
  *
- * Элемент, общий для всех продуктов Авито
+ * Элемент общий для всех продуктов Авито
  */
 final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'AdType';
 
     public const string FEED_ELEMENT_DESC = 'Вид объявления';
+
+    public function __construct(
+        private ?AvitoProductInterface $product = null,
+    ) {}
+
+    public function isMapping(): bool
+    {
+        return false;
+    }
 
     public function isRequired(): bool
     {
@@ -47,9 +58,24 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): string
+    public function value(): string
     {
         return 'Товар приобретен на продажу';
+    }
+
+    public function productType(): null
+    {
+        return null;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

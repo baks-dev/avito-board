@@ -18,8 +18,8 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementForm;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\ModificationCategoryProductSectionField\ModificationCategoryProductSectionFieldInterface;
@@ -63,18 +63,18 @@ final class MapperForm extends AbstractType
 
             /**
              * Массив теггированных элементов для соответствующей категории Авито
-             * @var list<AvitoBoardFeedElementInterface>|null $elements
+             * @var list<AvitoFeedElementInterface>|null $elements
              */
-            $elements = $this->mapperProvider->getElements($mapperDTO->getAvitoCategory());
+            $elements = $this->mapperProvider->getFeedElements($mapperDTO->getAvitoCategory());
 
             foreach ($elements as $element)
             {
-                if($element) {
-
-                $mapperElementDTO = new MapperElementDTO();
-                $mapperElementDTO->setFeedElement($element);
-                $mapperElementDTO->setProductFields($productFields);
-                $mapperDTO->addMapperSetting($mapperElementDTO);
+                if($element->isMapping())
+                {
+                    $mapperElementDTO = new MapperElementDTO();
+                    $mapperElementDTO->setFeedElement($element);
+                    $mapperElementDTO->setProductFields($productFields);
+                    $mapperDTO->addMapperSetting($mapperElementDTO);
                 }
             }
 

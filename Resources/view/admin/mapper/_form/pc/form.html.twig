@@ -48,17 +48,20 @@
 
     <div class="tab-pane fade show active" id="tab_parameter" role="tabpanel">
         {% for setting in form.mapperSetting %}
+{#            {{ dump(form.mapperSetting) }}#}
+{#            {{ dump(setting) }}#}
+{#            {{ dd(setting.def) }}#}
             <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
                  style='background-color: {{ setting.vars.data.feedElement.isRequired ? '#fff2f2' : '#f8f8f8' }}'
             >
                 {% set help = setting.def.vars.help %}
 
                 <div class="w-50">
-                        {{ form_label(setting.def) }}
+                    {{ form_label(setting.def) }}
 
                     <div>
                         {% if help is not null %}
-                            Выберите одно из значений из списка
+                            Выберите соответствующее значение из списка
                             <a href="{{ help }}" target="_blank">значений по умолчанию</a>
                         {% endif %}
 

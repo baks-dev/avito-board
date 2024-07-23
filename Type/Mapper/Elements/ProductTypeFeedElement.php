@@ -37,6 +37,11 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         private ?PassengerTyreProductInterface $product = null,
     ) {}
 
+    public function isMapping(): bool
+    {
+        return true;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -47,9 +52,24 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): string
+    public function value(): string
     {
         return $this->product->productType();
+    }
+
+    public function productType(): string
+    {
+        return $this->product->getProduct()->value;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

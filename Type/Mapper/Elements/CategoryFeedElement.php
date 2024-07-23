@@ -30,7 +30,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 /**
  * Категория объявления.
  *
- * Элемент обязателен для всех продуктов Авито
+ * Элемент общий для всех продуктов Авито
  */
 final readonly class CategoryFeedElement implements AvitoFeedElementInterface
 {
@@ -42,6 +42,11 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         private ?AvitoProductInterface $product = null,
     ) {}
 
+    public function isMapping(): bool
+    {
+        return true;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -52,9 +57,24 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function default(): string
+    public function value(): string
     {
-        return $this->product->category();
+        return $this->product->getProduct()->value;
+    }
+
+    public function productType(): null
+    {
+        return null;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public static function priority(): int

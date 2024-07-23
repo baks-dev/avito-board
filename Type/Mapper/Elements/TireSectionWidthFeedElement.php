@@ -37,6 +37,11 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         private ?PassengerTyreProductInterface $product = null,
     ) {}
 
+    public function isMapping(): bool
+    {
+        return true;
+    }
+
     public function isRequired(): bool
     {
         return true;
@@ -47,14 +52,24 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return null;
     }
 
-    public function default(): null
+    public function value(): null
     {
         return null;
     }
 
-    public function link(): string
+    public function help(): ?string
     {
-        return $this->product->link(self::FEED_ELEMENT);
+        return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function productType(): string
+    {
+        return $this->product->getProduct()->value;
+    }
+
+    public function label(): string
+    {
+        return self::FEED_ELEMENT_DESC;
     }
 
     public static function priority(): int
