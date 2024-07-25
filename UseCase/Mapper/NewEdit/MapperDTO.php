@@ -40,13 +40,13 @@ final class MapperDTO implements AvitoBoardEventInterface
      */
     #[Assert\NotBlank]
     #[Assert\Uuid]
-    private readonly CategoryProductUid $localCategory;
+    private CategoryProductUid $category;
 
     /**
      * Идентификатор категории на Avito
      */
     #[Assert\NotBlank]
-    private string $avitoCategory;
+    private string $avito;
 
     /**
      * Коллекция мапперов - соотношений свойств для рендеринга в форме
@@ -70,24 +70,24 @@ final class MapperDTO implements AvitoBoardEventInterface
         return $this->id;
     }
 
-    public function setLocalCategory(CategoryProductUid|CategoryProduct $category): void
+    public function setCategory(CategoryProductUid|CategoryProduct $category): void
     {
-        $this->localCategory = $category instanceof CategoryProduct ? $category->getId() : $category;
+        $this->category = $category instanceof CategoryProduct ? $category->getId() : $category;
     }
 
-    public function getLocalCategory(): CategoryProductUid
+    public function getCategory(): CategoryProductUid
     {
-        return $this->localCategory;
+        return $this->category;
     }
 
-    public function setAvitoCategory(string $avitoCategory): void
+    public function setAvito(string $avito): void
     {
-        $this->avitoCategory = $avitoCategory;
+        $this->avito = $avito;
     }
 
-    public function getAvitoCategory(): string
+    public function getAvito(): string
     {
-        return $this->avitoCategory;
+        return $this->avito;
     }
 
     /**

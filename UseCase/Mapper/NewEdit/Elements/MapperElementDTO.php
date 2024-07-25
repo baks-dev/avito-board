@@ -29,11 +29,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 final class MapperElementDTO implements AvitoBoardMapperInterface
 {
-    /**
-     * Элемент соответствия для построения фида для Авито
-     */
     #[Assert\NotBlank]
-    private ?AvitoFeedElementInterface $feedElement = null;
+    private ?string $element = null;
 
     /**
      * Связь на свойство продукта в категории
@@ -45,17 +42,23 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
     #[Assert\When(expression: 'this.getProductField() === null', constraints: new Assert\NotBlank())]
     private ?string $def = null;
 
-    /** @var ArrayCollection<CategoryProductSectionFieldUid> */
-    private ArrayCollection $productFields;
+    /**
+     *  Для передачи в форму
+     *  @see MapperElementForm
+     *
+     * Элемент соответствия для построения фида для Авито
+     */
+    #[Assert\NotBlank]
+    private ?AvitoFeedElementInterface $elementInstance = null;
 
-    public function getFeedElement(): ?AvitoFeedElementInterface
+    public function getElementInstance(): ?AvitoFeedElementInterface
     {
-        return $this->feedElement;
+        return $this->elementInstance;
     }
 
-    public function setFeedElement(?AvitoFeedElementInterface $feedElement): void
+    public function setElementInstance(?AvitoFeedElementInterface $elementInstance): void
     {
-        $this->feedElement = $feedElement;
+        $this->elementInstance = $elementInstance;
     }
 
     public function getProductField(): ?CategoryProductSectionFieldUid
@@ -79,16 +82,13 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
         return $this;
     }
 
-    /**
-     * @return ArrayCollection<CategoryProductSectionFieldUid>
-     */
-    public function getProductFields(): ArrayCollection
+    public function getElement(): ?string
     {
-        return $this->productFields;
+        return $this->element;
     }
 
-    public function setProductFields(ArrayCollection $productFields): void
+    public function setElement(?string $element): void
     {
-        $this->productFields = $productFields;
+        $this->element = $element;
     }
 }

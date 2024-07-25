@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final class Role implements RoleInterface, MenuAdminInterface
 {
     /** Транспорт доставки заказов */
-    public const string ROLE = 'ROLE_AVITO_PRODUCT_MAPPER';
+    public const string ROLE = 'ROLE_AVITO_BOARD_MAPPER';
 
     public function getRole(): string
     {

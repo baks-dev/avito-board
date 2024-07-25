@@ -70,6 +70,30 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
         return $elements;
     }
 
+    public function getElement(string $elementName): AvitoFeedElementInterface
+    {
+        /** @var AvitoFeedElementInterface $element */
+        foreach ($this->elements as $element)
+        {
+            if ($element->element() === $elementName)
+            {
+
+                if ($element->product() === null)
+                {
+                    return new $element($this);
+                }
+
+                if ($element->product() instanceof AvitoBoardProductEnum &&
+                    $element->product()->value === AvitoBoardProductEnum::PassengerTyre->value)
+                {
+                    return $element;
+                }
+            }
+        }
+
+        throw new \Exception();
+    }
+
     public function getProduct(): AvitoBoardProductEnum
     {
         return AvitoBoardProductEnum::PassengerTyre;
@@ -107,7 +131,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
 
     public function help(string $element): ?string
     {
-        if(false === isset(self::LINKS[$element]))
+        if (false === isset(self::LINKS[$element]))
         {
             return null;
         };

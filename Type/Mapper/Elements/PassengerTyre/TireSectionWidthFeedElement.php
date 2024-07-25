@@ -49,14 +49,19 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return false;
     }
 
     public function data(): null
     {
         return null;
+    }
+
+    public function element(): string
+    {
+        return self::FEED_ELEMENT;
     }
 
     public function help(): ?string

@@ -1,28 +1,22 @@
 # Роль
-
-ROLE_AVITO_TOKEN:
-  header: 'AVITO'
-  name: 'Токены авторизации AVITO'
-  desc: 'Токены авторизации AVITO'
+ROLE_AVITO_BOARD_MAPPER:
+  header: 'Avito'
+  name: 'Соотношение свойств для Avito'
+  desc: 'Соотношение свойств для Avito'
 
 # Правила
-
-ROLE_AVITO_TOKEN_INDEX:
+ROLE_AVITO_BOARD_MAPPER_INDEX:
   name: 'Просмотр'
   desc: ''
 
-ROLE_AVITO_TOKEN_NEW:
+ROLE_AVITO_BOARD_MAPPER_NEW:
   name: 'Добавить'
   desc: ''
 
-ROLE_AVITO_TOKEN_EDIT:
+ROLE_AVITO_BOARD_MAPPER_EDIT:
   name: 'Редактировать'
   desc: ''
 
-ROLE_AVITO_TOKEN_DELETE:
+ROLE_AVITO_BOARD_MAPPER_DELETE:
   name: 'Удалить'
-  desc: ''
-
-ROLE_AVITO_TOKEN_ACTIVE:
-  name: 'Активность'
   desc: ''

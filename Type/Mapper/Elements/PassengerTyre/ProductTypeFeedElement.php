@@ -49,14 +49,19 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return false;
     }
 
     public function data(): string
     {
         return $this->product->productType();
+    }
+
+    public function element(): string
+    {
+        return self::FEED_ELEMENT;
     }
 
     public function product(): ?AvitoBoardProductEnum

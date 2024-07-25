@@ -4,45 +4,37 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper;
 
+use BaksDev\Avito\Board\Repository\Mapper\AllMapperSettings\AllMapperSettingsInterface;
+use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Form\Search\SearchDTO;
 use BaksDev\Core\Form\Search\SearchForm;
-use BaksDev\Yandex\Market\Products\Repository\Settings\AllProductsSettings\AllProductsSettingsInterface;
+use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use BaksDev\Core\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
-use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_PRODUCT_MAPPER_INDEX')]
+#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_INDEX')]
 final class IndexController extends AbstractController
 {
-    /**
-     * Настройки соотношения категорий с Avito
-     */
     #[Route('/admin/avito-board/mapper/categories/{page<\d+>}', name: 'admin.mapper.index', methods: ['GET', 'POST'])]
-    public function index(Request $request, AllProductsSettingsInterface $allProductsSettings, int $page = 0): Response
+    public function index(Request $request, AllMapperSettingsInterface $allMapperSettings, int $page = 0): Response
     {
 
-        /* Поиск */
         $search = new SearchDTO();
-        $searchForm = $this->createForm(
-            SearchForm::class,
-            $search,
-            [
-                'action' => $this->generateUrl('avito-board:admin.mapper.index')
-            ]
-        );
+
+        $searchForm = $this->createForm(SearchForm::class, $search, [
+            'action' => $this->generateUrl('avito-board:admin.mapper.index')
+        ]);
 
         $searchForm->handleRequest($request);
 
-        /* Получаем список */
-        $query = $allProductsSettings->fetchAllProductsSettingsAssociative();
+        $mapperSetting = $allMapperSettings->findAll();
 
         return $this->render(
             [
-                'query' => $query,
+                'query' => $mapperSetting,
                 'search' => $searchForm->createView(),
             ],
         );

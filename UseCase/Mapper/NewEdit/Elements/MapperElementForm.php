@@ -18,7 +18,10 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -34,18 +37,19 @@ final class MapperElementForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
 
             $form = $event->getForm();
 
             /** @var MapperElementDTO $mapperElementDTO */
             if ($mapperElementDTO = $event->getData())
             {
-                $element = $mapperElementDTO->getFeedElement();
+                /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
+                $productFields = $options['product_fields'];
 
                 $form
                     ->add('productField', ChoiceType::class, [
-                        'choices' => $mapperElementDTO->getProductFields(),
+                        'choices' => $productFields,
                         'choice_value' => function (?CategoryProductSectionFieldUid $field) {
                             return $field?->getValue();
                         },
@@ -57,16 +61,22 @@ final class MapperElementForm extends AbstractType
                         'required' => false,
                     ]);
 
-                if ($choices = $element->choices())
+                /** @var AvitoProductInterface $avitoProduct */
+                $avitoProduct = $options['avito_product'];
+                $element = $avitoProduct->getElement($mapperElementDTO->getElement());
+                $mapperElementDTO->setElementInstance($element);
+
+                if ($element->isChoices())
                 {
                     $form
                         ->add('def', ChoiceType::class, [
-                            'choices' => $choices,
-                            'choice_value' => function (?string $choice) {
-                                return $choice;
+                            'choices' => $element->data(),
+                            'choice_value' => function (?string $element) {
+//                                dd($element);
+                                return $element;
                             },
-                            'choice_label' => function (string $choice) {
-                                return $choice;
+                            'choice_label' => function (string $element) {
+                                return $element;
                             },
                             'label' => $element->label(),
                             'help' => $element->help(),
@@ -79,7 +89,7 @@ final class MapperElementForm extends AbstractType
                 else
                 {
                     $form->add('def', TextType::class, [
-                        'data' => $element->data(),
+                        'data' => $mapperElementDTO->getDef() ?? $element->data(),
                         'label' => $element->label(),
                         'help' => $element->help(),
                         'translation_domain' => 'avito-board.settings',
@@ -95,6 +105,8 @@ final class MapperElementForm extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => MapperElementDTO::class,
+                'product_fields' => null,
+                'avito_product' => null,
             ]
         );
     }

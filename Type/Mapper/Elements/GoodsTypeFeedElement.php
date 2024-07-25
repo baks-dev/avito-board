@@ -53,12 +53,12 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return false;
     }
 
-    public function data(): ?string
+    public function data(): string
     {
         return $this->product->goodsType();
     }
@@ -66,6 +66,11 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
     public function product(): null
     {
         return null;
+    }
+
+    public function element(): string
+    {
+        return self::FEED_ELEMENT;
     }
 
     public function label(): string

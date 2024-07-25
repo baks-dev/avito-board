@@ -59,22 +59,27 @@ final class MapperForm extends AbstractType
             /**
              * Параметры продукта в системе (ТП, варианты, модификации)
              */
-            $productFields = $this->getProductParameters($mapperDTO->getLocalCategory());
+            $productFields = $this->getProductParameters($mapperDTO->getCategory());
 
-            /**
-             * Массив теггированных элементов для соответствующей категории Авито
-             * @var list<AvitoFeedElementInterface>|null $elements
-             */
-            $elements = $this->mapperProvider->getFeedElements($mapperDTO->getAvitoCategory());
+            $avitoProduct = $this->mapperProvider->getProduct($mapperDTO->getAvito());
 
-            foreach ($elements as $element)
+            /** Проверка для new */
+            if ($mapperDTO->getMapperSetting()->isEmpty())
             {
-                if ($element->isMapping())
+                /**
+                 * Фильтрация элементов по соответствующей категории Авито
+                 * @var list<AvitoFeedElementInterface>|null $elements
+                 */
+                $elements = $this->mapperProvider->filterElements($mapperDTO->getAvito());
+
+                foreach ($elements as $element)
                 {
-                    $mapperElementDTO = new MapperElementDTO();
-                    $mapperElementDTO->setFeedElement($element);
-                    $mapperElementDTO->setProductFields($productFields);
-                    $mapperDTO->addMapperSetting($mapperElementDTO);
+                    if ($element->isMapping())
+                    {
+                        $mapperElementDTO = new MapperElementDTO();
+                        $mapperElementDTO->setElement($element->element());
+                        $mapperDTO->addMapperSetting($mapperElementDTO);
+                    }
                 }
             }
 
@@ -82,6 +87,8 @@ final class MapperForm extends AbstractType
                 'entry_type' => MapperElementForm::class,
                 'entry_options' => [
                     'label' => false,
+                    'product_fields' => $productFields,
+                    'avito_product' => $avitoProduct,
                 ],
                 'label' => false,
                 'by_reference' => false,

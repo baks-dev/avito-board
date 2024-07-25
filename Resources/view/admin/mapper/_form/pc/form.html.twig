@@ -47,15 +47,15 @@
     {# ОСНОВНЫЕ НАСТРОЙКИ #}
 
     <div class="tab-pane fade show active" id="tab_parameter" role="tabpanel">
-        {% for setting in form.mapperSetting %}
+        {% for mapper in form.mapperSetting %}
             <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
-                 style='background-color: {{ setting.vars.data.feedElement.isRequired ? '#fff2f2' : '#f8f8f8' }}'
+                 style='background-color: {{ mapper.vars.data.elementInstance.isRequired ? '#fff2f2' : '#f8f8f8' }}'
             >
 
                 <div class="w-50">
-                    {{ form_label(setting.def) }}
+                    {{ form_label(mapper.def) }}
 
-                    {% set help = setting.def.vars.help %}
+                    {% set help = mapper.def.vars.help %}
                     <div>
                         {% if help is not null %}
                             Выберите соответствующее значение из списка
@@ -67,14 +67,14 @@
 
                 {# свойста для сопоставления #}
                 <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
-                    {{ form_widget(setting.productField, {
+                    {{ form_widget(mapper.productField, {
                         placeholder: 'Выберите поле из списка...',
-                        attr: { 'data-select' : 'select2', class:  'mb-0'  }
+                        attr: { 'data-select' : 'select2', class:  'mb-0'}
                     }) }}
 
-                    {{ form_widget(setting.def, {
+                    {{ form_widget(mapper.def, {
                         placeholder: 'Выберите поле из списка...',
-                        attr: { 'placeholder' : 'по умолчанию' }
+                        attr: { 'placeholder' : 'введите значение по умолчанию'}
                     }) }}
                 </div>
 

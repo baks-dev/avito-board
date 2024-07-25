@@ -23,10 +23,13 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper;
 
+use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\UseCase\Mapper\Delete\DeleteMapperDTO;
+use BaksDev\Avito\Board\UseCase\Mapper\Delete\DeleteMapperForm;
+use BaksDev\Avito\Board\UseCase\Mapper\Delete\DeleteMapperHandler;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Yandex\Market\Products\Entity\Settings\Event\YaMarketProductsSettingsEvent;
-use BaksDev\Yandex\Market\Products\UseCase\Settings\Delete\DeleteYaMarketProductsSettingsHandler;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,12 +37,48 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_PRODUCT_MAPPER_DELETE')]
+#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_DELETE')]
 final class DeleteController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/delete/{id}', name: 'admin.mapper.delete', methods: ['POST', 'GET'])]
-    public function delete(Request $request, DeleteYaMarketProductsSettingsHandler $ProductSettingsHandler, #[MapEntity] YaMarketProductsSettingsEvent $Event): Response
+    public function delete(Request $request, #[MapEntity] AvitoBoardEvent $event, DeleteMapperHandler $handler): Response
     {
-        return new Response();
+        $deleteMapperDTO = new DeleteMapperDTO();
+
+        /** Гидрируем ДТО из события */
+        $event->getDto($deleteMapperDTO);
+
+        $form = $this->createForm(DeleteMapperForm::class, $deleteMapperDTO, [
+            'action' => $this->generateUrl(
+                'avito-board:admin.mapper.delete',
+                [
+                    'id' => $deleteMapperDTO->getEvent()
+                ]
+            )
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $form->has('delete_mapper'))
+        {
+            $this->refreshTokenForm($form);
+
+            $handlerResult = $handler->handle($deleteMapperDTO);
+
+            if ($handlerResult instanceof AvitoBoard)
+            {
+                $this->addFlash('page.delete', 'success.delete', 'avito-board.admin');
+
+                return $this->redirectToRoute('avito-board:admin.mapper.index');
+            }
+
+            $this->addFlash('page.delete', 'danger.delete', 'avito-board.admin', $handlerResult);
+
+            return $this->redirectToRoute('avito-board:admin.mapper.index', status: 400);
+        }
+
+        return $this->render([
+            'form' => $form->createView(),
+        ]);
     }
 }

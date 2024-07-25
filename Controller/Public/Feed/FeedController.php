@@ -20,6 +20,7 @@ class FeedController extends AbstractController
 
         $category = $activeCategory->findAll();
         $products = $productsByCategory->fetchAllProductByCategory();
+        dd($products);
 
         $product = [$products[0]];
 

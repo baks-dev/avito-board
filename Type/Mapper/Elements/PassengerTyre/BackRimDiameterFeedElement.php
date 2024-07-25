@@ -56,9 +56,9 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return f;
     }
 
     /**
@@ -68,6 +68,11 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
     public function data(): string
     {
         return '10';
+    }
+
+    public function element(): string
+    {
+        return self::FEED_ELEMENT;
     }
 
     public function help(): ?string

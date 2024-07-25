@@ -25,7 +25,7 @@ final readonly class AvitoBoardMapperProvider
     /**
      * @return list<AvitoFeedElementInterface>
      */
-    public function getFeedElements(string $productCategory): array
+    public function filterElements(string $productCategory): array
     {
         /** @var AvitoProductInterface $product */
         foreach ($this->products as $product)
@@ -37,5 +37,40 @@ final readonly class AvitoBoardMapperProvider
         }
 
         throw new \Exception('Avito elements not found');
+    }
+
+    public function getFeedElement(string $productCategory, string $elementName): AvitoFeedElementInterface
+    {
+        /** @var AvitoProductInterface $product */
+        foreach ($this->products as $product)
+        {
+            if ($product->isEqualProduct($productCategory))
+            {
+                $allElements = $product->getElements();
+
+                foreach ($allElements as $element)
+                {
+                    if ($element->element() === $elementName)
+                    {
+                        return $element;
+                    }
+                }
+            }
+        }
+
+        throw new \Exception('Avito elements not found');
+    }
+
+    public function getProduct(string $productCategory): AvitoProductInterface
+    {
+        foreach ($this->products as $product)
+        {
+            if ($product->isEqualProduct($productCategory))
+            {
+                return $product;
+            }
+        }
+
+        throw new \Exception('Avito product not found');
     }
 }

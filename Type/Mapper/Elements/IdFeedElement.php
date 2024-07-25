@@ -61,9 +61,9 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return false;
     }
 
     public function data(): null
@@ -71,9 +71,9 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): null
+    public function element(): string
     {
-        return null;
+        return self::FEED_ELEMENT;
     }
 
     public function label(): string
@@ -84,5 +84,10 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function product(): null
+    {
+        return null;
     }
 }

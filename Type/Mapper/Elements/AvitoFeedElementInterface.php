@@ -33,9 +33,11 @@ interface AvitoFeedElementInterface
 
     public function isRequired(): bool;
 
-    public function choices(): null|array;
+    public function isChoices(): bool;
 
-    public function data(): null|string;
+    public function element(): string;
+
+    public function data(): null|string|array;
 
     public function label(): string;
 

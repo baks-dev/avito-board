@@ -33,12 +33,12 @@ use DomainException;
 
 final class MapperHandler extends AbstractHandler
 {
-    public function handle(MapperDTO $command): AvitoBoardMessage|string
+    public function handle(MapperDTO $command): AvitoBoard|string
     {
         /** Валидация DTO  */
         $this->validatorCollection->add($command);
 
-        $this->main = new AvitoBoard($command->getLocalCategory());
+        $this->main = new AvitoBoard($command->getCategory());
         $this->event = new AvitoBoardEvent();
 
         try
@@ -56,9 +56,9 @@ final class MapperHandler extends AbstractHandler
             return $this->validatorCollection->getErrorUniqid();
         }
 
-        dd($this->event);
         $this->entityManager->flush();
 
+        /** Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
             message: new AvitoBoardMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
             transport: 'avito-board'

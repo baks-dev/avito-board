@@ -11,6 +11,7 @@ use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,6 +37,10 @@ class AvitoBoardEvent extends EntityEvent
     #[ORM\Column(type: CategoryProductUid::TYPE)]
     private CategoryProductUid $category;
 
+    #[Assert\NotBlank]
+    #[ORM\Column(type: Types::STRING)]
+    private string $avito;
+
     /**
      * Модификатор
      */
@@ -60,7 +65,7 @@ class AvitoBoardEvent extends EntityEvent
      */
     public function __clone(): void
     {
-        $this->id = clone new AvitoBoardEventUid();
+        $this->id = clone $this->id;
     }
 
     public function __toString(): string

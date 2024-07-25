@@ -26,31 +26,13 @@ use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @see MapperElementDTO
+ */
 #[ORM\Entity]
 #[ORM\Table(name: 'avito_board_mapper')]
 class AvitoBoardMapper extends EntityEvent
 {
-    /**
-     * Наименование категории от Авито
-     */
-    #[Assert\NotBlank]
-    #[ORM\Column(type: Types::STRING)]
-    private string $type;
-
-    /**
-     * Связь на свойство продукта в категории
-     */
-    #[Assert\NotBlank]
-    #[Assert\Uuid]
-    #[ORM\Column(type: CategoryProductSectionFieldUid::TYPE)]
-    private CategoryProductSectionFieldUid $productField;
-
-    /**
-     * Значение по умолчанию
-     */
-    #[ORM\Column(type: Types::STRING, nullable: true)]
-    private ?string $def = null;
-
     /**
      * Идентификатор события
      */
@@ -60,6 +42,27 @@ class AvitoBoardMapper extends EntityEvent
     #[ORM\ManyToOne(targetEntity: AvitoBoardEvent::class, inversedBy: 'mapperSetting')]
     #[ORM\JoinColumn(name: 'event', referencedColumnName: 'id')]
     private AvitoBoardEvent $event;
+
+    /**
+     * Наименование категории от Авито
+     */
+    #[Assert\NotBlank]
+    #[ORM\Id]
+    #[ORM\Column(type: Types::STRING)]
+    private string $element;
+
+    /**
+     * Связь на свойство продукта в категории
+     */
+    #[Assert\Uuid]
+    #[ORM\Column(type: CategoryProductSectionFieldUid::TYPE, nullable: true)]
+    private ?CategoryProductSectionFieldUid $productField = null;
+
+    /**
+     * Значение по умолчанию
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $def = null;
 
     public function __construct(AvitoBoardEvent $event)
     {

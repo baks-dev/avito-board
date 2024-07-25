@@ -43,25 +43,25 @@ class AvitoBoardModify extends EntityEvent
 
     /** ID пользователя  */
     #[ORM\Column(type: UserUid::TYPE, nullable: true)]
-    private ?UserUid $user = null;
+    private ?UserUid $usr = null;
 
     /** Ip адрес */
     #[Assert\NotBlank]
     #[ORM\Column(type: IpAddress::TYPE)]
-    private IpAddress $ipAddress;
+    private IpAddress $ip;
 
     /** User-agent */
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::TEXT)]
-    private string $userAgent;
+    private string $agent;
 
 
     public function __construct(AvitoBoardEvent $event)
     {
         $this->event = $event;
         $this->modDate = new DateTimeImmutable();
-        $this->ipAddress = new IpAddress('127.0.0.1');
-        $this->userAgent = 'console';
+        $this->ip = new IpAddress('127.0.0.1');
+        $this->agent = 'console';
         $this->action = new ModifyAction(ModifyActionNew::class);
     }
 
@@ -69,8 +69,8 @@ class AvitoBoardModify extends EntityEvent
     {
         $this->modDate = new DateTimeImmutable();
         $this->action = new ModifyAction(ModifyActionUpdate::class);
-        $this->ipAddress = new IpAddress('127.0.0.1');
-        $this->userAgent = 'console';
+        $this->ip = new IpAddress('127.0.0.1');
+        $this->agent = 'console';
     }
 
     public function __toString(): string
@@ -101,14 +101,14 @@ class AvitoBoardModify extends EntityEvent
 
     public function upModifyAgent(IpAddress $ip, string $agent): void
     {
-        $this->ipAddress = $ip;
-        $this->userAgent = $agent;
+        $this->ip = $ip;
+        $this->agent = $agent;
         $this->modDate = new DateTimeImmutable();
     }
 
-    public function setUser(UserUid|User|null $user): void
+    public function setUsr(UserUid|User|null $user): void
     {
-        $this->user = $user instanceof User ? $user->getId() : $user;
+        $this->usr = $user instanceof User ? $user->getId() : $user;
     }
 
     public function equals(mixed $action): bool

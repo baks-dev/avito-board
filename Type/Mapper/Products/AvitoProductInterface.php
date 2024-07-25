@@ -37,6 +37,8 @@ interface AvitoProductInterface
      */
     public function getElements(): array;
 
+    public function getElement(string $elementName): AvitoFeedElementInterface;
+
     public function category(): string;
 
     public function goodsType(): string;

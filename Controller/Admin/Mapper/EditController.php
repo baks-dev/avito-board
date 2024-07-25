@@ -23,10 +23,12 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper;
 
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperDTO;
+use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperForm;
+use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperHandler;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
-use BaksDev\Yandex\Market\Products\Entity\Settings\Event\YaMarketProductsSettingsEvent;
-use BaksDev\Yandex\Market\Products\UseCase\Settings\NewEdit\YaMarketProductsSettingsHandler;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,12 +36,38 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_PRODUCT_MAPPER_EDIT')]
+#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_EDIT')]
 final class EditController extends AbstractController
 {
-    #[Route('/admin/avito-board/mapper/edit/{id}', name: 'admin.mapper.newedit.edit', methods: ['GET', 'POST'])]
-    public function new(Request $request, #[MapEntity] YaMarketProductsSettingsEvent $Event, YaMarketProductsSettingsHandler $productsSettingsHandler): Response
+    #[Route('/admin/avito-board/mapper/edit/{id}', name: 'admin.mapper.edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, #[MapEntity] AvitoBoardEvent $event, MapperHandler $handler): Response
     {
-        return new Response();
+        $mapperDTO = new MapperDTO();
+
+        $event->getDto($mapperDTO);
+
+        $form = $this->createForm(MapperForm::class, $mapperDTO);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
+        {
+            $this->refreshTokenForm($form);
+
+            $result = $handler->handle($mapperDTO);
+
+            if ($result)
+            {
+                $this->addFlash('page.edit', 'success.edit', 'avito-board.admin');
+
+                return $this->redirectToRoute('avito-board:admin.mapper.index');
+            }
+
+            $this->addFlash('page.edit', 'danger.update', 'avito-board.admin', $result);
+
+            return $this->redirectToReferer();
+        }
+
+        return $this->render(['form' => $form->createView()]);
+
     }
 }

@@ -45,7 +45,7 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -53,14 +53,19 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): null
+    public function isChoices(): bool
     {
-        return null;
+        return false;
     }
 
-    public function data(): ?string
+    public function data(): string
     {
-        return 'ожидает добавления в параметры товара';
+        return '...ожидает добавления';
+    }
+
+    public function element(): string
+    {
+        return self::FEED_ELEMENT;
     }
 
     public function help(): ?string

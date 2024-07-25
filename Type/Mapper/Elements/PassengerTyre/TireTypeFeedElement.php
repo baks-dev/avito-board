@@ -49,14 +49,19 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function choices(): array
+    public function isChoices(): bool
+    {
+        return true;
+    }
+
+    public function data(): array
     {
         return $this->product->tireType();
     }
 
-    public function data(): null
+    public function element(): string
     {
-        return null;
+        return self::FEED_ELEMENT;
     }
 
     public function product(): ?AvitoBoardProductEnum

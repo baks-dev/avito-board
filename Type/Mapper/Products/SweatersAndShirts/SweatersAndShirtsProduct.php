@@ -66,6 +66,30 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         return $elements;
     }
 
+    public function getElement(string $elementName): AvitoFeedElementInterface
+    {
+        /** @var AvitoFeedElementInterface $element */
+        foreach ($this->elements as $element)
+        {
+            if ($element->element() === $elementName)
+            {
+
+                if ($element->product() === null)
+                {
+                    return new $element($this);
+                }
+
+                if ($element->product() instanceof AvitoBoardProductEnum &&
+                    $element->product()->value === AvitoBoardProductEnum::SweatersAndShirts->value)
+                {
+                    return $element;
+                }
+            }
+        }
+
+        throw new \Exception();
+    }
+
     public function getProduct(): AvitoBoardProductEnum
     {
         return AvitoBoardProductEnum::SweatersAndShirts;

@@ -39,7 +39,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_PRODUCT_MAPPER_NEW')]
+#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_NEW')]
 final class NewController extends AbstractController
 {
     /**
@@ -88,8 +88,8 @@ final class NewController extends AbstractController
         string                       $avitoCategory
     ): Response {
         $mapperDTO = new MapperDTO();
-        $mapperDTO->setLocalCategory($localCategory);
-        $mapperDTO->setAvitoCategory($avitoCategory);
+        $mapperDTO->setCategory($localCategory);
+        $mapperDTO->setAvito($avitoCategory);
 
         $form = $this->createForm(MapperForm::class, $mapperDTO);
         $form->handleRequest($request);
@@ -107,7 +107,7 @@ final class NewController extends AbstractController
                 return $this->redirectToRoute('avito-board:admin.mapper.index');
             }
 
-            $this->addFlash('page.new', 'danger.new', 'avito-board.admin');
+            $this->addFlash('page.new', 'danger.new', 'avito-board.admin', $result);
 
             return $this->redirectToReferer();
         }
