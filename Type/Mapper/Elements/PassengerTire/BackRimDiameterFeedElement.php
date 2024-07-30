@@ -23,25 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
+/**
+ * Диаметр задней оси, дюймы.
+ *
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
+ */
+final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'RimDiameter';
+    public const string FEED_ELEMENT = 'BackRimDiameter';
 
-    public const string LABEL = 'Диаметр, дюймы';
+    public const string LABEL = 'Диаметр задней оси, дюймы';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -54,9 +61,13 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): null
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see RimDiameterFeedElement
+     */
+    public function data(): string
     {
-        return null;
+        return '10';
     }
 
     public function element(): string

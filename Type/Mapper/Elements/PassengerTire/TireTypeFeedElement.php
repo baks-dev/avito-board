@@ -23,32 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-/**
- * Высота профиля шины задней оси.
- *
- * Применимо, если в поле DifferentWidthTires указано значение 'Да'
- *
- * Одно из значений от Авито
- */
-final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
+final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'BackTireAspectRatio';
+    public const string FEED_ELEMENT = 'TireType';
 
-    public const string LABEL = 'Высота профиля шины задней оси';
+    public const string LABEL = 'Сезонность шин или колес';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -58,26 +51,17 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
 
     public function isChoices(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see TireAspectRatioFeedElement
-     */
-    public function data(): null
+    public function data(): array
     {
-        return null;
+        return $this->product->tireType();
     }
 
     public function element(): string
     {
         return self::FEED_ELEMENT;
-    }
-
-    public function help(): ?string
-    {
-        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public function product(): ?AvitoBoardProductEnum
@@ -88,5 +72,10 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 }

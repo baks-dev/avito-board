@@ -2,9 +2,10 @@
 
 namespace BaksDev\Avito\Board\Controller\Public\Feed;
 
+use BaksDev\Avito\Board\Repository\Feed\AllProducts\AllProductsWithMappingInterface;
 use BaksDev\Core\Controller\AbstractController;
-use BaksDev\Products\Category\Repository\AllCategoryByMenu\AllCategoryByMenuInterface;
-use BaksDev\Products\Product\Repository\AllProductsByCategory\AllProductsByCategoryInterface;
+use BaksDev\Core\Type\UidType\ParamConverter;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -12,22 +13,26 @@ use Symfony\Component\Routing\Attribute\Route;
 #[AsController]
 class FeedController extends AbstractController
 {
-    #[Route('/avito-board/feed.xml', name: 'public.export.feed', methods: ['GET'])]
-    public function products(
-        AllCategoryByMenuInterface     $activeCategory,
-        AllProductsByCategoryInterface $productsByCategory
+    #[Route('/avito-board/{profile}/feed.xml', name: 'public.export.feed', methods: ['GET'])]
+    public function feed(
+        AllProductsWithMappingInterface $allProductsWithMapping,
+        #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $category = $activeCategory->findAll();
-        $products = $productsByCategory->fetchAllProductByCategory();
-        dd($products);
+        //        dump($profile);
 
-        $product = [$products[0]];
+        $product = $allProductsWithMapping->findAllWithMapper();
+
+        //        dump(current($allProductsWithMapping->findAllWithMapper()));
+        //        dump(current($allProductsWithMapping->findAll()));
+        //        dd();
+
+        $products = $allProductsWithMapping->findAll();
+
 
         $response = $this->render(
             [
-                'category' => $category,
-                'products' => $product,
+                'products' => $products,
             ],
             file: 'export.html.twig'
         );

@@ -7,7 +7,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
- * @see PassengerTyreProductInterface
+ * @see PassengerTireProductInterface
  * @see SweatersAndShirtsProductInterface
  */
 final readonly class AvitoBoardMapperProvider

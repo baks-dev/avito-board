@@ -23,25 +23,33 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
+/**
+ * Остаточная глубина протектора шины.
+ *
+ * Может принимать значения от 1 до 50 включительно, измеряется в миллиметрах (мм)
+ * В диапазоне 1-10 мм включительно можно использовать дробные значения.
+ *
+ * Применимо, если в поле Condition указано значение 'Б/у'
+ */
+final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'TireType';
+    public const string FEED_ELEMENT = 'ResidualTread';
 
-    public const string LABEL = 'Сезонность шин или колес';
+    public const string LABEL = 'Остаточная глубина протектора шины';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -51,17 +59,25 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
 
     public function isChoices(): bool
     {
-        return true;
+        return false;
     }
 
-    public function data(): array
+    /**
+     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
+     */
+    public function data(): string
     {
-        return $this->product->tireType();
+        return '10';
     }
 
     public function element(): string
     {
         return self::FEED_ELEMENT;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public function product(): ?AvitoBoardProductEnum
@@ -72,10 +88,5 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function help(): ?string
-    {
-        return $this->product->help(self::FEED_ELEMENT);
     }
 }

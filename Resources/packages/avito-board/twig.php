@@ -23,13 +23,13 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-use Symfony\Config\TwigConfig;
 use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
+use Symfony\Config\TwigConfig;
 
 return static function (TwigConfig $twig) {
 
     $twig->path(
-        BaksDevAvitoBoardBundle::PATH.'Resources/view',
+        BaksDevAvitoBoardBundle::PATH . 'Resources/view',
         'avito-board'
     );
 };

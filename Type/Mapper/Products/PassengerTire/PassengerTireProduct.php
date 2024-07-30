@@ -23,13 +23,13 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-final readonly class PassengerTyreProduct implements PassengerTyreProductInterface
+final readonly class PassengerTireProduct implements PassengerTireProductInterface
 {
     private const array LINKS = [
         'Brand' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml',
@@ -56,7 +56,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
             }
 
             if ($element->product() instanceof AvitoBoardProductEnum &&
-                $element->product()->value === AvitoBoardProductEnum::PassengerTyre->value)
+                $element->product()->value === AvitoBoardProductEnum::PassengerTire->value)
             {
                 $elements[] = $element;
             }
@@ -84,7 +84,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
                 }
 
                 if ($element->product() instanceof AvitoBoardProductEnum &&
-                    $element->product()->value === AvitoBoardProductEnum::PassengerTyre->value)
+                    $element->product()->value === AvitoBoardProductEnum::PassengerTire->value)
                 {
                     return $element;
                 }
@@ -96,7 +96,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
 
     public function getProduct(): AvitoBoardProductEnum
     {
-        return AvitoBoardProductEnum::PassengerTyre;
+        return AvitoBoardProductEnum::PassengerTire;
     }
 
     public function category(): string
@@ -141,7 +141,7 @@ final readonly class PassengerTyreProduct implements PassengerTyreProductInterfa
 
     public function isEqualProduct(string $product): bool
     {
-        return AvitoBoardProductEnum::PassengerTyre->value === $product;
+        return AvitoBoardProductEnum::PassengerTire->value === $product;
     }
 
     public function __toString(): string

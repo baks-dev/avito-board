@@ -1,41 +1,59 @@
 <?xml version="1.0" encoding='UTF-8'?>
 
+{# <Ads formatVersion='3' target='Avito.ru'> #}
+{#    {% for product in products|filter(v => v.product_price > 0) %} #}
+{#        <Ad> #}
+{#            <Id> #}
+{#                test #}
+{#            </Id> #}
+{#        </Ad> #}
+{#    {% endfor %} #}
+{# </Ads> #}
+
 <Ads formatVersion='3' target='Avito.ru'>
-    {% for card in products|filter(v => v.product_price > 0) %}
+    {% for product in products|filter(v => v.product_price > 0) %}
+        {% set avitoMapper = product.avito_mapper %}
         <Ad>
-            {# обязательные параметры #}
+            {#             обязательные параметры #}
+
             <Id>
-                {{ card.product_article }}
+                {{ product.product_article }}
             </Id>
             <Address>
                 _from_avito_board
             </Address>
+
+
             <Category>
-                {{ card.category_name }}
+                _from_element
             </Category>
+
+            <GoodsType>
+                _from_element
+            </GoodsType>
             <Description>
                 <![CDATA[
-                {{ card.preview|raw }}
+                {{ product.product_description|raw }}
                 ]]>
             </Description>
-            <GoodsType>
-                _from_mapper
-            </GoodsType>
             <AdType>
-{#                _from_input#}
-                default
+                _from_element
             </AdType>
             <ProductType>
-                _from_mapper
+                _from_element
             </ProductType>
 
-            {# характеристики шины #}
             <Brand>
                 _from_mapper
             </Brand>
             <Model>
                 _from_mapper
             </Model>
+
+            характеристики шины
+            <TireType>
+                _from_mapper
+            </TireType>
             <TireSectionWidth>
                 _from_mapper
             </TireSectionWidth>
@@ -45,125 +63,126 @@
             <TireAspectRatio>
                 _from_mapper
             </TireAspectRatio>
-            <TireType>
-                _from_mapper
-            </TireType>
-            {# характеристики шины #}
+            характеристики шины
 
             <Quantity>
-                {{ card.product_quantity }}
+                1
             </Quantity>
+
             <ResidualTread>
                 для б/у - не наш вариант
             </ResidualTread>
 
-{#            <BackRimDiameter>#}
-{#                если указано DifferentWidthTires#}
-{#                _from_input#}
-{#            </BackRimDiameter>#}
-{#            <BackTireAspectRatio>#}
-{#                если указано DifferentWidthTires#}
-{#                _from_input#}
-{#            </BackTireAspectRatio>#}
-{#            <BackTireSectionWidth>#}
-{#                если указано DifferentWidthTires#}
-{#                _from_input#}
-{#            </BackTireSectionWidth>#}
+            <BackRimDiameter>
+                если указано DifferentWidthTires
+                _from_input
+            </BackRimDiameter>
+            <BackTireAspectRatio>
+                если указано DifferentWidthTires
+                _from_input
+            </BackTireAspectRatio>
+            <BackTireSectionWidth>
+                если указано DifferentWidthTires
+                _from_input
+            </BackTireSectionWidth>
 
             <Condition>
-                _from_avito_board
+                _from_element
             </Condition>
-            {# обязательные параметры #}
 
-            {# опциональные параметры #}
-            <DateBegin>
-                дата создания продукта
-            </DateBegin>
-            <DateEnd>
-                дата снятия с наличия
-            </DateEnd>
-{#            <ListingFee>#}
-{#                _from_input#}
-{#            </ListingFee>#}
-{#            <AdStatus>#}
-{#                _from_input#}
-{#            </AdStatus>#}
-{#            <AvitoId></AvitoId>#}
-            <ManagerName>
-                _from_avito_board
-            </ManagerName>
-            <ContactPhone>
-                _from_avito_board
-            </ContactPhone>
-            <Price>
-                {{ card.product_price }}
-            </Price>
-{#            <DisplayAreas>#}
-{#                testing#}
-{#            </DisplayAreas>#}
-            <Images>
-                <Image url="{{ card.product_image }}"/>
-            </Images>
-{#            <VideoURL>#}
-{#                Ссылка на youtube или rutube#}
-{#            </VideoURL>#}
-{#            <VideoFileURL>#}
-{#                можно подгрузить видео по прямой ссылке или из Яндекс Диск#}
-{#            </VideoFileURL>#}
-
-            <Latitude>
-                ...
-            </Latitude>
-            <Longitude>
-                ...
-            </Longitude>
-
-            <ContactMethod>
-{#                _from_input#}
-                default
-            </ContactMethod>
-            <Title>
-                {{ card.product_name }}
-            </Title>
-            <TypeId></TypeId>
-            <InternetCalls>
-{#                _from_input#}
-                default
-            </InternetCalls>
-{#            <CallsDevices>#}
-{#                _from_avito_board#}
-{#            </CallsDevices>#}
-            <Delivery>
-                _from_mapper
-            </Delivery>
-
-            {# # параметры для доставки # #}
-            <WeightForDelivery></WeightForDelivery>
-            <LengthForDelivery></LengthForDelivery>
-            <HeightForDelivery></HeightForDelivery>
-            <WidthForDelivery></WidthForDelivery>
-            {# # параметры для доставки # #}
+            {#             обязательные параметры #}
 
 
-            <LoadIndex>
-                _from_mapper
-            </LoadIndex>
-            <Homologation>
-                _from_mapper
-            </Homologation>
-            <SpeedIndex>
-                _from_mapper
-            </SpeedIndex>
-            <RunFlat>
-                _from_mapper
-            </RunFlat>
-            <DifferentWidthTires>
-                _from_input
-            </DifferentWidthTires>
-            <TireYear>
-                _from_mapper
-            </TireYear>
-            {# опциональные параметры #}
+
+            {#             опциональные параметры #}
+            {#                        <DateBegin> #}
+            {#                            {{ product_active_from }} #}
+            {#                        </DateBegin> #}
+            {#                        <DateEnd> #}
+            {#                            {{ product_active_to }} #}
+            {#                        </DateEnd> #}
+            {#                        <ListingFee> #}
+            {#                            _from_input #}
+            {#                        </ListingFee> #}
+            {#                        <AdStatus> #}
+            {#                            _from_input #}
+            {#                        </AdStatus> #}
+            {#                        <AvitoId></AvitoId> #}
+            {#                        <ManagerName> #}
+            {#                            _from_avito_board #}
+            {#                        </ManagerName> #}
+            {#                        <ContactPhone> #}
+            {#                            _from_avito_board #}
+            {#                        </ContactPhone> #}
+            {#                        <Price> #}
+            {#                            {{ product.product_price }} #}
+            {#                        </Price> #}
+            {#                        <DisplayAreas> #}
+            {#                            testing #}
+            {#                        </DisplayAreas> #}
+            {#                        <Images> #}
+            {#                            <Image url="{{ product.product_image }}"/> #}
+            {#                        </Images> #}
+            {#                        <VideoURL> #}
+            {#                            Ссылка на youtube или rutube #}
+            {#                        </VideoURL> #}
+            {#                        <VideoFileURL> #}
+            {#                            можно подгрузить видео по прямой ссылке или из Яндекс Диск #}
+            {#                        </VideoFileURL> #}
+
+            {#                        <Latitude> #}
+            {#                            ... #}
+            {#                        </Latitude> #}
+            {#                        <Longitude> #}
+            {#                            ... #}
+            {#                        </Longitude> #}
+
+            {#                        <ContactMethod> #}
+            {#                            _from_input #}
+            {#                            default #}
+            {#                        </ContactMethod> #}
+            {#                        <Title> #}
+            {#                            {{ product.product_name }} #}
+            {#                        </Title> #}
+            {#                        <TypeId></TypeId> #}
+            {#                        <InternetCalls> #}
+            {#                            _from_input #}
+            {#                            default #}
+            {#                        </InternetCalls> #}
+            {#                        <CallsDevices> #}
+            {#                            _from_avito_board #}
+            {#                        </CallsDevices> #}
+            {#                        <Delivery> #}
+            {#                            _from_mapper #}
+            {#                        </Delivery> #}
+
+            {#                          # параметры для доставки # #}
+            {#                        <WeightForDelivery></WeightForDelivery> #}
+            {#                        <LengthForDelivery></LengthForDelivery> #}
+            {#                        <HeightForDelivery></HeightForDelivery> #}
+            {#                        <WidthForDelivery></WidthForDelivery> #}
+            {#                          # параметры для доставки # #}
+
+
+            {#                        <LoadIndex> #}
+            {#                            _from_mapper #}
+            {#                        </LoadIndex> #}
+            {#                        <Homologation> #}
+            {#                            _from_mapper #}
+            {#                        </Homologation> #}
+            {#                        <SpeedIndex> #}
+            {#                            _from_mapper #}
+            {#                        </SpeedIndex> #}
+            {#                        <RunFlat> #}
+            {#                            _from_mapper #}
+            {#                        </RunFlat> #}
+            {#                        <DifferentWidthTires> #}
+            {#                            _from_input #}
+            {#                        </DifferentWidthTires> #}
+            {#                        <TireYear> #}
+            {#                            _from_mapper #}
+            {#                        </TireYear> #}
+            {#             опциональные параметры #}
         </Ad>
     {% endfor %}
 </Ads>

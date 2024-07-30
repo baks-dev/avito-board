@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,13 +21,25 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre;
+namespace BaksDev\Avito\Board\Twig;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
 
-interface PassengerTyreProductInterface extends AvitoProductInterface
+final class MapperDecodeExtension extends AbstractExtension
 {
-    public function productType(): string;
+    /**
+     * Фильтр преобразует строку формата json в массив
+     */
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('mapper_decode', [$this, 'mapperDecode']),
+        ];
+    }
 
-    public function tireType(): array;
+    public function mapperDecode($string): array
+    {
+        return json_decode($string, false, 512, JSON_THROW_ON_ERROR);
+    }
 }

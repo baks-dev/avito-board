@@ -23,33 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-/**
- * Остаточная глубина протектора шины.
- *
- * Может принимать значения от 1 до 50 включительно, измеряется в миллиметрах (мм)
- * В диапазоне 1-10 мм включительно можно использовать дробные значения.
- *
- * Применимо, если в поле Condition указано значение 'Б/у'
- */
-final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterface
+final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'ResidualTread';
+    public const string FEED_ELEMENT = 'ProductType';
 
-    public const string LABEL = 'Остаточная глубина протектора шины';
+    public const string LABEL = 'Тип товара';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -62,22 +54,14 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return false;
     }
 
-    /**
-     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
-     */
     public function data(): string
     {
-        return '10';
+        return $this->product->productType();
     }
 
     public function element(): string
     {
         return self::FEED_ELEMENT;
-    }
-
-    public function help(): ?string
-    {
-        return $this->product->help(self::FEED_ELEMENT);
     }
 
     public function product(): ?AvitoBoardProductEnum
@@ -88,5 +72,10 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function help(): ?string
+    {
+        return $this->product->help(self::FEED_ELEMENT);
     }
 }

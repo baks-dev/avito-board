@@ -21,65 +21,13 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
-
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-/**
- * Вид товара.
- * Одно из значений
- *
- * Элемент обязательный для всех продуктов Авито
- */
-final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
+interface PassengerTireProductInterface extends AvitoProductInterface
 {
-    public const string FEED_ELEMENT = 'GoodsType';
+    public function productType(): string;
 
-    public const string LABEL = 'Вид товара';
-
-    public function __construct(
-        private ?AvitoProductInterface $product = null,
-    ) {}
-
-    public function isMapping(): bool
-    {
-        return false;
-    }
-
-    public function isRequired(): bool
-    {
-        return true;
-    }
-
-    public function isChoices(): bool
-    {
-        return false;
-    }
-
-    public function data(): string
-    {
-        return $this->product->goodsType();
-    }
-
-    public function product(): null
-    {
-        return null;
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): ?string
-    {
-        return $this->product->help(self::FEED_ELEMENT);
-    }
+    public function tireType(): array;
 }

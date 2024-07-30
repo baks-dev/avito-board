@@ -23,25 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTyre;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTyre\PassengerTyreProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInterface
+final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'TireSectionWidth';
+    public const string FEED_ELEMENT = 'RimDiameter';
 
-    public const string LABEL = 'Ширина профиля шины';
+    public const string LABEL = 'Диаметр, дюймы';
 
     public function __construct(
-        private ?PassengerTyreProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
