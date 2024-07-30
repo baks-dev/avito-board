@@ -65,7 +65,7 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
      * @see RimDiameterFeedElement
      */
-    public function data(): string
+    public function default(): string
     {
         return '10';
     }

@@ -37,7 +37,11 @@ interface AvitoFeedElementInterface
 
     public function element(): string;
 
-    public function data(): null|string|array;
+    /**
+     * @return null если данные берутся не из класса, а из БД (продукта) productData
+     * @return string|array если данные берутся статически, из класса
+     */
+    public function default(): null|string|array;
 
     public function label(): string;
 

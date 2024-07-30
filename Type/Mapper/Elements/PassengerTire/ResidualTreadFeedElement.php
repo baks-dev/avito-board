@@ -65,7 +65,7 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
     /**
      * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
      */
-    public function data(): string
+    public function default(): string
     {
         return '10';
     }

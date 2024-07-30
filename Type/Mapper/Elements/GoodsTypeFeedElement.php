@@ -58,9 +58,14 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): string
+    public function default(): string
     {
         return $this->product->goodsType();
+    }
+
+    public function productData(array $product): null
+    {
+        return null;
     }
 
     public function product(): null

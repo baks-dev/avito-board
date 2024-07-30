@@ -8,7 +8,6 @@ use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapper;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
-use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Entity\Offers\CategoryProductOffers;
 use BaksDev\Products\Category\Entity\Trans\CategoryProductTrans;
@@ -61,7 +60,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             'product_event.id = product.event'
         );
 
-
         $dbal
             ->join(
                 'product',
@@ -72,7 +70,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 
 
         $dbal
-//                    ->addSelect('product_info.url')
             ->leftJoin(
                 'product_event',
                 ProductInfo::class,
@@ -251,7 +248,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             'product_modification_price.modification = product_modification.id'
         );
 
-
         /**
          * Стоимость продукта
          */
@@ -274,7 +270,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 			END AS product_price'
         );
 
-
         /**
          * Валюта продукта
          */
@@ -296,7 +291,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 			   ELSE NULL
 			END AS product_currency'
         );
-
 
         /** Наличие продукта */
         /**
@@ -328,7 +322,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             'product_modification_quantity.modification = product_modification.id'
         )
             ->addGroupBy('product_modification_quantity.reserve');
-
 
         $dbal->addSelect(
             '
@@ -429,7 +422,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                     END) AS product_images"
         );
 
-
         /** Avito mapper */
         /**
          * Категория, для которой создан маппер. Для каждой карточки
@@ -455,10 +447,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 'avito_event.id = avito_board.event'
             );
 
-
         $dbal
-//            ->addSelect('avito_mapper.element AS avito_mapper_element')
-            //->addSelect('avito_mapper.def AS avito_mapper_default')
             ->leftJoin(
                 'avito_board',
                 AvitoBoardMapper::class,
@@ -466,26 +455,8 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 'avito_mapper.event = avito_board.event'
             );
 
-
-        //        $dbal->addSelect(
-        //            "JSON_AGG
-        //            ( DISTINCT
-        //                    JSONB_BUILD_OBJECT
-        //                    (
-        //                        'avito_mapper_element', avito_mapper.element,
-        //                        'avito_mapper_field', avito_mapper.product_field,
-        //                        'avito_mapper_default', avito_mapper.def
-        //                    )
-        //            )
-        //            AS avito_mapper"
-        //        );
-
-        //        $dbal->allGroupByExclude();
-        //        dd($dbal->fetchAllAssociative());
-
         /** Получаем значение из свойств товара */
         $dbal
-//            ->addSelect('product_property.value AS product_property_value')
             ->leftJoin(
                 'avito_mapper',
                 ProductProperty::class,
@@ -552,9 +523,8 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                                 END)
                         )
 			) 
-			AS product_property"
+			AS avito_board_mapper"
         );
-
 
         $dbal->allGroupByExclude();
 
@@ -581,7 +551,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             'product_event',
             'product_event.id = product.event'
         );
-
 
         $dbal
             ->addSelect('product_active.active_from as product_active_from')
@@ -622,7 +591,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 'product_desc.event = product_event.id AND product_desc.device = :device '
             )->setParameter('device', 'pc');
 
-
         /**
          * Торговое предложение
          */
@@ -638,7 +606,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 'product_offer',
                 'product_offer.event = product_event.id'
             );
-
 
         /**
          * Тип торгового предложения
@@ -775,7 +742,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             'product_modification_price.modification = product_modification.id'
         );
 
-
         /**
          * Стоимость продукта
          */
@@ -798,7 +764,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 			END AS product_price'
         );
 
-
         /**
          * Валюта продукта
          */
@@ -820,7 +785,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 			   ELSE NULL
 			END AS product_currency'
         );
-
 
         /** Наличие продукта */
         /**
@@ -968,12 +932,12 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                     ( DISTINCT
                             JSONB_BUILD_OBJECT
                             (
-                                'product_property', product_property.field
+                                'property_field', product_property.field,
+                                'property_value', product_property.value
                             )
                     )
                     AS product_properties"
         );
-
 
         /** Avito mapper */
         /**

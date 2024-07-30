@@ -32,8 +32,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  * Является альтернативой параметрам Latitude, Longitude
  *
  * Элемент обязателен для всех продуктов Авито
+ * @TODO временно без интерфейса AvitoFeedElementInterface, так как адрес еще не откуда брать
  */
-final readonly class AddressFeedElement implements AvitoFeedElementInterface
+final readonly class AddressFeedElement
 {
     public const string FEED_ELEMENT = 'Address';
 
@@ -58,9 +59,14 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): null
+    public function default(): null
     {
         return null;
+    }
+
+    public function productData(array $product): string
+    {
+        return $product[''];
     }
 
     public function product(): null

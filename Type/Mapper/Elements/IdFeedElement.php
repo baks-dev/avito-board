@@ -66,9 +66,14 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): null
+    public function default(): null
     {
         return null;
+    }
+
+    public function productData(array $product): string
+    {
+        return $product['product_article'];
     }
 
     public function element(): string

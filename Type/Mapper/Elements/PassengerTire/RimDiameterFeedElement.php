@@ -54,7 +54,7 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): null
+    public function default(): null
     {
         return null;
     }

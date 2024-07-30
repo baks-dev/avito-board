@@ -54,7 +54,7 @@ final readonly class TireAspectRatioFeedElement implements AvitoFeedElementInter
         return false;
     }
 
-    public function data(): null
+    public function default(): null
     {
         return null;
     }

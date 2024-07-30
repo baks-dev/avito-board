@@ -58,9 +58,14 @@ final readonly class ConditionElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): string
+    public function default(): string
     {
         return $this->product->condition();
+    }
+
+    public function productData(array $product): null
+    {
+        return null;
     }
 
     public function product(): null

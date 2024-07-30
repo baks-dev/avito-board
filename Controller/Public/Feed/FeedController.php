@@ -21,13 +21,12 @@ class FeedController extends AbstractController
 
         //        dump($profile);
 
-        $product = $allProductsWithMapping->findAllWithMapper();
+//        dump($allProductsWithMapping->findAllWithMapper());
+//        dump($allProductsWithMapping->findAll());
 
-        //        dump(current($allProductsWithMapping->findAllWithMapper()));
-        //        dump(current($allProductsWithMapping->findAll()));
-        //        dd();
-
+//        $products = $allProductsWithMapping->findAllWithMapper();
         $products = $allProductsWithMapping->findAll();
+//        dd();
 
 
         $response = $this->render(

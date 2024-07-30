@@ -28,15 +28,18 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
 /**
- * Категория объявления.
+ * Текстовое описание объявления в соответствии с правилами Авито — строка не более 7500 символов
  *
- * Элемент общий для всех продуктов Авито
+ * Для объявлений, параметры которых соответствуют оплаченному тарифу, вы можете использовать дополнительное форматирование с помощью HTML-тегов.
+ * Для формата XML описание должно быть внутри CDATA. Использовать можно только HTML-теги из списка: p, br, strong, em, ul, ol, li.
+ *
+ * Элемент обязателен для всех продуктов Авито
  */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string FEED_ELEMENT = 'Description';
 
-    public const string LABEL = 'Категория объявления';
+    private const string LABEL = 'Текстовое описание объявления';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -57,19 +60,17 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return $this->product->category();
+        return null;
     }
 
     public function productData(array $product): string
     {
-        return $product['product_category'];
-    }
-
-    public function product(): null
-    {
-        return null;
+        $data = $product['product_description'];
+//        $data = sprintf('<![CDATA[%s]]>',$product['product_description']);
+//        dd($data);
+        return $data;
     }
 
     public function element(): string
@@ -85,5 +86,10 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
     public function help(): ?string
     {
         return $this->product->help(self::FEED_ELEMENT);
+    }
+
+    public function product(): null
+    {
+        return null;
     }
 }

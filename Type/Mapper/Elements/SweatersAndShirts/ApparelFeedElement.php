@@ -54,9 +54,9 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): string
+    public function default(): string
     {
-        return $this->product->apparel();
+        return 'Кофты и футболки';
     }
 
     public function product(): ?AvitoBoardProductEnum

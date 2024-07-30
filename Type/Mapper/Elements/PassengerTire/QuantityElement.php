@@ -62,9 +62,9 @@ final readonly class QuantityElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): null
+    public function default(): string
     {
-        return null;
+        return '1';
     }
 
     public function element(): string

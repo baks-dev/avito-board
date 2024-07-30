@@ -41,7 +41,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -54,7 +54,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): string
+    public function default(): string
     {
         return $this->product->productType();
     }

@@ -106,7 +106,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
     public function goodsType(): string
     {
-        return 'Шины, диски и колёса';
+        return 'Шины, диски и колёса (из класса)';
     }
 
     public function productType(): string

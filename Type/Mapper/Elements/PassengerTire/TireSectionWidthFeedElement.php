@@ -41,7 +41,7 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -54,7 +54,7 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return false;
     }
 
-    public function data(): null
+    public function default(): null
     {
         return null;
     }

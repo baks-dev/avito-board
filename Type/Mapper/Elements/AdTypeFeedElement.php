@@ -58,9 +58,14 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function data(): string
+    public function default(): string
     {
         return 'Товар приобретен на продажу';
+    }
+
+    public function productData(array $product): null
+    {
+        return null;
     }
 
     public function product(): null

@@ -48,7 +48,7 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -65,7 +65,7 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
      * @see TireAspectRatioFeedElement
      */
-    public function data(): null
+    public function default(): null
     {
         return null;
     }

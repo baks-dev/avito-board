@@ -24,29 +24,23 @@
 namespace BaksDev\Avito\Board\Twig;
 
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
+use Twig\TwigFunction;
 
-final class MapperDecodeExtension extends AbstractExtension
+final class HtmlFormaterExtension extends AbstractExtension
 {
-    public function getFilters(): array
+    public function getFunctions(): array
     {
         return [
-            new TwigFilter('mapper_decode', [$this, 'mapperDecode']),
+            new TwigFunction('element_format', [$this, 'elementFormat']),
         ];
     }
 
-    public function mapperDecode(string $string)
+    public function elementFormat(string $element, string $value)
     {
-        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
-
-        $tags = null;
-
-        foreach ($mapperElements as $element)
+        return match ($element)
         {
-            $tag = sprintf('<%s> %s </%s>', $element->element, $element->value, $element->element);
-            $tags[$element->element] = $tag;
-        }
-        //        return implode(PHP_EOL, $tags);
-        return $tags;
+            'Description' => sprintf('<![CDATA[%s]]>', $value),
+            default => $value
+        };
     }
 }

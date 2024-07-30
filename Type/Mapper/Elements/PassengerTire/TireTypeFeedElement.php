@@ -54,7 +54,7 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function data(): array
+    public function default(): array
     {
         return $this->product->tireType();
     }

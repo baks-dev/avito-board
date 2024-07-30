@@ -51,12 +51,17 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
 
     public function isChoices(): bool
     {
-        return is_array($this->data());
+        return is_array($this->default());
     }
 
-    public function data(): array
+    public function default(): array
     {
         return $this->product->goodsSubType();
+    }
+
+    public function productData(array $product): string
+    {
+        return $product['product_article'];
     }
 
     public function element(): string
