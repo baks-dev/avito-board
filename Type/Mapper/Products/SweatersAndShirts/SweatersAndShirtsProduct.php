@@ -66,7 +66,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         return $elements;
     }
 
-    public function getElement(string $elementName): AvitoFeedElementInterface
+    public function getElement(string $elementName): ?AvitoFeedElementInterface
     {
         /** @var AvitoFeedElementInterface $element */
         foreach ($this->elements as $element)
@@ -87,6 +87,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
             }
         }
 
+//        return null;
         throw new \Exception();
     }
 

@@ -13,34 +13,58 @@
 <Ads formatVersion='3' target='Avito.ru'>
     {% for product in products|filter(v => v.product_price > 0) %}
 
-        {% set tags = element_transform(product) %}
 
-        {% if tags is not null %}
-            <Ad>
-            {% for tag in tags %}
-{#                {% autoescape false %}#}
-{#                {{ tag }}#}
-{#                {% endautoescape  %}#}
-
-                <{{ tag.element }}>
-{#                {{ tag.value|trans({}, 'avito-board.mapper') }}#}
+{#        {% set tags = element_transform_to_array(product) %}#}
 
 
-                                {% autoescape false %}
+{#        {% if tags is not null %}#}
+{#            <Ad>#}
+{#                {% for tag in tags %}#}
+
+{#                    #}{#                {% autoescape false %} #}
+{#                    #}{#                {{ tag }} #}
+{#                    #}{#                {% endautoescape  %} #}
+
+{#                {% endfor %}#}
+{#            </Ad>#}
+{#        {% endif %}#}
+
+
+
+{#        {% set tags = element_transform(product) %}#}
+
+{#        {% if tags is not null %}#}
+{#            <Ad>#}
+{#            {% for tag in tags %}#}
+{#                <{{ tag.element }}>#}
+{#                #}{#                {{ tag.value|trans({}, 'avito-board.mapper') }} #}
 
 {#                {% if tag.element == 'Description' %}#}
 {#                    <![CDATA[#}
-{#                    {{ tag.value }}#}
+{#                    {{ tag.value|raw }}#}
 {#                    ]]>#}
 {#                {% else %}#}
 {#                    {{ tag.value }}#}
 {#                {% endif %}#}
 
-                                    {{ element_format(tag.element, tag.value) }}
+{#                </{{ tag.element }}>#}
+{#            {% endfor %}#}
+{#            </Ad>#}
+{#        {% endif %}#}
 
-                                {% endautoescape  %}
 
 
+        {% set tags = element_transform(product) %}
+
+        {% if tags is not null %}
+            <Ad>
+            {% for tag in tags %}
+                <{{ tag.element }}>
+
+                {% autoescape false %}
+{#                    {{ tag.value }}#}
+                    {{ element_format(tag.element, tag.value) }}
+                {% endautoescape %}
 
                 </{{ tag.element }}>
             {% endfor %}

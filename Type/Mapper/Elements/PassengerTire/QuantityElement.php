@@ -64,7 +64,7 @@ final readonly class QuantityElement implements AvitoFeedElementInterface
 
     public function default(): string
     {
-        return '1';
+        return 'за 1 шт.';
     }
 
     public function element(): string

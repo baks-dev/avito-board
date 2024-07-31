@@ -26,7 +26,7 @@ namespace BaksDev\Avito\Board\Twig;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-final class HtmlFormaterExtension extends AbstractExtension
+final class ElementFormatterExtension extends AbstractExtension
 {
     public function getFunctions(): array
     {
@@ -35,11 +35,14 @@ final class HtmlFormaterExtension extends AbstractExtension
         ];
     }
 
-    public function elementFormat(string $element, string $value)
+    public function elementFormat(string $element, string $value): string
     {
         return match ($element)
         {
             'Description' => sprintf('<![CDATA[%s]]>', $value),
+            'RimDiameter' => preg_replace('/\D/', '', $value),
+            'TireAspectRatio' => preg_replace('/\D/', '', $value),
+            'TireSectionWidth' => preg_replace('/\D/', '', $value),
             default => $value
         };
     }

@@ -70,7 +70,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         return $elements;
     }
 
-    public function getElement(string $elementName): AvitoFeedElementInterface
+    public function getElement(string $elementName): ?AvitoFeedElementInterface
     {
         /** @var AvitoFeedElementInterface $element */
         foreach ($this->elements as $element)
@@ -91,6 +91,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
             }
         }
 
+//        return null;
         throw new \Exception();
     }
 
@@ -106,7 +107,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
     public function goodsType(): string
     {
-        return 'Шины, диски и колёса (из класса)';
+        return 'Шины, диски и колёса';
     }
 
     public function productType(): string

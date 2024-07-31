@@ -35,6 +35,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
+ * @TODO временно убрал из реализации AvitoFeedElementInterface
  */
 final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
 {

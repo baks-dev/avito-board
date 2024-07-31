@@ -38,27 +38,26 @@ final class ElementTransformerExtension extends AbstractExtension
     {
         return [
             new TwigFunction('element_transform', [$this, 'elementTransform']),
+            new TwigFunction('element_transform_to_array', [$this, 'elementTransformToArray']),
         ];
     }
 
     public function elementTransform(array $product)
     {
         /** Возвращаем null, если нет маппера для продукта */
-        if ($product['avito_board_avito'] === null)
+        if ($product['avito_board_avito_category'] === null)
         {
             return null;
         }
 
         $elements = null;
 
-        foreach ($this->mapperProvider->filterElements($product['avito_board_avito']) as $element)
+        foreach ($this->mapperProvider->filterElements($product['avito_board_avito_category']) as $element)
         {
             if (false === $element->isMapping())
             {
                 if ($element->default() === null)
                 {
-//                                        $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->productData($product), $element->element());
-
                     $tag = new stdClass();
                     $tag->value = $element->productData($product);
                     $tag->element = $element->element();
@@ -66,8 +65,6 @@ final class ElementTransformerExtension extends AbstractExtension
                 }
                 else
                 {
-//                                        $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->default(), $element->element());
-
                     $tag = new stdClass();
                     $tag->value = $element->default();
                     $tag->element = $element->element();
@@ -76,7 +73,7 @@ final class ElementTransformerExtension extends AbstractExtension
             }
         }
 
-        /** Получаем массив элементов */
+        /** Получаем массив элементов из маппера*/
         $mapperElements = $this->mapperElementTransform($product['avito_board_mapper']);
 
         /** Добавляем к массиву элементов, не участвующих в маппинге элементы, участвующие в маппинге */
@@ -85,7 +82,7 @@ final class ElementTransformerExtension extends AbstractExtension
 
         //        $elements = implode(PHP_EOL, $elements);
 
-        //        dd($elements);
+//                dd($elements);
 
         return $elements;
     }
@@ -98,10 +95,64 @@ final class ElementTransformerExtension extends AbstractExtension
 
         foreach ($mapperElements as $element)
         {
-//                        $tag = sprintf('<%s> %s </%s>', $element->element, $element->value, $element->element);
-//            $elements[$element->element] = $tag;
-
             $elements[$element->element] = $element;
+        }
+
+        return $elements;
+    }
+
+    public function elementTransformToArray(array $product): ?array
+    {
+        /**
+         * Возвращаем null, если нет маппера для продукта
+         * Данная проверка есть так же на уровне БД
+         */
+        if ($product['avito_board_avito_category'] === null)
+        {
+            return null;
+        }
+
+        $elements = null;
+
+        foreach ($this->mapperProvider->filterElements($product['avito_board_avito_category']) as $element)
+        {
+            if (false === $element->isMapping())
+            {
+                if ($element->default() === null)
+                {
+                    $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->productData($product), $element->element());
+                }
+                else
+                {
+                    $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->default(), $element->element());
+                }
+            }
+        }
+
+        /** Получаем массив элементов из маппера*/
+        $mapperElements = $this->mapperElementTransformToArray($product['avito_board_mapper']);
+
+        /** Добавляем к массиву элементов, не участвующих в маппинге элементы, участвующие в маппинге */
+        $elements += $mapperElements;
+        //        $elements = array_merge($mapperElements, $elements);
+
+        //        $elements = implode(PHP_EOL, $elements);
+
+        //        dd($elements);
+
+        return $elements;
+    }
+
+    private function mapperElementTransformToArray(string $string): array
+    {
+        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
+
+        $elements = null;
+
+        foreach ($mapperElements as $element)
+        {
+            $tag = sprintf('<%s> %s </%s>', $element->element, $element->value, $element->element);
+            $elements[$element->element] = $tag;
         }
 
         return $elements;
