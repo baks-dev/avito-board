@@ -59,14 +59,19 @@ final readonly class TireAspectRatioFeedElement implements AvitoFeedElementInter
         return null;
     }
 
+    public function productData(string $data): string
+    {
+        return preg_replace('/\D/', '', $data);
+    }
+
     public function element(): string
     {
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function help(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml';
     }
 
     public function product(): ?AvitoBoardProductEnum

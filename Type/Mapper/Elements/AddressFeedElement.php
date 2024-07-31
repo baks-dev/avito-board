@@ -66,7 +66,7 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
 
     public function productData(array $product): string
     {
-        return $product[''];
+        return $product['_from_avito_token_profile'];
     }
 
     public function product(): null

@@ -54,9 +54,18 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return true;
     }
 
-    public function default(): array
+    public function default(): null
     {
-        return $this->product->tireType();
+        return null;
+    }
+
+    public function productData(string $data): string
+    {
+        return match ($data)
+        {
+            'winter' => 'Зимние нешипованные',
+            'summer' => 'Летние',
+        };
     }
 
     public function element(): string
@@ -74,8 +83,8 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }

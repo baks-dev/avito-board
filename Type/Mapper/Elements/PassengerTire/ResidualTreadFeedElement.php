@@ -70,6 +70,11 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return '10';
     }
 
+    public function productData(): string
+    {
+        return '10';
+    }
+
     public function element(): string
     {
         return self::FEED_ELEMENT;

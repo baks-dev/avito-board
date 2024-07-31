@@ -24,7 +24,7 @@
 namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use stdClass;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -38,11 +38,10 @@ final class ElementTransformerExtension extends AbstractExtension
     {
         return [
             new TwigFunction('element_transform', [$this, 'elementTransform']),
-            new TwigFunction('element_transform_to_array', [$this, 'elementTransformToArray']),
         ];
     }
 
-    public function elementTransform(array $product)
+    public function elementTransform(array $product): ?array
     {
         /** Возвращаем null, если нет маппера для продукта */
         if ($product['avito_board_avito_category'] === null)
@@ -50,100 +49,44 @@ final class ElementTransformerExtension extends AbstractExtension
             return null;
         }
 
-        $elements = null;
+        /** Преобразуем массив элементов из маппера*/
+//        $mappedElements = $this->mappedElementTransform($product['avito_board_mapper']);
 
-        foreach ($this->mapperProvider->filterElements($product['avito_board_avito_category']) as $element)
+        $mappedElements = $this->mapperTransform($product['avito_board_mapper'], $product['avito_board_avito_category']);
+
+
+        /** Получаем все элементы по типу продукта, не участвующих в маппинге */
+        $unmappedElements = array_filter(
+            $this->mapperProvider->filterElements($product['avito_board_avito_category']),
+            function (AvitoFeedElementInterface $element) {
+                return $element->isMapping() === false;
+            }
+        );
+
+        $elements = null;
+        foreach ($unmappedElements as $element)
         {
-            if (false === $element->isMapping())
+            if ($element->default() === null)
             {
-                if ($element->default() === null)
-                {
-                    $tag = new stdClass();
-                    $tag->value = $element->productData($product);
-                    $tag->element = $element->element();
-                    $elements[$element->element()] = $tag;
-                }
-                else
-                {
-                    $tag = new stdClass();
-                    $tag->value = $element->default();
-                    $tag->element = $element->element();
-                    $elements[$element->element()] = $tag;
-                }
+                $elements[$element->element()] = $element->productData($product);
+            }
+            else
+            {
+                $elements[$element->element()] = $element->default();
             }
         }
 
-        /** Получаем массив элементов из маппера*/
-        $mapperElements = $this->mapperElementTransform($product['avito_board_mapper']);
-
-        /** Добавляем к массиву элементов, не участвующих в маппинге элементы, участвующие в маппинге */
-        $elements += $mapperElements;
-        //        $elements = array_merge($mapperElements, $elements);
-
-        //        $elements = implode(PHP_EOL, $elements);
-
-//                dd($elements);
-
-        return $elements;
-    }
-
-    private function mapperElementTransform(string $string): array
-    {
-        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
-
-        $elements = null;
-
-        foreach ($mapperElements as $element)
-        {
-            $elements[$element->element] = $element;
-        }
-
-        return $elements;
-    }
-
-    public function elementTransformToArray(array $product): ?array
-    {
         /**
-         * Возвращаем null, если нет маппера для продукта
-         * Данная проверка есть так же на уровне БД
+         * Объединяем массивы элементов по принципу:
+         * - элемент, описанный в классе имеет приоритет над элементом, лученным из маппера
+         *  (элемент класса перезаписывает элемент из маппера)
          */
-        if ($product['avito_board_avito_category'] === null)
-        {
-            return null;
-        }
+        $allElements = array_merge($mappedElements, $elements);
 
-        $elements = null;
-
-        foreach ($this->mapperProvider->filterElements($product['avito_board_avito_category']) as $element)
-        {
-            if (false === $element->isMapping())
-            {
-                if ($element->default() === null)
-                {
-                    $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->productData($product), $element->element());
-                }
-                else
-                {
-                    $elements[$element->element()] = sprintf('<%s>%s</%s>', $element->element(), $element->default(), $element->element());
-                }
-            }
-        }
-
-        /** Получаем массив элементов из маппера*/
-        $mapperElements = $this->mapperElementTransformToArray($product['avito_board_mapper']);
-
-        /** Добавляем к массиву элементов, не участвующих в маппинге элементы, участвующие в маппинге */
-        $elements += $mapperElements;
-        //        $elements = array_merge($mapperElements, $elements);
-
-        //        $elements = implode(PHP_EOL, $elements);
-
-        //        dd($elements);
-
-        return $elements;
+        return $allElements;
     }
 
-    private function mapperElementTransformToArray(string $string): array
+    private function mappedElementTransform(string $string): array
     {
         $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
 
@@ -151,8 +94,22 @@ final class ElementTransformerExtension extends AbstractExtension
 
         foreach ($mapperElements as $element)
         {
-            $tag = sprintf('<%s> %s </%s>', $element->element, $element->value, $element->element);
-            $elements[$element->element] = $tag;
+            $elements[$element->element] = $element->value;
+        }
+
+        return $elements;
+    }
+
+    private function mapperTransform(string $mapper, string $category): array
+    {
+        $mapper = json_decode($mapper, false, 512, JSON_THROW_ON_ERROR);
+
+        $elements = null;
+
+        foreach ($mapper as $element)
+        {
+            $instance = $this->mapperProvider->getFeedElement($category, $element->element);
+            $elements[$element->element] = $instance->productData($element->value);
         }
 
         return $elements;

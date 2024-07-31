@@ -67,6 +67,11 @@ final readonly class QuantityElement implements AvitoFeedElementInterface
         return 'за 1 шт.';
     }
 
+    public function productData(): string
+    {
+        return 'за 1 шт.';
+    }
+
     public function element(): string
     {
         return self::FEED_ELEMENT;

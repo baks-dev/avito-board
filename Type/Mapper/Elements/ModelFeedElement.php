@@ -62,9 +62,9 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string $data): string
     {
-        return $product['avito_board_mapper'];
+        return $data;
     }
 
     public function element(): string

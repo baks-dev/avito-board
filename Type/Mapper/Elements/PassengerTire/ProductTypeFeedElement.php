@@ -56,7 +56,12 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 
     public function default(): string
     {
-        return $this->product->productType();
+        return 'Легковые шины';
+    }
+
+    public function productData(): string
+    {
+        return 'Легковые шины';
     }
 
     public function element(): string

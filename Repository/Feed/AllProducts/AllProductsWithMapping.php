@@ -35,6 +35,7 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use SplFixedArray;
 
 final class AllProductsWithMapping implements AllProductsWithMappingInterface
 {
@@ -468,27 +469,27 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 product_property.field = avito_mapper.product_field'
             );
 
-        /**
-         * Получаем ИМЕНОВАННОЕ значение из СВОЙСТВ товара
-         */
-        $dbal
-            ->leftJoin(
-                'product_property',
-                CategoryProductSectionField::class,
-                'product_category_section_field',
-                'product_property.field = product_category_section_field.const'
-            );
-
-        $dbal
-            ->leftJoin(
-                'product_category_section_field',
-                CategoryProductSectionFieldTrans::class,
-                'product_category_section_field_trans',
-                '
-                    product_category_section_field_trans.field = product_category_section_field.id AND
-                    product_category_section_field_trans.local = :local
-                '
-            );
+//        /**
+//         * Получаем ИМЕНОВАННОЕ значение из СВОЙСТВ товара
+//         */
+//        $dbal
+//            ->leftJoin(
+//                'product_property',
+//                CategoryProductSectionField::class,
+//                'product_category_section_field',
+//                'product_property.field = product_category_section_field.const'
+//            );
+//
+//        $dbal
+//            ->leftJoin(
+//                'product_category_section_field',
+//                CategoryProductSectionFieldTrans::class,
+//                'product_category_section_field_trans',
+//                '
+//                    product_category_section_field_trans.field = product_category_section_field.id AND
+//                    product_category_section_field_trans.local = :local
+//                '
+//            );
 
         /**
          * Получаем значение из торговых предложений
@@ -540,7 +541,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 
                             'value', 
                                 (CASE
-                                   WHEN product_property.value IS NOT NULL THEN product_category_section_field_trans.name
+                                   WHEN product_property.value IS NOT NULL THEN product_property.value
                                    WHEN product_offer_params.value IS NOT NULL THEN product_offer_params.value
                                    WHEN product_modification_params.value IS NOT NULL THEN product_modification_params.value
                                    WHEN product_variation_params.value IS NOT NULL THEN product_variation_params.value
@@ -555,7 +556,8 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
         $dbal->allGroupByExclude();
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
-        dd($dbal->fetchAllAssociative());
+
+//        dd($dbal->fetchAllAssociative());
 
         return $dbal
             // ->enableCache('Namespace', 3600)

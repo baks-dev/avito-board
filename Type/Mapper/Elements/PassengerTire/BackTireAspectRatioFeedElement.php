@@ -37,7 +37,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Одно из значений от Авито
  * @TODO временно убрал из реализации AvitoFeedElementInterface
  */
-final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
+final readonly class BackTireAspectRatioFeedElement
 {
     public const string FEED_ELEMENT = 'BackTireAspectRatio';
 

@@ -29,21 +29,26 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('baks.avito.board.elements')]
 interface AvitoFeedElementInterface
 {
+    /**
+     * @return true если элемент будет участвовать в маппинге и дынные будут браться из БД (маппинга)
+     * @return false если элемент не участвует в маппинге и его не нужно показывать в форме
+     */
     public function isMapping(): bool;
 
     public function isRequired(): bool;
 
     public function isChoices(): bool;
 
+    /** Получает название элемента */
     public function element(): string;
 
+    /** Получает описание элемента */
+    public function label(): string;
     /**
      * @return null если данные берутся не из класса, а из БД (продукта) productData
-     * @return string|array если данные берутся статически, из класса
+     * @return string|array если данные берутся статически, из описания класса
      */
     public function default(): null|string|array;
-
-    public function label(): string;
 
     public function help(): null|string;
 

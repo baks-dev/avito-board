@@ -43,6 +43,7 @@ final class ElementFormatterExtension extends AbstractExtension
             'RimDiameter' => preg_replace('/\D/', '', $value),
             'TireAspectRatio' => preg_replace('/\D/', '', $value),
             'TireSectionWidth' => preg_replace('/\D/', '', $value),
+            'BackTireAspectRatio' => preg_replace('/\D/', '', $value),
             default => $value
         };
     }

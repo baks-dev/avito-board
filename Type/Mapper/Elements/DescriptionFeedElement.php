@@ -67,10 +67,7 @@ final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
 
     public function productData(array $product): string
     {
-        $data = $product['product_description'];
-//        $data = sprintf('<![CDATA[%s]]>',$product['product_description']);
-//        dd($data);
-        return $data;
+        return sprintf('<![CDATA[%s]]>', $product['product_description']);
     }
 
     public function element(): string
