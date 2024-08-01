@@ -65,7 +65,7 @@ final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
         return sprintf('<![CDATA[%s]]>', $product['product_description']);
     }
@@ -82,11 +82,11 @@ final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
 
     public function help(): ?string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 
     public function product(): null
     {
-        return null;
+        return $this->product;
     }
 }

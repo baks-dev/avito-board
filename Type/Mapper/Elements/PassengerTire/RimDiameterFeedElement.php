@@ -59,7 +59,7 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(string $data): string
+    public function productData(string|array $data = null): string
     {
         return preg_replace('/\D/', '', $data);
     }

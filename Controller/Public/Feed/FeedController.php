@@ -19,15 +19,7 @@ class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        //        dump($profile);
-
-//        dump($allProductsWithMapping->findAllWithMapper());
-//        dump($allProductsWithMapping->findAll());
-
-//        $products = $allProductsWithMapping->findAllWithMapper();
         $products = $allProductsWithMapping->findAll();
-//        dd();
-
 
         $response = $this->render(
             [

@@ -50,8 +50,7 @@ final class ElementTransformerExtension extends AbstractExtension
         }
 
         /** Преобразуем массив элементов из маппера*/
-//        $mappedElements = $this->mappedElementTransform($product['avito_board_mapper']);
-
+        //        $mappedElements = $this->mappedElementTransform($product['avito_board_mapper']);
         $mappedElements = $this->mapperTransform($product['avito_board_mapper'], $product['avito_board_avito_category']);
 
 
@@ -86,20 +85,6 @@ final class ElementTransformerExtension extends AbstractExtension
         return $allElements;
     }
 
-    private function mappedElementTransform(string $string): array
-    {
-        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
-
-        $elements = null;
-
-        foreach ($mapperElements as $element)
-        {
-            $elements[$element->element] = $element->value;
-        }
-
-        return $elements;
-    }
-
     private function mapperTransform(string $mapper, string $category): array
     {
         $mapper = json_decode($mapper, false, 512, JSON_THROW_ON_ERROR);
@@ -114,4 +99,18 @@ final class ElementTransformerExtension extends AbstractExtension
 
         return $elements;
     }
+
+    //    private function mappedElementTransform(string $string): array
+    //    {
+    //        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
+    //
+    //        $elements = null;
+    //
+    //        foreach ($mapperElements as $element)
+    //        {
+    //            $elements[$element->element] = $element->value;
+    //        }
+    //
+    //        return $elements;
+    //    }
 }

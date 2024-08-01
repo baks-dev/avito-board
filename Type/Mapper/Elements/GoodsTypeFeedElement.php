@@ -63,9 +63,9 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return $this->product->goodsType();
     }
 
-    public function productData(array $product): null
+    public function productData(string|array $product = null): string
     {
-        return null;
+        return $this->product->goodsType();
     }
 
     public function product(): null
@@ -85,6 +85,6 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
 
     public function help(): ?string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }

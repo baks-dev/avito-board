@@ -67,12 +67,12 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
      */
     public function default(): string
     {
-        return '10';
+        return '50';
     }
 
-    public function productData(): string
+    public function productData(string|array $product = null): string
     {
-        return '10';
+        return '50';
     }
 
     public function element(): string

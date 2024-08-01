@@ -59,7 +59,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return 'Легковые шины';
     }
 
-    public function productData(): string
+    public function productData(string|array $product = null): string
     {
         return 'Легковые шины';
     }

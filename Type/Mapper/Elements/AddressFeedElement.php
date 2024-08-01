@@ -64,14 +64,15 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return 'Тамбовская область, Моршанск, Лесная улица, 7';
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
-        return $product['_from_avito_token_profile'];
+//        return $product['_from_avito_token_profile'];
+        return 'Тамбовская область, Моршанск, Лесная улица, 7';
     }
 
     public function product(): null
     {
-        return null;
+        return $this->product;
     }
 
     public function element(): string
@@ -84,8 +85,8 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }

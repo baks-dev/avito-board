@@ -35,9 +35,8 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
- * @TODO временно убрал из реализации AvitoFeedElementInterface
  */
-final readonly class BackTireAspectRatioFeedElement
+final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'BackTireAspectRatio';
 
@@ -71,23 +70,28 @@ final readonly class BackTireAspectRatioFeedElement
         return null;
     }
 
+    public function productData(string|array $data = null): string
+    {
+        return preg_replace('/\D/', '', $data);
+    }
+
     public function element(): string
     {
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function label(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return self::LABEL;
+    }
+
+    public function help(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
     }
 
     public function product(): ?AvitoBoardProductEnum
     {
         return $this->product->getProduct();
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
     }
 }

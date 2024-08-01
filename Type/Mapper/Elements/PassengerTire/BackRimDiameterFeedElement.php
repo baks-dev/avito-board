@@ -35,13 +35,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
- * @TODO временно убрал из реализации AvitoFeedElementInterface
  */
-final readonly class BackRimDiameterFeedElement
+final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'BackRimDiameter';
 
-    public const string LABEL = 'Диаметр задней оси, дюймы';
+    public const string LABEL = 'Диаметр задней оси';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -49,7 +48,7 @@ final readonly class BackRimDiameterFeedElement
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -66,9 +65,14 @@ final readonly class BackRimDiameterFeedElement
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
      * @see RimDiameterFeedElement
      */
-    public function default(): string
+    public function default(): null
     {
-        return '10';
+        return null;
+    }
+
+    public function productData(string|array $data = null): string
+    {
+        return preg_replace('/\D/', '', $data);
     }
 
     public function element(): string
@@ -76,18 +80,18 @@ final readonly class BackRimDiameterFeedElement
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function label(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return self::LABEL;
+    }
+
+    public function help(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/119259/values-xml';
     }
 
     public function product(): ?AvitoBoardProductEnum
     {
         return $this->product->getProduct();
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
     }
 }

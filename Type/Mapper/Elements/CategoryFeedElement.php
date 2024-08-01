@@ -62,14 +62,14 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return $this->product->category();
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
         return $product['product_category'];
     }
 
     public function product(): null
     {
-        return null;
+        return $this->product;
     }
 
     public function element(): string
@@ -82,8 +82,8 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }

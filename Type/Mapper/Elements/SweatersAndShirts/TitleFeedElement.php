@@ -66,9 +66,9 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
-        return $product['product_article'];
+        return $product['product_category'];
     }
 
     public function element(): string
@@ -76,18 +76,18 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
-    }
-
     public function label(): string
     {
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
+    }
+
+    public function product(): ?AvitoBoardProductEnum
+    {
+        return $this->product->getProduct();
     }
 }

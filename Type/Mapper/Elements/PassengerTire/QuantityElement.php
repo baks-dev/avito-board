@@ -67,7 +67,7 @@ final readonly class QuantityElement implements AvitoFeedElementInterface
         return 'за 1 шт.';
     }
 
-    public function productData(): string
+    public function productData(string|array $product = null): string
     {
         return 'за 1 шт.';
     }

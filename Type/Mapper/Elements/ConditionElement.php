@@ -63,14 +63,9 @@ final readonly class ConditionElement implements AvitoFeedElementInterface
         return $this->product->condition();
     }
 
-    public function productData(array $product): null
+    public function productData(string|array $product = null): string
     {
-        return null;
-    }
-
-    public function product(): null
-    {
-        return null;
+        return $this->product->condition();
     }
 
     public function element(): string
@@ -83,8 +78,13 @@ final readonly class ConditionElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
+    }
+
+    public function product(): null
+    {
+        return $this->product;
     }
 }

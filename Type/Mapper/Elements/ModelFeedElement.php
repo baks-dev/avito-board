@@ -62,9 +62,9 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(string $data): string
+    public function productData(string|array $product = null): string
     {
-        return $data;
+        return $product;
     }
 
     public function element(): string
@@ -72,18 +72,18 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function label(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return self::LABEL;
     }
 
-    public function product(): null
+    public function help(): null
     {
         return null;
     }
 
-    public function label(): string
+    public function product(): null
     {
-        return self::LABEL;
+        return $this->product;
     }
 }

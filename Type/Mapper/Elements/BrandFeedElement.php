@@ -66,7 +66,7 @@ final readonly class BrandFeedElement
 
     public function productData(array $product): string
     {
-        return $product['product_article'];
+        return $product['product_brand'];
     }
 
     public function element(): string
@@ -74,18 +74,18 @@ final readonly class BrandFeedElement
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function label(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return self::LABEL;
     }
 
-    public function product(): null
+    public function help(): null
     {
         return null;
     }
 
-    public function label(): string
+    public function product(): null
     {
-        return self::LABEL;
+        return $this->product;
     }
 }

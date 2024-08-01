@@ -63,14 +63,14 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
         return 'Товар приобретен на продажу';
     }
 
-    public function productData(array $product): null
+    public function productData(string|array $product = null): string
     {
-        return null;
+        return 'Товар приобретен на продажу';
     }
 
     public function product(): null
     {
-        return null;
+        return $this->product;
     }
 
     public function element(): string
@@ -83,8 +83,8 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }

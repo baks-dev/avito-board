@@ -71,7 +71,7 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
         return $product['product_article'];
     }
@@ -93,6 +93,6 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
 
     public function product(): null
     {
-        return null;
+        return $this->product;
     }
 }

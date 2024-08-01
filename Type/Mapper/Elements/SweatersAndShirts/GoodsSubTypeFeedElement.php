@@ -51,7 +51,7 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
 
     public function isChoices(): bool
     {
-        return is_array($this->default());
+        return true;
     }
 
     public function default(): array
@@ -59,9 +59,9 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
         return $this->product->goodsSubType();
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): array
     {
-        return $product['product_article'];
+        return $this->product->goodsSubType();
     }
 
     public function element(): string
@@ -79,8 +79,8 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
     }
 }
