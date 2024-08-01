@@ -98,18 +98,6 @@ final class MapperForm extends AbstractType
                 'allow_add' => true,
             ]);
 
-            $form->add('settings', CollectionType::class, [
-                'entry_type' => MapperElementForm::class,
-                'entry_options' => [
-                    'label' => false,
-                    'product_fields' => $productFields,
-                    'avito_product' => $avitoProduct,
-                ],
-                'label' => false,
-                'by_reference' => false,
-                'allow_delete' => true,
-                'allow_add' => true,
-            ]);
         });
 
         $builder->add('mapper_new', SubmitType::class, [
