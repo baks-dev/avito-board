@@ -24,7 +24,7 @@
 namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -56,7 +56,7 @@ final class ElementTransformerExtension extends AbstractExtension
         /** Получаем все элементы по типу продукта, не участвующих в маппинге */
         $unmappedElements = array_filter(
             $this->mapperProvider->filterElements($product['avito_board_avito_category']),
-            function (AvitoFeedElementInterface $element) {
+            function (AvitoBoardElementInterface $element) {
                 return $element->isMapping() === false;
             }
         );

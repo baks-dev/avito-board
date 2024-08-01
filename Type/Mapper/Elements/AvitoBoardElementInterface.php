@@ -23,11 +23,10 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.elements')]
-interface AvitoFeedElementInterface
+interface AvitoBoardElementInterface
 {
     /**
      * @return true если элемент будет участвовать в маппинге и дынные будут браться из БД (маппинга)
@@ -46,6 +45,8 @@ interface AvitoFeedElementInterface
     public function label(): string;
 
     /**
+     * Для использования в форме маппинга
+     *
      * @return null если данные берутся не из класса,
      * а из БД (поля продукта) по соответствующему ключу методом ->productData(string|array $data)
      *
@@ -53,6 +54,9 @@ interface AvitoFeedElementInterface
      */
     public function default(): null|string|array;
 
+    /**
+     * Для использования в виде
+     */
     public function productData(string|array $data = null): null|string|array;
 
     public function help(): null|string;

@@ -23,7 +23,7 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.products')]
@@ -32,11 +32,11 @@ interface AvitoProductInterface
     public function getProduct(): string;
 
     /**
-     * @return list<AvitoFeedElementInterface>
+     * @return list<AvitoBoardElementInterface>
      */
     public function getElements(): array;
 
-    public function getElement(string $elementName): ?AvitoFeedElementInterface;
+    public function getElement(string $elementName): ?AvitoBoardElementInterface;
 
     public function isEqualProduct(string $product): bool;
 }

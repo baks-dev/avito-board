@@ -23,24 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-/**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
- *
- * Элемент обязателен для всех продуктов Авито
- */
-final readonly class AddressFeedElement implements AvitoFeedElementInterface
+final readonly class ProductTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Address';
+    public const string FEED_ELEMENT = 'ProductType';
 
-    public const string LABEL = 'Полный адрес объекта';
+    public const string LABEL = 'Тип товара';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -58,21 +54,14 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    // @TODO временный адрес, так как адрес еще не откуда брать
     public function default(): string
     {
-        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+        return 'Легковые шины';
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-//        return $product['_from_avito_token_profile'];
-        return 'Тамбовская область, Моршанск, Лесная улица, 7';
-    }
-
-    public function product(): null
-    {
-        return $this->product;
+        return 'Легковые шины';
     }
 
     public function element(): string
@@ -88,5 +77,10 @@ final readonly class AddressFeedElement implements AvitoFeedElementInterface
     public function help(): null
     {
         return null;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

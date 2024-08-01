@@ -109,7 +109,7 @@ final class AllProductNameRepository implements AllProductNameInterface
                 'product.event = product_trans.event AND product_trans.local = :local'
             );
 
-        dd($dbal->fetchHydrate(CategoryProductSectionFieldUid::class));
+//        dd($dbal->fetchHydrate(CategoryProductSectionFieldUid::class));
 
 
         return $dbal->fetchHydrate(CategoryProductSectionFieldUid::class);

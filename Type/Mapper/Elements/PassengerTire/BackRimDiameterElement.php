@@ -26,21 +26,22 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Высота профиля шины задней оси.
+ * Диаметр задней оси, дюймы.
  *
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
+ * @TODO Добавить реализацию AvitoFeedElementInterface, если элемент обязательный
  */
-final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementInterface
+final readonly class BackRimDiameterElement
 {
-    public const string FEED_ELEMENT = 'BackTireAspectRatio';
+    public const string FEED_ELEMENT = 'BackRimDiameter';
 
-    public const string LABEL = 'Высота профиля шины задней оси';
+    public const string LABEL = 'Диаметр шины задней оси';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -63,7 +64,7 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
 
     /**
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see TireAspectRatioFeedElement
+     * @see RimDiameterElement
      */
     public function default(): null
     {
@@ -87,7 +88,7 @@ final readonly class BackTireAspectRatioFeedElement implements AvitoFeedElementI
 
     public function help(): string
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/119259/values-xml';
     }
 
     public function product(): PassengerTireProductInterface

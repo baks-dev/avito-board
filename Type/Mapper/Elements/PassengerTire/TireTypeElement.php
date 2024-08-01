@@ -23,29 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-/**
- * Вид объявления.
- * В случае, если вид объявления не указан, будет установлено значение по умолчанию — "Товар приобретен на продажу"
- *
- * Элемент общий для всех продуктов Авито
- */
-final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
+final readonly class TireTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'AdType';
+    public const string FEED_ELEMENT = 'TireType';
 
-    public const string LABEL = 'Вид объявления';
+    public const string LABEL = 'Сезонность шин или колес';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -55,22 +51,23 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
 
     public function isChoices(): bool
     {
-        return false;
+        return true;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Товар приобретен на продажу';
+        return null;
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-        return 'Товар приобретен на продажу';
-    }
-
-    public function product(): null
-    {
-        return $this->product;
+        return match ($data)
+        {
+            'winter' => 'Зимние нешипованные',
+            'summer' => 'Летние',
+            'all' => 'Всесезонные',
+            default => $data
+        };
     }
 
     public function element(): string
@@ -86,5 +83,10 @@ final readonly class AdTypeFeedElement implements AvitoFeedElementInterface
     public function help(): null
     {
         return null;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

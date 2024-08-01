@@ -61,7 +61,6 @@
                             Формат значения
                             <a href="{{ help }}" target="_blank"> пример </a>
                         {% endif %}
-
                     </div>
                 </div>
 
@@ -76,7 +75,7 @@
                     {% if mapper.def is defined %}
                         {{ form_widget(mapper.def, {
                             placeholder: 'Выберите свойство продукта...',
-                            attr: { 'placeholder' : 'введите значение по умолчанию'}
+                            attr: { 'placeholder' : 'введите значение'}
                         }) }}
                     {% endif %}
 

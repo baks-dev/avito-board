@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;

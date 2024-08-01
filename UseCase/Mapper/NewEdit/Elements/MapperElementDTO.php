@@ -19,7 +19,7 @@
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapperInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,10 +36,11 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
      * Связь на свойство продукта в категории
      */
     #[Assert\Uuid]
-    #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
+    #[Assert\NotBlank()]
+//    #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
     private ?CategoryProductSectionFieldUid $productField = null;
 
-    #[Assert\When(expression: 'this.getProductField() === null', constraints: new Assert\NotBlank())]
+//    #[Assert\When(expression: 'this.getProductField() === null', constraints: new Assert\NotBlank())]
     private ?string $def = null;
 
     /**
@@ -49,14 +50,14 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
      * Элемент соответствия для построения фида для Авито
      */
     #[Assert\NotBlank]
-    private ?AvitoFeedElementInterface $elementInstance = null;
+    private ?AvitoBoardElementInterface $elementInstance = null;
 
-    public function getElementInstance(): ?AvitoFeedElementInterface
+    public function getElementInstance(): ?AvitoBoardElementInterface
     {
         return $this->elementInstance;
     }
 
-    public function setElementInstance(?AvitoFeedElementInterface $elementInstance): void
+    public function setElementInstance(?AvitoBoardElementInterface $elementInstance): void
     {
         $this->elementInstance = $elementInstance;
     }

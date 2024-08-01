@@ -2,7 +2,7 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -23,7 +23,7 @@ final readonly class AvitoBoardMapperProvider
     }
 
     /**
-     * @return list<AvitoFeedElementInterface>
+     * @return list<AvitoBoardElementInterface>
      */
     public function filterElements(string $productCategory): array
     {
@@ -39,7 +39,7 @@ final readonly class AvitoBoardMapperProvider
         throw new \Exception('Avito elements not found');
     }
 
-    public function getFeedElement(string $productCategory, string $elementName): AvitoFeedElementInterface
+    public function getFeedElement(string $productCategory, string $elementName): AvitoBoardElementInterface
     {
         /** @var AvitoProductInterface $product */
         foreach ($this->products as $product)

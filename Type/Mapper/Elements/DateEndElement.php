@@ -23,31 +23,38 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Вид товара.
- * Одно из значений
+Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из форматов:
+ * — dd.MM.yyyy
+ * — dd.MM.yy
+ * — yyyy-MM-dd
  *
- * Элемент обязательный для всех продуктов Авито
+ * Чтобы объявление закрылось с точностью до часа, добавьте время через пробел в формате HH:mm:ss или HH:mm.
+ * Если хотите явно указать часовой пояс, используйте формат ISO 8601: YYYY-MM-DDTHH:mm:ss+hh:mm.
+ *
+ * Если вы укажете уже прошедшую дату, автозагрузка не обработает объявление.
+ *
+ * @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
  */
-final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
+final readonly class DateEndElement
 {
-    public const string FEED_ELEMENT = 'GoodsType';
+    public const string ELEMENT = 'DateEnd';
 
-    public const string LABEL = 'Вид товара';
+    public const string ELEMENT_ALIAS = 'product_date_over';
+
+    private const string LABEL = 'Дата и время окончания размещения';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -60,19 +67,24 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Мужская одежда';
+        return null;
     }
 
     public function productData(string|array $data = null): string
     {
-        return 'Мужская одежда';
+        if (null === $data)
+        {
+            return $data[self::ELEMENT_ALIAS];
+        }
+
+        return $data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
@@ -80,12 +92,12 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function product(): PassengerTireProductInterface
     {
         return $this->product;
     }

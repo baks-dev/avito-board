@@ -28,24 +28,15 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
 /**
- * Это уникальный идентификатор, который вы присваиваете каждому объявлению в файле.
+ * Одно из значений
  *
- * Он помогает Авито распознавать объявления от загрузки к загрузке.
- * Идентификаторы не должны повторяться и их нельзя менять — тогда вы избежите блокировок и других ошибок.
- * Присвоить Id можно двумя способами:
- * 1) Если вы создаёте свой файл или используете шаблон Авито, придумайте Id самостоятельно.
- * Заранее подумайте над правилами, по которым будете составлять его, — так будет проще добавлять новые Id.
- * Например, можно использовать нумерацию по порядку.
- * 2) Если вы работаете в CRM, ERP или другой системе, там есть идентификатор товара или объявления. Можно использовать его.
- * Id может состоять из цифр, русских и английских букв, а также символов , \ / ( ) [  ] - =. Всего — не более 100 знаков.
- *
- * Элемент обязателен для всех продуктов Авито
+ * Элемент общий для всех продуктов Авито
  */
-final readonly class IdFeedElement implements AvitoFeedElementInterface
+final readonly class ModelElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Id';
+    public const string FEED_ELEMENT = 'Model';
 
-    private const string LABEL = 'Идентификатор';
+    public const string LABEL = 'Модель';
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
@@ -71,9 +62,16 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-        return $product['product_article'];
+        if (is_string($data))
+        {
+            return $data;
+        }
+        else
+        {
+            return $data['product_name'];
+        }
     }
 
     public function element(): string
@@ -86,9 +84,9 @@ final readonly class IdFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): string
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return 'https://autoload.avito.ru/format/tyres_make.xml';
     }
 
     public function product(): null

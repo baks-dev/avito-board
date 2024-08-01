@@ -25,26 +25,29 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- * Категория объявления.
+ * Название объявления — строка до 50 символов.
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
  *
- * Элемент общий для всех продуктов Авито
+ * Элемент обязателен для продуктов:
+ * - Кофты и футболки
  */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string FEED_ELEMENT = 'Title';
 
-    public const string LABEL = 'Категория объявления';
+    public const string LABEL = 'Название объявления';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
     ) {}
 
+    // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
     public function isMapping(): bool
     {
         return false;
@@ -60,14 +63,15 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Запчасти и аксессуары';
+        return null;
     }
 
+    // @TODO подумать где брать
     public function productData(string|array $data = null): string
     {
-        return 'Запчасти и аксессуары';
+        return $data['product_name'] . $data['product_article'];
     }
 
     public function element(): string

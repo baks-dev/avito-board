@@ -23,31 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- * Вид товара.
- * Одно из значений
+ * Название объявления — строка до 50 символов.
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
  *
- * Элемент обязательный для всех продуктов Авито
+ * Элемент обязателен для продуктов:
+ * - Кофты и футболки
  */
-final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'GoodsType';
+    public const string FEED_ELEMENT = 'Title';
 
-    public const string LABEL = 'Вид товара';
+    public const string LABEL = 'Название объявления';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -60,14 +61,14 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Шины, диски и колёса';
+        return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function productData(string|array $product = null): string
     {
-        return 'Шины, диски и колёса';
+        return $product['product_category'];
     }
 
     public function element(): string
@@ -80,12 +81,12 @@ final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
         return null;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function product(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

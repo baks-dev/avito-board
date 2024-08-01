@@ -23,20 +23,26 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-final readonly class ApparelFeedElement implements AvitoFeedElementInterface
+/**
+ * Текстовое описание объявления в соответствии с правилами Авито — строка не более 7500 символов
+ *
+ * Для объявлений, параметры которых соответствуют оплаченному тарифу, вы можете использовать дополнительное форматирование с помощью HTML-тегов.
+ * Для формата XML описание должно быть внутри CDATA. Использовать можно только HTML-теги из списка: p, br, strong, em, ul, ol, li.
+ *
+ * Элемент обязателен для всех продуктов Авито
+ */
+final readonly class DescriptionElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Apparel';
+    public const string FEED_ELEMENT = 'Description';
 
-    public const string LABEL = 'Тип товара';
+    private const string LABEL = 'Текстовое описание объявления';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -54,14 +60,14 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Кофты и футболки';
+        return null;
     }
 
     public function productData(string|array $data = null): string
     {
-        return 'Кофты и футболки';
+        return sprintf('<![CDATA[%s]]>', $data['product_description']);
     }
 
     public function element(): string
@@ -74,12 +80,12 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
+    public function help(): ?string
     {
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function product(): null
     {
         return $this->product;
     }

@@ -26,14 +26,14 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
+final readonly class TireSectionWidthElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'ProductType';
+    public const string FEED_ELEMENT = 'TireSectionWidth';
 
-    public const string LABEL = 'Тип товара';
+    public const string LABEL = 'Ширина профиля шины';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -41,7 +41,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -54,14 +54,14 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Легковые шины';
+        return null;
     }
 
     public function productData(string|array $data = null): string
     {
-        return 'Легковые шины';
+        return preg_replace('/\D/', '', $data);
     }
 
     public function element(): string
@@ -69,14 +69,14 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
+    public function help(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml';
+    }
+
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
     }
 
     public function product(): PassengerTireProductInterface

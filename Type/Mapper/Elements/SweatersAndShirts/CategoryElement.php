@@ -23,31 +23,27 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- * Название объявления — строка до 50 символов.
- * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
+ * Категория объявления.
  *
- * Элемент обязателен для продуктов:
- * - Кофты и футболки
+ * Элемент общий для всех продуктов Авито
  */
-final readonly class TitleFeedElement implements AvitoFeedElementInterface
+final readonly class CategoryElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Title';
+    public const string FEED_ELEMENT = 'Category';
 
-    public const string LABEL = 'Название объявления';
+    public const string LABEL = 'Категория объявления';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
-    // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
     public function isMapping(): bool
     {
         return false;
@@ -63,15 +59,14 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): null
+    public function default(): string
     {
-        return null;
+        return 'Одежда, обувь, аксессуары';
     }
 
-    // @TODO подумать где брать
     public function productData(string|array $data = null): string
     {
-        return $data['product_name'] . $data['product_article'];
+        return 'Одежда, обувь, аксессуары';
     }
 
     public function element(): string
@@ -89,7 +84,7 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function product(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

@@ -23,26 +23,28 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Текстовое описание объявления в соответствии с правилами Авито — строка не более 7500 символов
+ * Остаточная глубина протектора шины.
  *
- * Для объявлений, параметры которых соответствуют оплаченному тарифу, вы можете использовать дополнительное форматирование с помощью HTML-тегов.
- * Для формата XML описание должно быть внутри CDATA. Использовать можно только HTML-теги из списка: p, br, strong, em, ul, ol, li.
+ * Может принимать значения от 1 до 50 включительно, измеряется в миллиметрах (мм)
+ * В диапазоне 1-10 мм включительно можно использовать дробные значения.
  *
- * Элемент обязателен для всех продуктов Авито
+ * Применимо, если в поле Condition указано значение 'Б/у'
  */
-final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
+final readonly class ResidualTreadElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Description';
+    public const string FEED_ELEMENT = 'ResidualTread';
 
-    private const string LABEL = 'Текстовое описание объявления';
+    public const string LABEL = 'Остаточная глубина протектора шины';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -60,14 +62,17 @@ final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): null
+    /**
+     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
+     */
+    public function default(): string
     {
-        return null;
+        return '50';
     }
 
     public function productData(string|array $data = null): string
     {
-        return sprintf('<![CDATA[%s]]>', $data['product_description']);
+        return '50';
     }
 
     public function element(): string
@@ -75,17 +80,17 @@ final readonly class DescriptionFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
+    public function help(): null
+    {
+        return null;
+    }
+
     public function label(): string
     {
         return self::LABEL;
     }
 
-    public function help(): ?string
-    {
-        return null;
-    }
-
-    public function product(): null
+    public function product(): PassengerTireProductInterface
     {
         return $this->product;
     }

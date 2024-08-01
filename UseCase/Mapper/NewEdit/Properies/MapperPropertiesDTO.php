@@ -19,7 +19,7 @@
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Properies;
 
 use BaksDev\Avito\Board\Entity\Mapper\Properies\AvitoBoardMapperPropertiesInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -46,14 +46,14 @@ final class MapperPropertiesDTO implements AvitoBoardMapperPropertiesInterface
      * Элемент соответствия для построения фида для Авито
      */
     #[Assert\NotBlank]
-    private ?AvitoFeedElementInterface $elementInstance = null;
+    private ?AvitoBoardElementInterface $elementInstance = null;
 
-    public function getElementInstance(): ?AvitoFeedElementInterface
+    public function getElementInstance(): ?AvitoBoardElementInterface
     {
         return $this->elementInstance;
     }
 
-    public function setElementInstance(?AvitoFeedElementInterface $elementInstance): void
+    public function setElementInstance(?AvitoBoardElementInterface $elementInstance): void
     {
         $this->elementInstance = $elementInstance;
     }

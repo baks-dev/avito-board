@@ -23,30 +23,30 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Категория объявления.
+ * Доступные способы доставки.
  *
- * Элемент общий для всех продуктов Авито
+ * Подробнее о работе с доставкой https://support.avito.ru/sections/62?articleId=2271
+ *
+ * Одно или несколько значений
  */
-final readonly class CategoryFeedElement implements AvitoFeedElementInterface
+final readonly class DeliveryElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string ELEMENT = 'Delivery';
 
-    public const string LABEL = 'Категория объявления';
+    private const string LABEL = 'Доступные способы доставки';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -59,19 +59,32 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): array
     {
-        return 'Одежда, обувь, аксессуары';
+        return [
+            'Выключена',
+            'ПВЗ',
+            'Курьер',
+            'Постамат',
+            'Свой курьер',
+            'Свой партнер СДЭК',
+            'Свой партнер Деловые Линии',
+            'Свой партнер DPD',
+            'Свой партнер ПЭК',
+            'Свой партнер Почта России',
+            'Свой партнер Boxberry',
+            'Свой партнер СДЭК курьер',
+        ];
     }
 
     public function productData(string|array $data = null): string
     {
-        return 'Одежда, обувь, аксессуары';
+        return sprintf('<Option>%s</Option>', $data);
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
@@ -84,7 +97,7 @@ final readonly class CategoryFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function product(): PassengerTireProductInterface
     {
         return $this->product;
     }

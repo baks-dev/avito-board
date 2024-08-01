@@ -20,7 +20,7 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit;
 
 use BaksDev\Avito\Board\Repository\Mapper\AllProductName\AllProductNameRepository;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementForm;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\ModificationCategoryProductSectionField\ModificationCategoryProductSectionFieldInterface;
@@ -70,7 +70,7 @@ final class MapperForm extends AbstractType
             {
                 /**
                  * Фильтрация элементов по соответствующей категории Авито
-                 * @var list<AvitoFeedElementInterface>|null $elements
+                 * @var list<AvitoBoardElementInterface>|null $elements
                  */
                 $elements = $this->mapperProvider->filterElements($mapperDTO->getAvito());
 
@@ -133,11 +133,14 @@ final class MapperForm extends AbstractType
         $productFields = new ArrayCollection($productProperties);
 
 
-        //        $name = $this->productNameRepository
-        //            ->category($productCategory)
-        //            ->findAll();
-        //
-        //        dump($name);
+        //                $productName = $this->productNameRepository
+        //                    ->category($productCategory)
+        //                    ->findAll();
+
+        //        $productFields->add($productName);
+
+        //                dd($productName);
+
 
         /** Торговое предложение */
         $productOffer = $this->offersCategoryProductSectionField

@@ -26,21 +26,14 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-/**
- * Название объявления — строка до 50 символов.
- * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
- *
- * Элемент обязателен для продуктов:
- * - Кофты и футболки
- */
-final readonly class TitleFeedElement implements AvitoFeedElementInterface
+final readonly class ApparelElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Title';
+    public const string FEED_ELEMENT = 'Apparel';
 
-    public const string LABEL = 'Название объявления';
+    public const string LABEL = 'Тип товара';
 
     public function __construct(
         private ?SweatersAndShirtsProductInterface $product = null,
@@ -48,7 +41,7 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -61,14 +54,14 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): null
+    public function default(): string
     {
-        return null;
+        return 'Кофты и футболки';
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-        return $product['product_category'];
+        return 'Кофты и футболки';
     }
 
     public function element(): string

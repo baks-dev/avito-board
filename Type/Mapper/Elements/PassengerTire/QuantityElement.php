@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 
@@ -37,7 +37,7 @@ use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
  * Элемент обязателен продуктов Авито:
  * - Легковые шины
  */
-final readonly class QuantityElement implements AvitoFeedElementInterface
+final readonly class QuantityElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'Quantity';
 

@@ -26,9 +26,9 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\GoodsTypeFeedElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\GoodsTypeElement;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProductInterface
@@ -43,7 +43,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
     {
         $elements = null;
 
-        /** @var AvitoFeedElementInterface $element */
+        /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
 
@@ -66,9 +66,9 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         return $elements;
     }
 
-    public function getElement(string $elementName): ?AvitoFeedElementInterface
+    public function getElement(string $elementName): ?AvitoBoardElementInterface
     {
-        /** @var AvitoFeedElementInterface $element */
+        /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
             if ($element->element() === $elementName)
@@ -102,8 +102,8 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
 
     public function __toString(): string
     {
-        $category = (new CategoryFeedElement($this))->default();
-        $variation = (new GoodsTypeFeedElement($this))->default();
+        $category = (new CategoryElement($this))->default();
+        $variation = (new GoodsTypeElement($this))->default();
 
         return sprintf('%s / %s', $category, $variation);
     }

@@ -23,25 +23,29 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
+/**
+ * Полный адрес объекта — строка до 256 символов.
+ * Является альтернативой параметрам Latitude, Longitude
+ *
+ * Элемент обязателен для всех продуктов Авито
+ */
+final readonly class AddressElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'TireType';
+    public const string FEED_ELEMENT = 'Address';
 
-    public const string LABEL = 'Сезонность шин или колес';
+    public const string LABEL = 'Полный адрес объекта';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -51,23 +55,24 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
 
     public function isChoices(): bool
     {
-        return true;
+        return false;
     }
 
-    public function default(): null
+    // @TODO временный адрес, так как адрес еще не откуда брать
+    public function default(): string
     {
-        return null;
+        return 'Тамбовская область, Моршанск, Лесная улица, 7';
     }
 
-    public function productData(string|array $data = null): string
+    public function productData(string|array $product = null): string
     {
-        return match ($data)
-        {
-            'winter' => 'Зимние нешипованные',
-            'summer' => 'Летние',
-            'all' => 'Всесезонные',
-            default => $data
-        };
+//        return $product['_from_avito_token_profile'];
+        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+    }
+
+    public function product(): null
+    {
+        return $this->product;
     }
 
     public function element(): string
@@ -83,10 +88,5 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
     public function help(): null
     {
         return null;
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
     }
 }

@@ -23,28 +23,26 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- * Остаточная глубина протектора шины.
+ * Вид товара.
+ * Одно из значений
  *
- * Может принимать значения от 1 до 50 включительно, измеряется в миллиметрах (мм)
- * В диапазоне 1-10 мм включительно можно использовать дробные значения.
- *
- * Применимо, если в поле Condition указано значение 'Б/у'
+ * Элемент обязательный для всех продуктов Авито
  */
-final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterface
+final readonly class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'ResidualTread';
+    public const string FEED_ELEMENT = 'GoodsType';
 
-    public const string LABEL = 'Остаточная глубина протектора шины';
+    public const string LABEL = 'Вид товара';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -62,17 +60,14 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return false;
     }
 
-    /**
-     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
-     */
     public function default(): string
     {
-        return '50';
+        return 'Мужская одежда';
     }
 
     public function productData(string|array $data = null): string
     {
-        return '50';
+        return 'Мужская одежда';
     }
 
     public function element(): string
@@ -80,17 +75,17 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return self::FEED_ELEMENT;
     }
 
-    public function help(): null
-    {
-        return null;
-    }
-
     public function label(): string
     {
         return self::LABEL;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function help(): ?string
+    {
+        return null;
+    }
+
+    public function product(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

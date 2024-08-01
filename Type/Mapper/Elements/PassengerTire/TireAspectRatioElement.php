@@ -25,21 +25,15 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-/**
- * Состояние
- *
- * Элемент обязателен для всех продуктов Авито:
- * - Легковые шины
- */
-final readonly class ConditionElement implements AvitoBoardElementInterface
+final readonly class TireAspectRatioElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Condition';
+    public const string FEED_ELEMENT = 'TireAspectRatio';
 
-    private const string LABEL = 'Состояние';
+    public const string LABEL = 'Высота профиля шины';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -47,7 +41,7 @@ final readonly class ConditionElement implements AvitoBoardElementInterface
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -60,14 +54,14 @@ final readonly class ConditionElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function default(): null
     {
-        return 'Новое';
+        return null;
     }
 
     public function productData(string|array $data = null): string
     {
-        return 'Новое';
+        return preg_replace('/\D/', '', $data);
     }
 
     public function element(): string
@@ -75,14 +69,14 @@ final readonly class ConditionElement implements AvitoBoardElementInterface
         return self::FEED_ELEMENT;
     }
 
+    public function help(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml';
+    }
+
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
     }
 
     public function product(): PassengerTireProductInterface

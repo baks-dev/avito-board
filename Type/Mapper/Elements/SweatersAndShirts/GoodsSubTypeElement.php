@@ -23,28 +23,20 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-/**
- * Диаметр задней оси, дюймы.
- *
- * Применимо, если в поле DifferentWidthTires указано значение 'Да'
- *
- * Одно из значений от Авито
- * @TODO
- */
-final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInterface
+final readonly class GoodsSubTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'BackRimDiameter';
+    public const string FEED_ELEMENT = 'GoodsSubType';
 
-    public const string LABEL = 'Диаметр шины задней оси';
+    public const string LABEL = 'Тип одежды, обуви, аксессуаров';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?SweatersAndShirtsProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -59,21 +51,37 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
 
     public function isChoices(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see RimDiameterFeedElement
-     */
-    public function default(): null
+    public function default(): array
     {
-        return null;
+        return [
+            'Футболка',
+            'Поло',
+            'Майка',
+            'Свитшот',
+            'Толстовка / худи',
+            'Джемпер',
+            'Свитер',
+            'Кардиган',
+            'Кофта'
+        ];
     }
 
-    public function productData(string|array $data = null): string
+    public function productData(string|array $product = null): array
     {
-        return preg_replace('/\D/', '', $data);
+        return [
+            'Футболка',
+            'Поло',
+            'Майка',
+            'Свитшот',
+            'Толстовка / худи',
+            'Джемпер',
+            'Свитер',
+            'Кардиган',
+            'Кофта'
+        ];
     }
 
     public function element(): string
@@ -86,12 +94,12 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
         return self::LABEL;
     }
 
-    public function help(): string
+    public function help(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/119259/values-xml';
+        return null;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function product(): ?SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

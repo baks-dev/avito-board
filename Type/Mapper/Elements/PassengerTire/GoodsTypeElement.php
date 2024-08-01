@@ -23,25 +23,31 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterface
+/**
+ * Вид товара.
+ * Одно из значений
+ *
+ * Элемент обязательный для всех продуктов Авито
+ */
+final readonly class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'GoodsSubType';
+    public const string FEED_ELEMENT = 'GoodsType';
 
-    public const string LABEL = 'Тип одежды, обуви, аксессуаров';
+    public const string LABEL = 'Вид товара';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -51,37 +57,17 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
 
     public function isChoices(): bool
     {
-        return true;
+        return false;
     }
 
-    public function default(): array
+    public function default(): string
     {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return 'Шины, диски и колёса';
     }
 
-    public function productData(string|array $product = null): array
+    public function productData(string|array $data = null): string
     {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return 'Шины, диски и колёса';
     }
 
     public function element(): string
@@ -94,12 +80,12 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
         return self::LABEL;
     }
 
-    public function help(): null
+    public function help(): ?string
     {
         return null;
     }
 
-    public function product(): ?SweatersAndShirtsProductInterface
+    public function product(): PassengerTireProductInterface
     {
         return $this->product;
     }

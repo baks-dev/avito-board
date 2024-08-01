@@ -26,14 +26,22 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInterface
+/**
+ * Высота профиля шины задней оси.
+ *
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
+ * @TODO Добавить реализацию AvitoFeedElementInterface, если элемент обязательный
+ */
+final readonly class BackTireSectionWidthElement
 {
-    public const string FEED_ELEMENT = 'TireSectionWidth';
+    public const string FEED_ELEMENT = 'BackTireSectionWidth';
 
-    public const string LABEL = 'Ширина профиля шины';
+    public const string LABEL = 'Ширина профиля шины задней оси';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -54,6 +62,10 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return false;
     }
 
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see TireSectionWidthElement
+     */
     public function default(): null
     {
         return null;
@@ -69,14 +81,14 @@ final readonly class TireSectionWidthFeedElement implements AvitoFeedElementInte
         return self::FEED_ELEMENT;
     }
 
-    public function help(): string
-    {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml';
-    }
-
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function help(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
     }
 
     public function product(): PassengerTireProductInterface

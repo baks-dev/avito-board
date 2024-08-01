@@ -23,32 +23,29 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
 /**
- * Высота профиля шины задней оси.
+ * Вид объявления.
+ * В случае, если вид объявления не указан, будет установлено значение по умолчанию — "Товар приобретен на продажу"
  *
- * Применимо, если в поле DifferentWidthTires указано значение 'Да'
- *
- * Одно из значений от Авито
+ * Элемент общий для всех продуктов Авито
  */
-final readonly class BackTireSectionWidthFeedElement implements AvitoFeedElementInterface
+final readonly class AdTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'BackTireSectionWidth';
+    public const string FEED_ELEMENT = 'AdType';
 
-    public const string LABEL = 'Ширина профиля шины задней оси';
+    public const string LABEL = 'Вид объявления';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private ?AvitoProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -61,18 +58,19 @@ final readonly class BackTireSectionWidthFeedElement implements AvitoFeedElement
         return false;
     }
 
-    /**
-     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see TireSectionWidthFeedElement
-     */
-    public function default(): null
+    public function default(): string
     {
-        return null;
+        return 'Товар приобретен на продажу';
     }
 
-    public function productData(string|array $data = null): string
+    public function productData(string|array $product = null): string
     {
-        return preg_replace('/\D/', '', $data);
+        return 'Товар приобретен на продажу';
+    }
+
+    public function product(): null
+    {
+        return $this->product;
     }
 
     public function element(): string
@@ -85,13 +83,8 @@ final readonly class BackTireSectionWidthFeedElement implements AvitoFeedElement
         return self::LABEL;
     }
 
-    public function help(): string
+    public function help(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return null;
     }
 }

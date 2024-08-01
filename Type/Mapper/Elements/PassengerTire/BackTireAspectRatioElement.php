@@ -23,28 +23,33 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Одно из значений
+ * Высота профиля шины задней оси.
  *
- * Элемент общий для всех продуктов Авито
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
+ * @TODO Добавить реализацию AvitoFeedElementInterface, если элемент обязательный
  */
-final readonly class ModelFeedElement implements AvitoFeedElementInterface
+final readonly class BackTireAspectRatioElement
 {
-    public const string FEED_ELEMENT = 'Model';
+    public const string FEED_ELEMENT = 'BackTireAspectRatio';
 
-    public const string LABEL = 'Модель';
+    public const string LABEL = 'Высота профиля шины задней оси';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): bool
@@ -57,6 +62,10 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see TireAspectRatioElement
+     */
     public function default(): null
     {
         return null;
@@ -64,14 +73,7 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
 
     public function productData(string|array $data = null): string
     {
-        if (is_string($data))
-        {
-            return $data;
-        }
-        else
-        {
-            return $data['product_name'];
-        }
+        return preg_replace('/\D/', '', $data);
     }
 
     public function element(): string
@@ -86,10 +88,10 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
 
     public function help(): string
     {
-        return 'https://autoload.avito.ru/format/tyres_make.xml';
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
     }
 
-    public function product(): null
+    public function product(): PassengerTireProductInterface
     {
         return $this->product;
     }

@@ -25,10 +25,10 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\CategoryFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeFeedElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeFeedElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\CategoryBoardElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeElement;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PassengerTireProduct implements PassengerTireProductInterface
@@ -43,7 +43,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
     {
         $elements = null;
 
-        /** @var AvitoFeedElementInterface $element */
+        /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
 
@@ -66,9 +66,9 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         return $elements;
     }
 
-    public function getElement(string $elementName): ?AvitoFeedElementInterface
+    public function getElement(string $elementName): ?AvitoBoardElementInterface
     {
-        /** @var AvitoFeedElementInterface $element */
+        /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
             if ($element->element() === $elementName)
@@ -101,9 +101,9 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
     public function __toString(): string
     {
-        $category = (new CategoryFeedElement($this))->default();
-        $variation = (new GoodsTypeFeedElement($this))->default();
-        $type = (new ProductTypeFeedElement($this))->default();
+        $category = (new CategoryBoardElement($this))->default();
+        $variation = (new GoodsTypeElement($this))->default();
+        $type = (new ProductTypeElement($this))->default();
 
         return sprintf('%s / %s / %s', $category, $variation, $type);
     }

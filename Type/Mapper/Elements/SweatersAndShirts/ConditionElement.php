@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
@@ -35,7 +35,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для всех продуктов Авито:
  * - Легковые шины
  */
-final readonly class ConditionElement implements AvitoFeedElementInterface
+final readonly class ConditionElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'Condition';
 
