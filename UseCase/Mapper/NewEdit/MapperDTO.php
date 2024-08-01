@@ -21,6 +21,7 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEventInterface;
 use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
+use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Properies\MapperPropertiesDTO;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -55,9 +56,16 @@ final class MapperDTO implements AvitoBoardEventInterface
     #[Assert\Valid]
     private ArrayCollection $mapperSetting;
 
+    /**
+     * @var ArrayCollection<MapperPropertiesDTO> $mapperSetting
+     */
+    #[Assert\Valid]
+    private ArrayCollection $properties;
+
     public function __construct()
     {
         $this->mapperSetting = new ArrayCollection();
+        $this->properties = new ArrayCollection();
     }
 
     public function setId(AvitoBoardEventUid $id): void
@@ -106,5 +114,23 @@ final class MapperDTO implements AvitoBoardEventInterface
     public function removeMapperSetting(MapperElementDTO $element): void
     {
         $this->mapperSetting->removeElement($element);
+    }
+
+    /**
+     * @return ArrayCollection<MapperPropertiesDTO>
+     */
+    public function getProperties(): ArrayCollection
+    {
+        return $this->properties;
+    }
+
+    public function addProperty(MapperPropertiesDTO $property): void
+    {
+        $this->properties->add($property);
+    }
+
+    public function removeProperty(MapperElementDTO $property): void
+    {
+        $this->mapperSetting->removeElement($property);
     }
 }

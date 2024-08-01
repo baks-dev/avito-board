@@ -47,9 +47,10 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         private ?PassengerTireProductInterface $product = null,
     ) {}
 
+    // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -67,9 +68,10 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
+    // @TODO подумать где брать
     public function productData(string|array $data = null): string
     {
-        return $data['product_category'];
+        return $data['product_name'] . $data['product_article'];
     }
 
     public function element(): string

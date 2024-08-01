@@ -53,9 +53,9 @@
             >
 
                 <div class="w-50">
-                    {{ form_label(mapper.def) }}
+                    {{ form_label(mapper.productField) }}
 
-                    {% set help = mapper.def.vars.help %}
+                    {% set help = mapper.productField.vars.help %}
                     <div>
                         {% if help is not null %}
                             Формат значения
@@ -65,6 +65,7 @@
                     </div>
                 </div>
 
+
                 {# свойста для сопоставления #}
                 <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
                     {{ form_widget(mapper.productField, {
@@ -72,37 +73,40 @@
                         attr: { 'data-select' : 'select2', class:  'mb-0'}
                     }) }}
 
-                    {{ form_widget(mapper.def, {
-                        placeholder: 'Выберите свойство продукта...',
-                        attr: { 'placeholder' : 'введите значение по умолчанию'}
-                    }) }}
+                    {% if mapper.def is defined %}
+                        {{ form_widget(mapper.def, {
+                            placeholder: 'Выберите свойство продукта...',
+                            attr: { 'placeholder' : 'введите значение по умолчанию'}
+                        }) }}
+                    {% endif %}
+
                 </div>
 
             </div>
         {% endfor %}
     </div>
 
-{#    <div class="tab-pane fade show active" id="tab_parameter" role="tabpanel">#}
-{#        {% for mapper in form.mapperSetting %}#}
-{#            <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"#}
-{#                 style='background-color: {{ mapper.vars.data.elementInstance.isRequired ? '#fff2f2' : '#f8f8f8' }}'#}
-{#            >#}
+    {#    <div class="tab-pane fade show active" id="tab_property" role="tabpanel"> #}
+    {#        {% for mapper in form.mapperSetting %} #}
+    {#            <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border" #}
+    {#                 style='background-color: {{ mapper.vars.data.elementInstance.isRequired ? '#fff2f2' : '#f8f8f8' }}' #}
+    {#            > #}
 
-{#                <div class="w-50">#}
-{#                    {{ form_label(mapper.productField) }}#}
-{#                </div>#}
+    {#                <div class="w-50"> #}
+    {#                    {{ form_label(mapper.productField) }} #}
+    {#                </div> #}
 
-{#                #}{# свойста для сопоставления #}
-{#                <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">#}
-{#                    {{ form_widget(mapper.productField, {#}
-{#                        placeholder: 'Выберите свойство продукта...',#}
-{#                        attr: { 'data-select' : 'select2', class:  'mb-0'}#}
-{#                    }) }}#}
-{#                </div>#}
+    {#                 свойста для сопоставления #}
+    {#                <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3"> #}
+    {#                    {{ form_widget(mapper.productField, { #}
+    {#                        placeholder: 'Выберите свойство продукта...', #}
+    {#                        attr: { 'data-select' : 'select2', class:  'mb-0'} #}
+    {#                    }) }} #}
+    {#                </div> #}
 
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
+    {#            </div> #}
+    {#        {% endfor %} #}
+    {#    </div> #}
 
 </div>
 

@@ -46,7 +46,7 @@ final class MapperForm extends AbstractType
         private readonly ModificationCategoryProductSectionFieldInterface $modificationCategoryProductSectionField,
         private readonly PropertyFieldsCategoryChoiceInterface $propertyFields,
         private readonly VariationCategoryProductSectionFieldInterface $variationCategoryProductSectionField,
-        private readonly AllProductNameRepository $test,
+        private readonly AllProductNameRepository $productNameRepository,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -133,18 +133,18 @@ final class MapperForm extends AbstractType
         $productFields = new ArrayCollection($productProperties);
 
 
-        //        $name = $this->test
-//            ->category($productCategory)
-//            ->findAll();
-//
-//        dump($name);
+        //        $name = $this->productNameRepository
+        //            ->category($productCategory)
+        //            ->findAll();
+        //
+        //        dump($name);
 
         /** Торговое предложение */
         $productOffer = $this->offersCategoryProductSectionField
             ->category($productCategory)
             ->findAllCategoryProductSectionField();
 
-//        dd($productOffer);
+        //        dd($productOffer);
 
         if ($productOffer)
         {

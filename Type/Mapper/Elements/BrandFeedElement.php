@@ -66,7 +66,7 @@ final readonly class BrandFeedElement implements AvitoFeedElementInterface
 
     public function default(): null|string|array
     {
-        return null;
+        return '';
     }
 
     // @TODO ожидает добавление в характеристики продукта

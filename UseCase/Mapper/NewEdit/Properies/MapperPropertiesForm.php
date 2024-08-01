@@ -16,15 +16,14 @@
  *
  */
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
+namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Properies;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -33,7 +32,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Форма для отрисовки полей соответствия между категориями
  */
-final class MapperElementForm extends AbstractType
+final class MapperPropertiesForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -44,11 +43,6 @@ final class MapperElementForm extends AbstractType
             /** @var MapperElementDTO $mapperElementDTO */
             if ($mapperElementDTO = $event->getData())
             {
-                /** @var AvitoProductInterface $avitoProduct */
-                $avitoProduct = $options['avito_product'];
-                $element = $avitoProduct->getElement($mapperElementDTO->getElement());
-                $mapperElementDTO->setElementInstance($element);
-
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
                 $productFields = $options['product_fields'];
 
@@ -61,42 +55,15 @@ final class MapperElementForm extends AbstractType
                         'choice_label' => function (CategoryProductSectionFieldUid $field) {
                             return $field->getAttr();
                         },
-                        'label' => $element->label(),
-                        'help' => $element->help(),
                         'expanded' => false,
                         'multiple' => false,
                         'required' => false,
                     ]);
 
-
-                if ($element->default() !== null)
-                {
-                    if ($element->isChoices())
-                    {
-                        $form
-                            ->add('def', ChoiceType::class, [
-                                'choices' => $element->default(),
-                                'choice_value' => function (?string $element) {
-                                    return $element;
-                                },
-                                'choice_label' => function (string $element) {
-                                    return $element;
-                                },
-                                'expanded' => false,
-                                'multiple' => false,
-                                'translation_domain' => 'avito-board.settings',
-                                'required' => false,
-                            ]);
-                    }
-                    else
-                    {
-                        $form->add('def', TextType::class, [
-                            'data' => $mapperElementDTO->getDef() ?? $element->default(),
-                            'translation_domain' => 'avito-board.settings',
-                            'required' => false,
-                        ]);
-                    }
-                }
+                /** @var AvitoProductInterface $avitoProduct */
+                $avitoProduct = $options['avito_product'];
+                $element = $avitoProduct->getElement($mapperElementDTO->getElement());
+                $mapperElementDTO->setElementInstance($element);
             }
         });
     }
