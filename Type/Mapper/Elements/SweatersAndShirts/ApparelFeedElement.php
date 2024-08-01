@@ -59,11 +59,10 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return 'Кофты и футболки';
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
         return 'Кофты и футболки';
     }
-
 
     public function element(): string
     {
@@ -80,8 +79,8 @@ final readonly class ApparelFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): ?AvitoBoardProductEnum
+    public function product(): SweatersAndShirtsProductInterface
     {
-        return $this->product->getProduct();
+        return $this->product;
     }
 }

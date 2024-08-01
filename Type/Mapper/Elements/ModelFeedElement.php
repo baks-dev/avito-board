@@ -62,15 +62,15 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-        if (is_string($product))
+        if (is_string($data))
         {
-            return $product;
+            return $data;
         }
         else
         {
-            return $product['product_name'];
+            return $data['product_name'];
         }
     }
 

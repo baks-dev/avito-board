@@ -25,9 +25,4 @@ namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-interface PassengerTireProductInterface extends AvitoProductInterface
-{
-    public function productType(): string;
-
-    public function tireType(): array;
-}
+interface PassengerTireProductInterface extends AvitoProductInterface {}

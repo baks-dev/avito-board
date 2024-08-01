@@ -86,8 +86,8 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): ?AvitoBoardProductEnum
+    public function product(): SweatersAndShirtsProductInterface
     {
-        return $this->product->getProduct();
+        return $this->product;
     }
 }

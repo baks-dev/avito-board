@@ -44,15 +44,18 @@ interface AvitoFeedElementInterface
 
     /** Получает описание элемента */
     public function label(): string;
+
     /**
-     * @return null если данные берутся не из класса, а из БД (продукта) productData
+     * @return null если данные берутся не из класса,
+     * а из БД (поля продукта) по соответствующему ключу методом ->productData(string|array $data)
+     *
      * @return string|array если данные берутся статически, из описания класса
      */
     public function default(): null|string|array;
 
-    public function productData(string|array $data = null): string|array;
+    public function productData(string|array $data = null): null|string|array;
 
     public function help(): null|string;
 
-    public function product(): null|AvitoBoardProductEnum;
+    public function product(): mixed;
 }

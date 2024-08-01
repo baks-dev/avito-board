@@ -25,15 +25,21 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
+/**
+ * Вид товара.
+ * Одно из значений
+ *
+ * Элемент обязательный для всех продуктов Авито
+ */
+final readonly class GoodsTypeFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'RimDiameter';
+    public const string FEED_ELEMENT = 'GoodsType';
 
-    public const string LABEL = 'Диаметр шины';
+    public const string LABEL = 'Вид товара';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
@@ -41,7 +47,7 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -54,14 +60,14 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
         return false;
     }
 
-    public function default(): null
+    public function default(): string
     {
-        return null;
+        return 'Шины, диски и колёса';
     }
 
     public function productData(string|array $data = null): string
     {
-        return preg_replace('/\D/', '', $data);
+        return 'Шины, диски и колёса';
     }
 
     public function element(): string
@@ -69,14 +75,14 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function help(): string
-    {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/733/values-xml';
-    }
-
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function help(): ?string
+    {
+        return null;
     }
 
     public function product(): PassengerTireProductInterface

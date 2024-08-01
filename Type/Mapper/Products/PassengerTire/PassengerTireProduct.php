@@ -25,19 +25,15 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\CategoryFeedElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeFeedElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeFeedElement;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PassengerTireProduct implements PassengerTireProductInterface
 {
-    private const array LINKS = [
-        'Brand' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/110431/values-xml',
-        'Model' => 'https://autoload.avito.ru/format/tyres_make.xml',
-        'TireSectionWidth' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml',
-        'TireAspectRatio' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml',
-        'RimDiameter' => 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/733/values-xml',
-    ];
+    private const string PASSENGER_TIRE = 'Легковые шины';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
@@ -50,13 +46,13 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         /** @var AvitoFeedElementInterface $element */
         foreach ($this->elements as $element)
         {
+
             if ($element->product() === null)
             {
                 $elements[] = new $element($this);
             }
 
-            if ($element->product() instanceof AvitoBoardProductEnum &&
-                $element->product()->value === AvitoBoardProductEnum::PassengerTire->value)
+            if ($element->product() instanceof self)
             {
                 $elements[] = $element;
             }
@@ -83,70 +79,32 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
                     return new $element($this);
                 }
 
-                if ($element->product() instanceof AvitoBoardProductEnum &&
-                    $element->product()->value === AvitoBoardProductEnum::PassengerTire->value)
+                if ($element->product() instanceof self)
                 {
                     return $element;
                 }
             }
         }
 
-//        return null;
         throw new \Exception();
     }
 
-    public function getProduct(): AvitoBoardProductEnum
+    public function getProduct(): string
     {
-        return AvitoBoardProductEnum::PassengerTire;
-    }
-
-    public function category(): string
-    {
-        return 'Запчасти и аксессуары';
-    }
-
-    public function goodsType(): string
-    {
-        return 'Шины, диски и колёса';
-    }
-
-    public function productType(): string
-    {
-        return 'Легковые шины';
-    }
-
-    public function tireType(): array
-    {
-        return [
-            'Всесезонные',
-            'Зимние нешипованные',
-            'Зимние шипованные',
-            'Летние',
-        ];
-    }
-
-    public function condition(): string
-    {
-        return 'Новое';
-    }
-
-    public function help(string $element): ?string
-    {
-        if (false === isset(self::LINKS[$element]))
-        {
-            return null;
-        };
-
-        return self::LINKS[$element];
+        return self::PASSENGER_TIRE;
     }
 
     public function isEqualProduct(string $product): bool
     {
-        return AvitoBoardProductEnum::PassengerTire->value === $product;
+        return $product === self::PASSENGER_TIRE;
     }
 
     public function __toString(): string
     {
-        return sprintf('%s / %s / %s', $this->category(), $this->goodsType(), $this->productType());
+        $category = (new CategoryFeedElement($this))->default();
+        $variation = (new GoodsTypeFeedElement($this))->default();
+        $type = (new ProductTypeFeedElement($this))->default();
+
+        return sprintf('%s / %s / %s', $category, $variation, $type);
     }
 }

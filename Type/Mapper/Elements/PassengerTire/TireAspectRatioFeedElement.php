@@ -74,13 +74,13 @@ final readonly class TireAspectRatioFeedElement implements AvitoFeedElementInter
         return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml';
     }
 
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
-    }
-
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

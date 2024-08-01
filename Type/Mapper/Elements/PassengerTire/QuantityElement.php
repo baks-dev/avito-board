@@ -77,18 +77,18 @@ final readonly class QuantityElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
-    }
-
     public function label(): string
     {
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

@@ -75,11 +75,6 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
-    }
-
     public function label(): string
     {
         return self::LABEL;
@@ -88,5 +83,10 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
     public function help(): null
     {
         return null;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

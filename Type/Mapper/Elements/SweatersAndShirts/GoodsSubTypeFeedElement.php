@@ -56,22 +56,37 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
 
     public function default(): array
     {
-        return $this->product->goodsSubType();
+        return [
+            'Футболка',
+            'Поло',
+            'Майка',
+            'Свитшот',
+            'Толстовка / худи',
+            'Джемпер',
+            'Свитер',
+            'Кардиган',
+            'Кофта'
+        ];
     }
 
     public function productData(string|array $product = null): array
     {
-        return $this->product->goodsSubType();
+        return [
+            'Футболка',
+            'Поло',
+            'Майка',
+            'Свитшот',
+            'Толстовка / худи',
+            'Джемпер',
+            'Свитер',
+            'Кардиган',
+            'Кофта'
+        ];
     }
 
     public function element(): string
     {
         return self::FEED_ELEMENT;
-    }
-
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
     }
 
     public function label(): string
@@ -82,5 +97,10 @@ final readonly class GoodsSubTypeFeedElement implements AvitoFeedElementInterfac
     public function help(): null
     {
         return null;
+    }
+
+    public function product(): ?SweatersAndShirtsProductInterface
+    {
+        return $this->product;
     }
 }

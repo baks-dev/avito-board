@@ -59,7 +59,7 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return 'Легковые шины';
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
         return 'Легковые шины';
     }
@@ -69,18 +69,18 @@ final readonly class ProductTypeFeedElement implements AvitoFeedElementInterface
         return self::FEED_ELEMENT;
     }
 
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
-    }
-
     public function label(): string
     {
         return self::LABEL;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
+        return null;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

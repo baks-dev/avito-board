@@ -90,8 +90,8 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
         return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/119259/values-xml';
     }
 
-    public function product(): ?AvitoBoardProductEnum
+    public function product(): PassengerTireProductInterface
     {
-        return $this->product->getProduct();
+        return $this->product;
     }
 }

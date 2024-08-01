@@ -70,7 +70,7 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return '50';
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
         return '50';
     }
@@ -80,18 +80,18 @@ final readonly class ResidualTreadFeedElement implements AvitoFeedElementInterfa
         return self::FEED_ELEMENT;
     }
 
-    public function help(): ?string
+    public function help(): null
     {
-        return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public function product(): ?AvitoBoardProductEnum
-    {
-        return $this->product->getProduct();
+        return null;
     }
 
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function product(): PassengerTireProductInterface
+    {
+        return $this->product;
     }
 }

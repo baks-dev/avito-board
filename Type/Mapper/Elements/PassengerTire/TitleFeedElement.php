@@ -67,9 +67,9 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function productData(string|array $product = null): string
+    public function productData(string|array $data = null): string
     {
-        return $product['product_category'];
+        return $data['product_category'];
     }
 
     public function element(): string
@@ -87,8 +87,8 @@ final readonly class TitleFeedElement implements AvitoFeedElementInterface
         return null;
     }
 
-    public function product(): ?AvitoBoardProductEnum
+    public function product(): PassengerTireProductInterface
     {
-        return $this->product->getProduct();
+        return $this->product;
     }
 }

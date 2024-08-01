@@ -25,9 +25,4 @@ namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-interface SweatersAndShirtsProductInterface extends AvitoProductInterface
-{
-    public function apparel(): string;
-
-    public function goodsSubType(): array;
-}
+interface SweatersAndShirtsProductInterface extends AvitoProductInterface {}

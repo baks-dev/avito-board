@@ -62,7 +62,7 @@ final class CategoryMapperForm extends AbstractType
             ->add('avitoCategory', ChoiceType::class, [
                 'choices' => $avitoProducts,
                 'choice_value' => static function (?AvitoProductInterface $avitoCategories) {
-                    return $avitoCategories?->getProduct()->value;
+                    return $avitoCategories?->getProduct();
                 },
                 'choice_label' => static function (AvitoProductInterface $avitoCategories) {
                     return $avitoCategories;
