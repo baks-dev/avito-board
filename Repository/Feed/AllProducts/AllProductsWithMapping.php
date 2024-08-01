@@ -554,7 +554,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        //        dd($dbal->fetchAllAssociative());
+//                dd($dbal->fetchAllAssociative());
 
         return $dbal
             // ->enableCache('Namespace', 3600)

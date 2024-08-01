@@ -40,7 +40,7 @@ final readonly class BackRimDiameterFeedElement implements AvitoFeedElementInter
 {
     public const string FEED_ELEMENT = 'BackRimDiameter';
 
-    public const string LABEL = 'Диаметр задней оси';
+    public const string LABEL = 'Диаметр шины задней оси';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,

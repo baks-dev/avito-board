@@ -50,7 +50,7 @@ interface AvitoFeedElementInterface
      */
     public function default(): null|string|array;
 
-    public function productData(string|array $product = null): string|array;
+    public function productData(string|array $data = null): string|array;
 
     public function help(): null|string;
 

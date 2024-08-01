@@ -53,7 +53,6 @@ final class ElementTransformerExtension extends AbstractExtension
         //        $mappedElements = $this->mappedElementTransform($product['avito_board_mapper']);
         $mappedElements = $this->mapperTransform($product['avito_board_mapper'], $product['avito_board_avito_category']);
 
-
         /** Получаем все элементы по типу продукта, не участвующих в маппинге */
         $unmappedElements = array_filter(
             $this->mapperProvider->filterElements($product['avito_board_avito_category']),

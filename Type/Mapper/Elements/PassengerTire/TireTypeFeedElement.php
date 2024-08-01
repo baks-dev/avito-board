@@ -65,6 +65,7 @@ final readonly class TireTypeFeedElement implements AvitoFeedElementInterface
         {
             'winter' => 'Зимние нешипованные',
             'summer' => 'Летние',
+            'all' => 'Всесезонные',
             default => $data
         };
     }

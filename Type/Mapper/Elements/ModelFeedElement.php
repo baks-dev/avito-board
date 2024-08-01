@@ -44,7 +44,7 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -64,7 +64,14 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
 
     public function productData(string|array $product = null): string
     {
-        return $product;
+        if (is_string($product))
+        {
+            return $product;
+        }
+        else
+        {
+            return $product['product_name'];
+        }
     }
 
     public function element(): string
@@ -77,9 +84,9 @@ final readonly class ModelFeedElement implements AvitoFeedElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
+    public function help(): string
     {
-        return null;
+        return 'https://autoload.avito.ru/format/tyres_make.xml';
     }
 
     public function product(): null

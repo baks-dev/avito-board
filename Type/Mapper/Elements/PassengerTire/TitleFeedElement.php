@@ -23,25 +23,28 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- *  Бренд.
- *  Одно из значений
+ * Название объявления — строка до 50 символов.
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
  *
- * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта
+ * Элемент обязателен для продуктов:
+ * - Кофты и футболки
  */
-final readonly class BrandFeedElement
+final readonly class TitleFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Brand';
+    public const string FEED_ELEMENT = 'Title';
 
-    public const string LABEL = 'Бренд';
+    public const string LABEL = 'Название объявления';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -59,19 +62,14 @@ final readonly class BrandFeedElement
         return false;
     }
 
-    public function isInput(): bool
-    {
-        return true;
-    }
-
-    public function data(): null
+    public function default(): null
     {
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $product = null): string
     {
-        return $product['product_brand'];
+        return $product['product_category'];
     }
 
     public function element(): string
@@ -89,8 +87,8 @@ final readonly class BrandFeedElement
         return null;
     }
 
-    public function product(): null
+    public function product(): ?AvitoBoardProductEnum
     {
-        return $this->product;
+        return $this->product->getProduct();
     }
 }

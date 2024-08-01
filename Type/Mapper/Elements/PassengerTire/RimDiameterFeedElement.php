@@ -33,7 +33,7 @@ final readonly class RimDiameterFeedElement implements AvitoFeedElementInterface
 {
     public const string FEED_ELEMENT = 'RimDiameter';
 
-    public const string LABEL = 'Диаметр, дюймы';
+    public const string LABEL = 'Диаметр шины';
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,

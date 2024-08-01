@@ -23,25 +23,27 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- *  Бренд.
- *  Одно из значений
+ * Высота профиля шины задней оси.
  *
- * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта
+ * Применимо, если в поле DifferentWidthTires указано значение 'Да'
+ *
+ * Одно из значений от Авито
  */
-final readonly class BrandFeedElement
+final readonly class BackTireSectionWidthFeedElement implements AvitoFeedElementInterface
 {
-    public const string FEED_ELEMENT = 'Brand';
+    public const string FEED_ELEMENT = 'BackTireSectionWidth';
 
-    public const string LABEL = 'Бренд';
+    public const string LABEL = 'Ширина профиля шины задней оси';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private ?PassengerTireProductInterface $product = null,
     ) {}
 
     public function isMapping(): bool
@@ -59,19 +61,18 @@ final readonly class BrandFeedElement
         return false;
     }
 
-    public function isInput(): bool
-    {
-        return true;
-    }
-
-    public function data(): null
+    /**
+     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
+     * @see TireSectionWidthFeedElement
+     */
+    public function default(): null
     {
         return null;
     }
 
-    public function productData(array $product): string
+    public function productData(string|array $data = null): string
     {
-        return $product['product_brand'];
+        return preg_replace('/\D/', '', $data);
     }
 
     public function element(): string
@@ -84,13 +85,13 @@ final readonly class BrandFeedElement
         return self::LABEL;
     }
 
-    public function help(): null
+    public function help(): string
     {
-        return null;
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
     }
 
-    public function product(): null
+    public function product(): ?AvitoBoardProductEnum
     {
-        return $this->product;
+        return $this->product->getProduct();
     }
 }

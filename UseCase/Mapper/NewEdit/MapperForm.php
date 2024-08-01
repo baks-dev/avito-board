@@ -18,6 +18,7 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit;
 
+use BaksDev\Avito\Board\Repository\Mapper\AllProductName\AllProductNameRepository;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoFeedElementInterface;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
@@ -45,6 +46,7 @@ final class MapperForm extends AbstractType
         private readonly ModificationCategoryProductSectionFieldInterface $modificationCategoryProductSectionField,
         private readonly PropertyFieldsCategoryChoiceInterface $propertyFields,
         private readonly VariationCategoryProductSectionFieldInterface $variationCategoryProductSectionField,
+        private readonly AllProductNameRepository $test,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -59,7 +61,7 @@ final class MapperForm extends AbstractType
             /**
              * Параметры продукта в системе (ТП, варианты, модификации)
              */
-            $productFields = $this->getProductParameters($mapperDTO->getCategory());
+            $productFields = $this->getProductProperties($mapperDTO->getCategory());
 
             $avitoProduct = $this->mapperProvider->getProduct($mapperDTO->getAvito());
 
@@ -95,6 +97,19 @@ final class MapperForm extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
             ]);
+
+            $form->add('settings', CollectionType::class, [
+                'entry_type' => MapperElementForm::class,
+                'entry_options' => [
+                    'label' => false,
+                    'product_fields' => $productFields,
+                    'avito_product' => $avitoProduct,
+                ],
+                'label' => false,
+                'by_reference' => false,
+                'allow_delete' => true,
+                'allow_add' => true,
+            ]);
         });
 
         $builder->add('mapper_new', SubmitType::class, [
@@ -116,7 +131,7 @@ final class MapperForm extends AbstractType
     /**
      * @return ArrayCollection<CategoryProductSectionFieldUid>
      */
-    private function getProductParameters(CategoryProductUid $productCategory): ArrayCollection
+    private function getProductProperties(CategoryProductUid $productCategory): ArrayCollection
     {
         /**
          * Массив с элементами "свойства продукта"
@@ -129,10 +144,19 @@ final class MapperForm extends AbstractType
         /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
         $productFields = new ArrayCollection($productProperties);
 
+
+        //        $name = $this->test
+//            ->category($productCategory)
+//            ->findAll();
+//
+//        dump($name);
+
         /** Торговое предложение */
         $productOffer = $this->offersCategoryProductSectionField
             ->category($productCategory)
             ->findAllCategoryProductSectionField();
+
+//        dd($productOffer);
 
         if ($productOffer)
         {
