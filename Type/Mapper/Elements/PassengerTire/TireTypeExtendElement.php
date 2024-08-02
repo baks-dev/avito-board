@@ -63,6 +63,7 @@ final readonly class TireTypeExtendElement extends TireTypeElement
                 return implode(' ', $data);
             }
         }
+
     }
 
     public function element(): string

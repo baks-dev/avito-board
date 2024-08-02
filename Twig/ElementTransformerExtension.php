@@ -96,56 +96,45 @@ final class ElementTransformerExtension extends AbstractExtension
 
         $elements = null;
 
-
         $instances = null;
         foreach ($mapper as $element)
         {
             $instance = $this->mapperProvider->getOneElement($category, $element->element);
-            $instances[$instance::class] = [
-                'element' => $this->mapperProvider->getOneElement($category, $element->element),
-                'data' => $instance->getData($element->value),
-            ];
-
-            $instance = $this->mapperProvider->getOneElement($category, $element->element);
             $elements[$element->element] = $instance->getData($element->value);
 
-
+            $instances[$instance::class] = [
+                'element' => $instance,
+                'data' => $instance->getData($element->value),
+            ];
         }
         //        dump($instances);
 
         foreach ($instances as $instance)
         {
-            if (isset($instances[get_parent_class($instance['element'])]))
+            $parentClass = get_parent_class($instance['element']);
+
+            if ($parentClass)
             {
-                $parent = $instances[get_parent_class($instance['element'])];
+                if (isset($instances[$parentClass]))
+                {
+                    $parent = $instances[$parentClass];
 
-                $child = $instance;
-                $data = $child['element']->getData(['parent' => $parent['data'], 'child' => $child['data']]);
+                    $child = $instance;
+                    $data = $child['element']->getData([
+                        'parent' => $parent['data'],
+                        'child' => $child['data'],
+                    ]);
 
-                //                dump($parent);
-                //                dump($child);
-                //                dump($data);
-                unset($elements[$child['element']->element()]);
-                $elements[$parent['element']->element()] = $data;
+                    //                dump($parent);
+                    //                dump($child);
+                    //                dump($data);
+                    unset($elements[$child['element']->element()]);
+                    $elements[$parent['element']->element()] = $data;
+                }
             }
         }
 
-//        dd($elements);
-
+        //        dd($elements);
         return $elements;
     }
-
-    //    private function mappedElementTransform(string $string): array
-    //    {
-    //        $mapperElements = json_decode($string, false, 512, JSON_THROW_ON_ERROR);
-    //
-    //        $elements = null;
-    //
-    //        foreach ($mapperElements as $element)
-    //        {
-    //            $elements[$element->element] = $element->value;
-    //        }
-    //
-    //        return $elements;
-    //    }
 }
