@@ -56,10 +56,10 @@ final readonly class DeliveryElement implements AvitoBoardElementInterface
 
     public function isChoices(): bool
     {
-        return false;
+        return is_array($this->getDefault());
     }
 
-    public function default(): array
+    public function getDefault(): array
     {
         return [
             'Выключена',
@@ -77,7 +77,8 @@ final readonly class DeliveryElement implements AvitoBoardElementInterface
         ];
     }
 
-    public function productData(string|array $data = null): string
+    /** одно из дефолтных значений либо пользовательский ввод */
+    public function getData(string|array $data = null): ?string
     {
         return sprintf('<Option>%s</Option>', $data);
     }

@@ -52,6 +52,7 @@ final class MapperElementForm extends AbstractType
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
                 $productFields = $options['product_fields'];
 
+
                 $form
                     ->add('productField', ChoiceType::class, [
                         'choices' => $productFields,
@@ -69,13 +70,13 @@ final class MapperElementForm extends AbstractType
                     ]);
 
 
-                if ($element->default() !== null)
+                if ($element->getDefault() !== null)
                 {
                     if ($element->isChoices())
                     {
                         $form
                             ->add('def', ChoiceType::class, [
-                                'choices' => $element->default(),
+                                'choices' => $element->getDefault(),
                                 'choice_value' => function (?string $element) {
                                     return $element;
                                 },
@@ -91,7 +92,7 @@ final class MapperElementForm extends AbstractType
                     else
                     {
                         $form->add('def', TextType::class, [
-                            'data' => $mapperElementDTO->getDef() ?? $element->default(),
+                            'data' => $mapperElementDTO->getDef() ?? $element->getDefault(),
                             'translation_domain' => 'avito-board.settings',
                             'required' => false,
                         ]);

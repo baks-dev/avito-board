@@ -64,13 +64,13 @@ final readonly class BrandElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function default(): null|string|array
+    public function getDefault(): null|string|array
     {
         return '';
     }
 
     // @TODO ожидает добавление в характеристики продукта
-    public function productData(string|array $data = null): ?string
+    public function getData(string|array $data = null): ?string
     {
         return $data;
         //        return $product['product_brand'];

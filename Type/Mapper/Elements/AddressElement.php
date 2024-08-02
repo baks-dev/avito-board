@@ -59,12 +59,12 @@ final readonly class AddressElement implements AvitoBoardElementInterface
     }
 
     // @TODO временный адрес, так как адрес еще не откуда брать
-    public function default(): string
+    public function getDefault(): string
     {
         return 'Тамбовская область, Моршанск, Лесная улица, 7';
     }
 
-    public function productData(string|array $product = null): string
+    public function getData(string|array $product = null): string
     {
 //        return $product['_from_avito_token_profile'];
         return 'Тамбовская область, Моршанск, Лесная улица, 7';

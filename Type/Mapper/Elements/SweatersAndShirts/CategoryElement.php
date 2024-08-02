@@ -59,12 +59,12 @@ final readonly class CategoryElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function getDefault(): string
     {
         return 'Одежда, обувь, аксессуары';
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         return 'Одежда, обувь, аксессуары';
     }

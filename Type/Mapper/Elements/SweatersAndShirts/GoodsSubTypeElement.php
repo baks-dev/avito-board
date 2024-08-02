@@ -54,7 +54,7 @@ final readonly class GoodsSubTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function default(): array
+    public function getDefault(): array
     {
         return [
             'Футболка',
@@ -69,7 +69,7 @@ final readonly class GoodsSubTypeElement implements AvitoBoardElementInterface
         ];
     }
 
-    public function productData(string|array $product = null): array
+    public function getData(string|array $product = null): array
     {
         return [
             'Футболка',

@@ -64,13 +64,13 @@ final class ElementTransformerExtension extends AbstractExtension
         $elements = null;
         foreach ($unmappedElements as $element)
         {
-            if ($element->default() === null)
+            if ($element->getDefault() === null)
             {
-                $elements[$element->element()] = $element->productData($product);
+                $elements[$element->element()] = $element->getData($product);
             }
             else
             {
-                $elements[$element->element()] = $element->default();
+                $elements[$element->element()] = $element->getDefault();
             }
         }
 
@@ -93,7 +93,7 @@ final class ElementTransformerExtension extends AbstractExtension
         foreach ($mapper as $element)
         {
             $instance = $this->mapperProvider->getFeedElement($category, $element->element);
-            $elements[$element->element] = $instance->productData($element->value);
+            $elements[$element->element] = $instance->getData($element->value);
         }
 
         return $elements;

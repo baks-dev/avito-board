@@ -61,12 +61,12 @@ final readonly class TitleElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $product = null): string
+    public function getData(string|array $product = null): string
     {
         return $product['product_category'];
     }

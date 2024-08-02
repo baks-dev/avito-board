@@ -54,12 +54,12 @@ final readonly class TireAspectRatioElement implements AvitoBoardElementInterfac
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         return preg_replace('/\D/', '', $data);
     }

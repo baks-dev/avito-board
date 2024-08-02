@@ -74,19 +74,19 @@ final readonly class DateBeginElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): string
     {
-        return null;
+        return '';
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
+        dd($data);
         if (null === $data)
         {
             return $data[self::ELEMENT_ALIAS];
         }
 
-        return $data;
     }
 
     public function element(): string

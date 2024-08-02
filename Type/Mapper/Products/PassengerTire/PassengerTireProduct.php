@@ -101,9 +101,9 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
     public function __toString(): string
     {
-        $category = (new CategoryBoardElement($this))->default();
-        $variation = (new GoodsTypeElement($this))->default();
-        $type = (new ProductTypeElement($this))->default();
+        $category = (new CategoryBoardElement($this))->getDefault();
+        $variation = (new GoodsTypeElement($this))->getDefault();
+        $type = (new ProductTypeElement($this))->getDefault();
 
         return sprintf('%s / %s / %s', $category, $variation, $type);
     }

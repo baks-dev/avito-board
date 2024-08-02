@@ -58,12 +58,12 @@ final readonly class AdTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function getDefault(): string
     {
         return 'Товар приобретен на продажу';
     }
 
-    public function productData(string|array $product = null): string
+    public function getData(string|array $product = null): string
     {
         return 'Товар приобретен на продажу';
     }

@@ -62,14 +62,14 @@ final readonly class QuantityElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function getDefault(): string
     {
         return 'за 1 шт.';
     }
 
-    public function productData(string|array $product = null): string
+    public function getData(string|array $data = null): null
     {
-        return 'за 1 шт.';
+        return null;
     }
 
     public function element(): string

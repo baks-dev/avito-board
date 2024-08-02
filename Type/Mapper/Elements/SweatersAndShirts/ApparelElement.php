@@ -54,12 +54,12 @@ final readonly class ApparelElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function getDefault(): string
     {
         return 'Кофты и футболки';
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         return 'Кофты и футболки';
     }

@@ -60,14 +60,14 @@ final readonly class GoodsTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): string
+    public function getDefault(): string
     {
         return 'Шины, диски и колёса';
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): null
     {
-        return 'Шины, диски и колёса';
+        return null;
     }
 
     public function element(): string

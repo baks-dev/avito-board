@@ -102,8 +102,8 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
 
     public function __toString(): string
     {
-        $category = (new CategoryElement($this))->default();
-        $variation = (new GoodsTypeElement($this))->default();
+        $category = (new CategoryElement($this))->getDefault();
+        $variation = (new GoodsTypeElement($this))->getDefault();
 
         return sprintf('%s / %s', $category, $variation);
     }

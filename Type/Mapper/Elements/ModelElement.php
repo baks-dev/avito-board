@@ -57,12 +57,12 @@ final readonly class ModelElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         if (is_string($data))
         {

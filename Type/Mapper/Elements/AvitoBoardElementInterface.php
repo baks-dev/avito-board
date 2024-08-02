@@ -45,19 +45,19 @@ interface AvitoBoardElementInterface
     public function label(): string;
 
     /**
-     * Для использования в форме маппинга
+     * Для сохранения в базу
      *
      * @return null если данные берутся не из класса,
      * а из БД (поля продукта) по соответствующему ключу методом ->productData(string|array $data)
      *
      * @return string|array если данные берутся статически, из описания класса
      */
-    public function default(): null|string|array;
+    public function getDefault(): null|int|string|array;
 
     /**
-     * Для использования в виде
+     * Для выдачи в фиде
      */
-    public function productData(string|array $data = null): null|string|array;
+    public function getData(string|array $data = null): null|int|string|array;
 
     public function help(): null|string;
 

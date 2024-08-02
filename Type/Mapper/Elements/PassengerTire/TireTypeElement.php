@@ -54,12 +54,12 @@ final readonly class TireTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         return match ($data)
         {

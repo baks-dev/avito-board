@@ -59,18 +59,18 @@ final readonly class BackRimDiameterElement
 
     public function isChoices(): bool
     {
-        return false;
+        return is_array($this->default());
+    }
+
+    public function default(): null
+    {
+        return null;
     }
 
     /**
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
      * @see RimDiameterElement
      */
-    public function default(): null
-    {
-        return null;
-    }
-
     public function productData(string|array $data = null): string
     {
         return preg_replace('/\D/', '', $data);

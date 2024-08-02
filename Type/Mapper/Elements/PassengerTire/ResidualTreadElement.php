@@ -63,16 +63,16 @@ final readonly class ResidualTreadElement implements AvitoBoardElementInterface
     }
 
     /**
-     * Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
+     * @TODO Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
      */
-    public function default(): string
+    public function getDefault(): string
     {
         return '50';
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): null
     {
-        return '50';
+        return null;
     }
 
     public function element(): string

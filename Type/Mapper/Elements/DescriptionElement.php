@@ -60,12 +60,12 @@ final readonly class DescriptionElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): string
     {
         return sprintf('<![CDATA[%s]]>', $data['product_description']);
     }

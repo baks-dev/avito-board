@@ -48,6 +48,7 @@ final readonly class TitleElement implements AvitoBoardElementInterface
     ) {}
 
     // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
+    // @todo если давать выбор из свойства продукта - как его добавить в выпадающий список
     public function isMapping(): bool
     {
         return false;
@@ -63,13 +64,13 @@ final readonly class TitleElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    // @TODO подумать где брать
-    public function productData(string|array $data = null): string
+    // @TODO подумать по какому ключу формировать значение
+    public function getData(string|array $data = null): string
     {
         return $data['product_name'] . $data['product_article'];
     }
