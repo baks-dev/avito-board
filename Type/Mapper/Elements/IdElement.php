@@ -71,9 +71,9 @@ final readonly class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $product = null): string
+    public function getData(string|array $data = null): string
     {
-        return $product['product_article'];
+        return $data['product_article'];
     }
 
     public function element(): string

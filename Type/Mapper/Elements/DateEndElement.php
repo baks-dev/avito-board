@@ -28,7 +28,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
-Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из форматов:
+ * Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из форматов:
  * — dd.MM.yyyy
  * — dd.MM.yy
  * — yyyy-MM-dd
@@ -40,7 +40,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  *
  * @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
  */
-final readonly class DateEndElement
+final readonly class DateEndElement implements AvitoBoardElementInterface
 {
     public const string ELEMENT = 'DateEnd';
 
@@ -54,7 +54,7 @@ final readonly class DateEndElement
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -67,19 +67,14 @@ final readonly class DateEndElement
         return false;
     }
 
-    public function default(): null
+    public function getDefault(): null
     {
         return null;
     }
 
-    public function productData(string|array $data = null): string
+    public function getData(string|array $data = null): ?string
     {
-        if (null === $data)
-        {
-            return $data[self::ELEMENT_ALIAS];
-        }
-
-        return $data;
+        return $data[self::ELEMENT_ALIAS] ?? null;
     }
 
     public function element(): string

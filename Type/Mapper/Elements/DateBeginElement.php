@@ -61,7 +61,7 @@ final readonly class DateBeginElement implements AvitoBoardElementInterface
 
     public function isMapping(): bool
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): bool
@@ -74,19 +74,14 @@ final readonly class DateBeginElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return '';
+        return null;
     }
 
     public function getData(string|array $data = null): string
     {
-        dd($data);
-        if (null === $data)
-        {
-            return $data[self::ELEMENT_ALIAS];
-        }
-
+        return $data[self::ELEMENT_ALIAS];
     }
 
     public function element(): string

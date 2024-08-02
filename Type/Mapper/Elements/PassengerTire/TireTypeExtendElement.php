@@ -29,49 +29,40 @@ use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-readonly class TireTypeElement implements AvitoBoardElementInterface
+final readonly class TireTypeExtendElement extends TireTypeElement
 {
-    public const string FEED_ELEMENT = 'TireType';
+    public const string FEED_ELEMENT = 'TireTypeExtend';
 
-    public const string LABEL = 'Сезонность шин';
-
-    public function __construct(
-        private ?PassengerTireProductInterface $product = null,
-    ) {}
+    public const string LABEL = 'Шипы';
 
     public function isMapping(): bool
     {
         return true;
     }
 
-    public function isRequired(): bool
-    {
-        return true;
-    }
-
-    public function isChoices(): bool
-    {
-        return true;
-    }
-
-    public function getDefault(): null
-    {
-        return null;
-    }
-
     public function getData(string|array $data = null): string
     {
-//        $data !== 'winter' ?: dd($data);
-
-//        return $data;
-
-        return match ($data)
+        if (is_string($data))
         {
-            'winter' => 'Зимние',
-            'summer' => 'Летние',
-            'all' => 'Всесезонные',
-            default => $data
-        };
+            return match ($data)
+            {
+                'true' => 'шипованные',
+                'false' => 'не шипованные',
+                default => $data
+            };
+        }
+
+        if (is_array($data))
+        {
+            if ($data['parent'] === 'Летние' || $data['parent'] === 'Всесезонные')
+            {
+                return $data['parent'];
+            }
+            else
+            {
+                return implode(' ', $data);
+            }
+        }
     }
 
     public function element(): string
@@ -82,15 +73,5 @@ readonly class TireTypeElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
     }
 }

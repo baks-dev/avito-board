@@ -36,11 +36,11 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
      * Связь на свойство продукта в категории
      */
     #[Assert\Uuid]
-    #[Assert\NotBlank()]
-//    #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
+//    #[Assert\NotBlank()]
+    #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
     private ?CategoryProductSectionFieldUid $productField = null;
 
-//    #[Assert\When(expression: 'this.getProductField() === null', constraints: new Assert\NotBlank())]
+    #[Assert\When(expression: 'this.getProductField() === null', constraints: new Assert\NotBlank())]
     private ?string $def = null;
 
     /**

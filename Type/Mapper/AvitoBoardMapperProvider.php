@@ -3,6 +3,7 @@
 namespace BaksDev\Avito\Board\Type\Mapper;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\TireSectionWidthElement;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -15,12 +16,6 @@ final readonly class AvitoBoardMapperProvider
     public function __construct(
         #[AutowireIterator('baks.avito.board.products')] private iterable $products,
     ) {}
-
-    /** @return list<AvitoProductInterface> */
-    public function getProducts(): array
-    {
-        return iterator_to_array($this->products);
-    }
 
     /**
      * @return list<AvitoBoardElementInterface>
@@ -36,10 +31,11 @@ final readonly class AvitoBoardMapperProvider
             }
         }
 
-        throw new \Exception('Avito elements not found');
+        throw new \Exception('Не найдены элементы, относящиеся к категории ' .$productCategory);
     }
 
-    public function getFeedElement(string $productCategory, string $elementName): AvitoBoardElementInterface
+    // @TODO подумать, как еще можно получать инстанс элемента
+    public function getOneElement(string $productCategory, string $elementName): AvitoBoardElementInterface
     {
         /** @var AvitoProductInterface $product */
         foreach ($this->products as $product)
@@ -58,7 +54,13 @@ final readonly class AvitoBoardMapperProvider
             }
         }
 
-        throw new \Exception('Avito elements not found');
+        throw new \Exception('Не найден элемент с названием: '. $elementName);
+    }
+
+    /** @return list<AvitoProductInterface> */
+    public function getProducts(): array
+    {
+        return iterator_to_array($this->products);
     }
 
     public function getProduct(string $productCategory): AvitoProductInterface
@@ -71,6 +73,6 @@ final readonly class AvitoBoardMapperProvider
             }
         }
 
-        throw new \Exception('Avito product not found');
+        throw new \Exception('Не найдены категория продукта с названием ' . $productCategory);
     }
 }

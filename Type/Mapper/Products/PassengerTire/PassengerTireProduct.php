@@ -41,7 +41,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
     public function getElements(): array
     {
-        $elements = null;
+        $passengerTireElements = null;
 
         /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
@@ -49,21 +49,21 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
             if ($element->product() === null)
             {
-                $elements[] = new $element($this);
+                $passengerTireElements[] = new $element($this);
             }
 
             if ($element->product() instanceof self)
             {
-                $elements[] = $element;
+                $passengerTireElements[] = $element;
             }
         }
 
-        if (null === $elements)
+        if (null === $passengerTireElements)
         {
             throw new \Exception();
         }
 
-        return $elements;
+        return $passengerTireElements;
     }
 
     public function getElement(string $elementName): ?AvitoBoardElementInterface

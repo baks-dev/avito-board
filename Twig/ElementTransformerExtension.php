@@ -66,6 +66,12 @@ final class ElementTransformerExtension extends AbstractExtension
         {
             if ($element->getDefault() === null)
             {
+                if ($element->getData($product) === null)
+                {
+                    // @TODO что делать, если дата окончания у продукта не указана - не отрендерить элемент
+                    continue;
+                }
+
                 $elements[$element->element()] = $element->getData($product);
             }
             else
@@ -90,11 +96,41 @@ final class ElementTransformerExtension extends AbstractExtension
 
         $elements = null;
 
+
+        $instances = null;
         foreach ($mapper as $element)
         {
-            $instance = $this->mapperProvider->getFeedElement($category, $element->element);
+            $instance = $this->mapperProvider->getOneElement($category, $element->element);
+            $instances[$instance::class] = [
+                'element' => $this->mapperProvider->getOneElement($category, $element->element),
+                'data' => $instance->getData($element->value),
+            ];
+
+            $instance = $this->mapperProvider->getOneElement($category, $element->element);
             $elements[$element->element] = $instance->getData($element->value);
+
+
         }
+        //        dump($instances);
+
+        foreach ($instances as $instance)
+        {
+            if (isset($instances[get_parent_class($instance['element'])]))
+            {
+                $parent = $instances[get_parent_class($instance['element'])];
+
+                $child = $instance;
+                $data = $child['element']->getData(['parent' => $parent['data'], 'child' => $child['data']]);
+
+                //                dump($parent);
+                //                dump($child);
+                //                dump($data);
+                unset($elements[$child['element']->element()]);
+                $elements[$parent['element']->element()] = $data;
+            }
+        }
+
+//        dd($elements);
 
         return $elements;
     }

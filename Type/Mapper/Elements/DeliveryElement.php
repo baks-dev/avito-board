@@ -33,8 +33,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Подробнее о работе с доставкой https://support.avito.ru/sections/62?articleId=2271
  *
  * Одно или несколько значений
+ * @TODO тестирую без implements AvitoBoardElementInterface
  */
-final readonly class DeliveryElement implements AvitoBoardElementInterface
+final readonly class DeliveryElement
 {
     public const string ELEMENT = 'Delivery';
 

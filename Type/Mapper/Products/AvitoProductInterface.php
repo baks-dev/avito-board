@@ -32,6 +32,8 @@ interface AvitoProductInterface
     public function getProduct(): string;
 
     /**
+     * Получаем элементы, относящиеся к определенной категории продукта Авито
+     *
      * @return list<AvitoBoardElementInterface>
      */
     public function getElements(): array;

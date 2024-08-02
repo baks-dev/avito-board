@@ -53,24 +53,44 @@ final class MapperElementForm extends AbstractType
                 $productFields = $options['product_fields'];
 
 
-                $form
-                    ->add('productField', ChoiceType::class, [
-                        'choices' => $productFields,
-                        'choice_value' => function (?CategoryProductSectionFieldUid $field) {
-                            return $field?->getValue();
-                        },
-                        'choice_label' => function (CategoryProductSectionFieldUid $field) {
-                            return $field->getAttr();
-                        },
-                        'label' => $element->label(),
-                        'help' => $element->help(),
-                        'expanded' => false,
-                        'multiple' => false,
-                        'required' => false,
-                    ]);
+                if (null === $element->getDefault())
+                {
+//                    if($element->element() === 'TireType') {
+//                        $form
+//                            ->add('def', ChoiceType::class, [
+//                                'choices' => $productFields,
+//                                'choice_value' => function (?CategoryProductSectionFieldUid $field) {
+//                                    return $field?->getValue();
+//                                },
+//                                'choice_label' => function (CategoryProductSectionFieldUid $field) {
+//                                    return $field->getAttr();
+//                                },
+//                                'label' => $element->label(),
+//                                'help' => $element->help(),
+//                                'expanded' => false,
+//                                'multiple' => false,
+//                                'required' => false,
+//                            ]);
+//                    }
 
+                    $form
+                        ->add('productField', ChoiceType::class, [
+                            'choices' => $productFields,
+                            'choice_value' => function (?CategoryProductSectionFieldUid $field) {
+                                return $field?->getValue();
+                            },
+                            'choice_label' => function (CategoryProductSectionFieldUid $field) {
+                                return $field->getAttr();
+                            },
+                            'label' => $element->label(),
+                            'help' => $element->help(),
+                            'expanded' => false,
+                            'multiple' => false,
+                            'required' => false,
+                        ]);
+                }
 
-                if ($element->getDefault() !== null)
+                if (null !== $element->getDefault())
                 {
                     if ($element->isChoices())
                     {
@@ -83,6 +103,8 @@ final class MapperElementForm extends AbstractType
                                 'choice_label' => function (string $element) {
                                     return $element;
                                 },
+                                'label' => $element->label(),
+                                'help' => $element->help(),
                                 'expanded' => false,
                                 'multiple' => false,
                                 'translation_domain' => 'avito-board.settings',
@@ -93,11 +115,14 @@ final class MapperElementForm extends AbstractType
                     {
                         $form->add('def', TextType::class, [
                             'data' => $mapperElementDTO->getDef() ?? $element->getDefault(),
+                            'label' => $element->label(),
+                            'help' => $element->help(),
                             'translation_domain' => 'avito-board.settings',
                             'required' => false,
                         ]);
                     }
                 }
+
             }
         });
     }

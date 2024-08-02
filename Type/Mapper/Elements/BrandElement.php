@@ -86,9 +86,9 @@ final readonly class BrandElement implements AvitoBoardElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
+    public function help(): string
     {
-        return null;
+        return 'Общее значение для всех продуктов в данной категории';
     }
 
     public function product(): null
