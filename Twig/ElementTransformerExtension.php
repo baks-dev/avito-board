@@ -28,6 +28,8 @@ use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
+use function Symfony\Component\String\u;
+
 final class ElementTransformerExtension extends AbstractExtension
 {
     public function __construct(
@@ -95,46 +97,30 @@ final class ElementTransformerExtension extends AbstractExtension
         $mapper = json_decode($mapper, false, 512, JSON_THROW_ON_ERROR);
 
         $elements = null;
-
         $instances = null;
         foreach ($mapper as $element)
         {
             $instance = $this->mapperProvider->getOneElement($category, $element->element);
+            $instance->setData($element->value);
+
             $elements[$element->element] = $instance->getData($element->value);
 
-            $instances[$instance::class] = [
-                'element' => $instance,
-                'data' => $instance->getData($element->value),
-            ];
+            $instances[$instance::class] = $instance;
         }
-        //        dump($instances);
 
-        foreach ($instances as $instance)
+        foreach ($instances as $className => $instance)
         {
-            $parentClass = get_parent_class($instance['element']);
+            $baseClass = get_parent_class($className);
 
-            if ($parentClass)
+            if($baseClass && isset($instances[$baseClass]))
             {
-                if (isset($instances[$parentClass]))
-                {
-                    $parent = $instances[$parentClass];
-
-                    $child = $instance;
-                    $data = $child['element']->getData([
-                        'parent' => $parent['data'],
-                        'child' => $child['data'],
-                    ]);
-
-                    //                dump($parent);
-                    //                dump($child);
-                    //                dump($data);
-                    unset($elements[$child['element']->element()]);
-                    $elements[$parent['element']->element()] = $data;
-                }
+                $instance->setBaseData($instances[$baseClass]->data());
+                unset($elements[$instance->element()]);
+                $elements[$instances[$baseClass]->element()] = $instance->data();
             }
         }
 
-        //        dd($elements);
         return $elements;
     }
+
 }

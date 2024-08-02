@@ -28,43 +28,81 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
-final readonly class TireTypeExtendElement extends TireTypeElement
+final class TireTypeExtendElement extends TireTypeElement
 {
     public const string FEED_ELEMENT = 'TireTypeExtend';
 
     public const string LABEL = 'Шипы';
+
+    private null|string $baseData = null;
+
+    public function __construct(
+        private readonly ?PassengerTireProductInterface $product = null,
+        private array|string|null $data = null
+    ) {
+        parent::__construct($product);
+    }
 
     public function isMapping(): bool
     {
         return true;
     }
 
-    public function getData(string|array $data = null): string
+    public function setData(string|array $data): void
     {
-        if (is_string($data))
+        $this->data = match ($data)
         {
-            return match ($data)
-            {
-                'true' => 'шипованные',
-                'false' => 'не шипованные',
-                default => $data
-            };
-        }
-
-        if (is_array($data))
-        {
-            if ($data['parent'] === 'Летние' || $data['parent'] === 'Всесезонные')
-            {
-                return $data['parent'];
-            }
-            else
-            {
-                return implode(' ', $data);
-            }
-        }
-
+            'true' => 'шипованные',
+            'false' => 'не шипованные',
+            default => $data
+        };
     }
+
+    public function setBaseData(string $baseData): self
+    {
+        $this->baseData = $baseData;
+        return $this;
+    }
+
+    public function data(): string
+    {
+        if ($this->baseData === 'Летние' || $this->baseData === 'Всесезонные')
+        {
+            return $this->baseData;
+        }
+        else
+        {
+            return sprintf('%s %s', $this->baseData, $this->data);
+        }
+    }
+
+    //    public function getData(string|array $data = null): string
+    //    {
+    //        if (is_string($data))
+    //        {
+    //            return match ($data)
+    //            {
+    //                'true' => 'шипованные',
+    //                'false' => 'не шипованные',
+    //                default => $data
+    //            };
+    //        }
+    //
+    //        if (is_array($data))
+    //        {
+    //            if ($data['base'] === 'Летние' || $data['base'] === 'Всесезонные')
+    //            {
+    //                return $data['base'];
+    //            }
+    //            else
+    //            {
+    //                return implode(' ', $data);
+    //            }
+    //        }
+    //
+    //    }
 
     public function element(): string
     {

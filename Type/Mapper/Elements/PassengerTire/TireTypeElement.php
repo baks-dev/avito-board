@@ -28,15 +28,17 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
-readonly class TireTypeElement implements AvitoBoardElementInterface
+class TireTypeElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'TireType';
 
     public const string LABEL = 'Сезонность шин';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        private null|string|array $data = null,
     ) {}
 
     public function isMapping(): bool
@@ -59,17 +61,31 @@ readonly class TireTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $data = null): string
+    public function setData(string|array $data): void
     {
-//        $data !== 'winter' ?: dd($data);
+        $this->data = $data;
+    }
 
-//        return $data;
+    public function data(): string
+    {
+        return match ($this->data)
+        {
+            TireSeasonEnum::WINTER->value => 'Зимние',
+            TireSeasonEnum::SUMMER->value => 'Летние',
+            TireSeasonEnum::ALL->value => 'Всесезонные',
+            default => $this->data
+        };
+    }
+
+    public function getData(string|array $data = null): ?string
+    {
+        //        $data !== 'winter' ?: dd($data);
 
         return match ($data)
         {
-            'winter' => 'Зимние',
-            'summer' => 'Летние',
-            'all' => 'Всесезонные',
+            TireSeasonEnum::WINTER => 'Зимние',
+            TireSeasonEnum::SUMMER => 'Летние',
+            TireSeasonEnum::ALL => 'Всесезонные',
             default => $data
         };
     }

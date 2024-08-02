@@ -29,7 +29,7 @@ use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class TireAspectRatioElement implements AvitoBoardElementInterface
+final class TireAspectRatioElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'TireAspectRatio';
 
@@ -37,6 +37,7 @@ final readonly class TireAspectRatioElement implements AvitoBoardElementInterfac
 
     public function __construct(
         private ?PassengerTireProductInterface $product = null,
+        private null|string|array $data = null,
     ) {}
 
     public function isMapping(): bool
@@ -57,6 +58,16 @@ final readonly class TireAspectRatioElement implements AvitoBoardElementInterfac
     public function getDefault(): null
     {
         return null;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function data(): string
+    {
+        return preg_replace('/\D/', '', $this->data);
     }
 
     public function getData(string|array $data = null): string

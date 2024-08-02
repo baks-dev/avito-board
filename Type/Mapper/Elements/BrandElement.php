@@ -34,7 +34,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  * Элемент общий для всех продуктов Авито
  * @TODO ожидает добавление в характеристики продукта
  */
-final readonly class BrandElement implements AvitoBoardElementInterface
+final class BrandElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'Brand';
 
@@ -42,6 +42,7 @@ final readonly class BrandElement implements AvitoBoardElementInterface
 
     public function __construct(
         private ?AvitoProductInterface $product = null,
+        private null|string|array $data = null,
     ) {}
 
     public function isMapping(): bool
@@ -67,6 +68,16 @@ final readonly class BrandElement implements AvitoBoardElementInterface
     public function getDefault(): null|string|array
     {
         return '';
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function data(): string
+    {
+        return $this->data;
     }
 
     // @TODO ожидает добавление в характеристики продукта
