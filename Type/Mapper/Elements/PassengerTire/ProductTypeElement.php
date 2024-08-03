@@ -25,31 +25,31 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final readonly class ProductTypeElement implements AvitoBoardElementInterface
+class ProductTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'ProductType';
+    private const string ELEMENT = 'ProductType';
 
-    public const string LABEL = 'Тип товара';
+    private const string ELEMENT_LABEL = 'Тип товара';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -59,28 +59,33 @@ final readonly class ProductTypeElement implements AvitoBoardElementInterface
         return 'Легковые шины';
     }
 
-    public function getData(string|array $data = null): null
+    public function getHelp(): null
     {
         return null;
+    }
+
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::ELEMENT_LABEL;
     }
 }

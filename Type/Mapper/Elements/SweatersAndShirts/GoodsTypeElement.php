@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
@@ -35,27 +34,28 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  *
  * Элемент обязательный для всех продуктов Авито
  */
-final readonly class GoodsTypeElement implements AvitoBoardElementInterface
+class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'GoodsType';
+    private const string ELEMENT = 'GoodsType';
 
-    public const string LABEL = 'Вид товара';
+    private const string ELEMENT_LABEL = 'Вид товара';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -65,27 +65,32 @@ final readonly class GoodsTypeElement implements AvitoBoardElementInterface
         return 'Мужская одежда';
     }
 
-    public function getData(string|array $data = null): string
-    {
-        return 'Мужская одежда';
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): ?string
+    public function getHelp(): ?string
     {
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

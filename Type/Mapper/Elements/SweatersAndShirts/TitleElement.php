@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
@@ -36,27 +35,30 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
  */
-final readonly class TitleElement implements AvitoBoardElementInterface
+class TitleElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Title';
+    public const string ELEMENT_ALIAS = 'product_category';
 
-    public const string LABEL = 'Название объявления';
+    private const string ELEMENT = 'Title';
+
+    private const string ELEMENT_LABEL = 'Название объявления';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -66,27 +68,37 @@ final readonly class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $product = null): string
-    {
-        return $product['product_category'];
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): null
+    public function getHelp(): null
     {
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function setData(string|array $product): void
+    {
+        $this->data = (string)$product[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(): string
+    {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return $this->data;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

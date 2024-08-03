@@ -25,32 +25,31 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-final class RimDiameterElement implements AvitoBoardElementInterface
+class RimDiameterElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'RimDiameter';
+    public const string ELEMENT = 'RimDiameter';
 
-    public const string LABEL = 'Диаметр шины';
+    public const string ELEMENT_LABEL = 'Диаметр шины';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
-        private null|string|array $data = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        private ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -60,37 +59,37 @@ final class RimDiameterElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function setData(string|array $data): void
-    {
-        $this->data = $data;
-    }
-
-    public function data(): string
-    {
-        return preg_replace('/\D/', '', $this->data);
-    }
-
-    public function getData(string|array $data = null): string
-    {
-        return preg_replace('/\D/', '', $data);
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function help(): string
+    public function getHelp(): string
     {
         return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/733/values-xml';
     }
 
-    public function label(): string
+    public function setData(string|array $mapper): void
     {
-        return self::LABEL;
+        $this->data = $mapper;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function fetchData(): string
+    {
+        if(null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return preg_replace('/\D/', '', $this->data);
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): PassengerTireProductInterface
     {
         return $this->product;
     }

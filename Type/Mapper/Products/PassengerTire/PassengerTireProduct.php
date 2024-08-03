@@ -47,12 +47,12 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         foreach ($this->elements as $element)
         {
 
-            if ($element->product() === null)
+            if ($element->getProduct() === null)
             {
                 $passengerTireElements[] = new $element($this);
             }
 
-            if ($element->product() instanceof self)
+            if ($element->getProduct() instanceof self)
             {
                 $passengerTireElements[] = $element;
             }
@@ -74,12 +74,12 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
             if ($element->element() === $elementName)
             {
 
-                if ($element->product() === null)
+                if ($element->getProduct() === null)
                 {
                     return new $element($this);
                 }
 
-                if ($element->product() instanceof self)
+                if ($element->getProduct() instanceof self)
                 {
                     return $element;
                 }

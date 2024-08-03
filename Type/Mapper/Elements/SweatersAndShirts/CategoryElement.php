@@ -34,27 +34,28 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  *
  * Элемент общий для всех продуктов Авито
  */
-final readonly class CategoryElement implements AvitoBoardElementInterface
+class CategoryElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    private const string ELEMENT = 'Category';
 
-    public const string LABEL = 'Категория объявления';
+    private const string ELEMENT_LABEL = 'Категория объявления';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -64,27 +65,32 @@ final readonly class CategoryElement implements AvitoBoardElementInterface
         return 'Одежда, обувь, аксессуары';
     }
 
-    public function getData(string|array $data = null): string
-    {
-        return 'Одежда, обувь, аксессуары';
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): null
+    public function getHelp(): null
     {
         return null;
     }
 
-    public function product(): SweatersAndShirtsProductInterface
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

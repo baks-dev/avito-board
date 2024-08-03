@@ -37,60 +37,68 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  *
  * Применимо, если в поле Condition указано значение 'Б/у'
  */
-final readonly class ResidualTreadElement implements AvitoBoardElementInterface
+class ResidualTreadElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'ResidualTread';
+    public const string ELEMENT = 'ResidualTread';
 
-    public const string LABEL = 'Остаточная глубина протектора шины';
-
-    public function __construct(
-        private ?PassengerTireProductInterface $product = null,
-    ) {}
-
-    public function isMapping(): bool
-    {
-        return false;
-    }
-
-    public function isRequired(): bool
-    {
-        return true;
-    }
-
-    public function isChoices(): bool
-    {
-        return false;
-    }
+    public const string ELEMENT_LABEL = 'Остаточная глубина протектора шины';
 
     /**
      * @TODO Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
      */
+    private const string DEFAULT = '50';
+
+    public function __construct(
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
+    ) {}
+
+    public function isMapping(): false
+    {
+        return false;
+    }
+
+    public function isRequired(): true
+    {
+        return true;
+    }
+
+    public function isChoices(): false
+    {
+        return false;
+    }
+
     public function getDefault(): string
     {
         return '50';
     }
 
-    public function getData(string|array $data = null): null
+    public function getHelp(): null
     {
         return null;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
-    }
-
-    public function help(): null
-    {
-        return null;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::ELEMENT_LABEL;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function getProduct(): PassengerTireProductInterface
     {
         return $this->product;
     }

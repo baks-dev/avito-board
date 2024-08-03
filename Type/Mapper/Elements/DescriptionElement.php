@@ -35,27 +35,30 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *
  * Элемент обязателен для всех продуктов Авито
  */
-final readonly class DescriptionElement implements AvitoBoardElementInterface
+class DescriptionElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Description';
+    public const string ELEMENT = 'Description';
 
-    private const string LABEL = 'Текстовое описание объявления';
+    private const string ELEMENT_ALIAS = 'product_name';
+
+    private const string ELEMENT_LABEL = 'Текстовое описание объявления';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -65,28 +68,38 @@ final readonly class DescriptionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $data = null): string
-    {
-        return sprintf('<![CDATA[%s]]>', $data['product_description']);
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): ?string
+    public function getHelp(): ?string
     {
         return null;
     }
 
-    public function product(): null
+    public function getProduct(): null
     {
         return $this->product;
+    }
+
+    public function setData(string|array $product): void
+    {
+        $this->data = (string)$product[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(): string
+    {
+        if(null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return sprintf('<![CDATA[%s]]>', $this->data);
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
     }
 }

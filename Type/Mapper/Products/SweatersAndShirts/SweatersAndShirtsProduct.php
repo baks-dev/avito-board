@@ -47,12 +47,12 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         foreach ($this->elements as $element)
         {
 
-            if ($element->product() === null)
+            if ($element->getProduct() === null)
             {
                 $elements[] = new $element($this);
             }
 
-            if ($element->product() instanceof self)
+            if ($element->getProduct() instanceof self)
             {
                 $elements[] = $element;
             }
@@ -74,13 +74,13 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
             if ($element->element() === $elementName)
             {
 
-                if ($element->product() === null)
+                if ($element->getProduct() === null)
                 {
                     return new $element($this);
                 }
 
-                if ($element->product() instanceof AvitoBoardProductEnum &&
-                    $element->product()->value === AvitoBoardProductEnum::SweatersAndShirts->value)
+                if ($element->getProduct() instanceof AvitoBoardProductEnum &&
+                    $element->getProduct()->value === AvitoBoardProductEnum::SweatersAndShirts->value)
                 {
                     return $element;
                 }

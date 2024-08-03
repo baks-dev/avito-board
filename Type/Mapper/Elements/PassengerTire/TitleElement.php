@@ -25,10 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
  * Название объявления — строка до 50 символов.
@@ -37,29 +35,30 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
  */
-final readonly class TitleElement implements AvitoBoardElementInterface
+class TitleElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Title';
+    private const string ELEMENT = 'Title';
 
-    public const string LABEL = 'Название объявления';
+    private const string ELEMENT_LABEL = 'Название объявления';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
     // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
     // @todo если давать выбор из свойства продукта - как его добавить в выпадающий список
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -69,28 +68,38 @@ final readonly class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    // @TODO подумать по какому ключу формировать значение
-    public function getData(string|array $data = null): string
-    {
-        return $data['product_name'] . $data['product_article'];
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): null
+    public function getHelp(): null
     {
         return null;
     }
 
-    public function product(): PassengerTireProductInterface
+    public function setData(string|array $product): void
+    {
+        // @TODO подумать по какому ключу формировать значение
+        $this->data = $product['product_name'] . $product['product_article'];
+    }
+
+    public function fetchData(): string
+    {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return $this->data;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): PassengerTireProductInterface
     {
         return $this->product;
     }

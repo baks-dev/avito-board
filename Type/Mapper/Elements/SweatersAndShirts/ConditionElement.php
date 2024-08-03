@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
@@ -35,27 +34,28 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для всех продуктов Авито:
  * - Легковые шины
  */
-final readonly class ConditionElement implements AvitoBoardElementInterface
+class ConditionElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Condition';
+    private const string FEED_ELEMENT = 'Condition';
 
     private const string LABEL = 'Состояние';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -65,9 +65,19 @@ final readonly class ConditionElement implements AvitoBoardElementInterface
         return 'Новое с биркой';
     }
 
-    public function getData(string|array $data = null): string
+    public function getHelp(): null
     {
-        return 'Новое с биркой';
+        return null;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
     }
 
     public function element(): string
@@ -80,12 +90,7 @@ final readonly class ConditionElement implements AvitoBoardElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): SweatersAndShirtsProductInterface
+    public function getProduct(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

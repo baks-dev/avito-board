@@ -25,28 +25,27 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
 class TireTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'TireType';
+    private const string FEED_ELEMENT = 'TireType';
 
-    public const string LABEL = 'Сезонность шин';
+    private const string LABEL = 'Сезонность шин';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
-        private null|string|array $data = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
@@ -61,32 +60,29 @@ class TireTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function setData(string|array $data): void
+    public function getHelp(): null
     {
-        $this->data = $data;
+        return null;
     }
 
-    public function data(): string
+    public function setData(string|array $mapper): void
     {
+        $this->data = $mapper;
+    }
+
+    public function fetchData(): string
+    {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
         return match ($this->data)
         {
             TireSeasonEnum::WINTER->value => 'Зимние',
             TireSeasonEnum::SUMMER->value => 'Летние',
             TireSeasonEnum::ALL->value => 'Всесезонные',
             default => $this->data
-        };
-    }
-
-    public function getData(string|array $data = null): ?string
-    {
-        //        $data !== 'winter' ?: dd($data);
-
-        return match ($data)
-        {
-            TireSeasonEnum::WINTER => 'Зимние',
-            TireSeasonEnum::SUMMER => 'Летние',
-            TireSeasonEnum::ALL => 'Всесезонные',
-            default => $data
         };
     }
 
@@ -100,12 +96,7 @@ class TireTypeElement implements AvitoBoardElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): PassengerTireProductInterface
+    public function getProduct(): PassengerTireProductInterface
     {
         return $this->product;
     }

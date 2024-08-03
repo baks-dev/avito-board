@@ -35,63 +35,74 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
- * @TODO Добавить реализацию AvitoFeedElementInterface, если элемент обязательный
+ * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
  */
-final readonly class BackTireAspectRatioElement
+class BackTireAspectRatioElement
 {
-    public const string FEED_ELEMENT = 'BackTireAspectRatio';
+    public const string ELEMENT = 'BackTireAspectRatio';
 
-    public const string LABEL = 'Высота профиля шины задней оси';
+    public const string ELEMENT_LABEL = 'Высота профиля шины задней оси';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
+    }
+
+    public function getDefault(): null
+    {
+        return null;
+    }
+
+    public function getHelp(): string
+    {
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
+    }
+
+    public function setData(string|array $mapper): void
+    {
+        $this->data = $mapper;
     }
 
     /**
      * Если элемент обязательный, то значение будем брать такое же, как и в элементе
      * @see TireAspectRatioElement
      */
-    public function default(): null
+    public function fetchData(): string
     {
-        return null;
-    }
+        if(null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
 
-    public function productData(string|array $data = null): string
-    {
-        return preg_replace('/\D/', '', $data);
+        return preg_replace('/\D/', '', $this->data);
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::ELEMENT_LABEL;
     }
 
-    public function help(): string
-    {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
-    }
-
-    public function product(): PassengerTireProductInterface
+    public function getProduct(): PassengerTireProductInterface
     {
         return $this->product;
     }

@@ -25,31 +25,31 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-final readonly class ApparelElement implements AvitoBoardElementInterface
+class ApparelElement implements AvitoBoardElementInterface
 {
     public const string FEED_ELEMENT = 'Apparel';
 
     public const string LABEL = 'Тип товара';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -59,9 +59,19 @@ final readonly class ApparelElement implements AvitoBoardElementInterface
         return 'Кофты и футболки';
     }
 
-    public function getData(string|array $data = null): string
+    public function getHelp(): null
     {
-        return 'Кофты и футболки';
+        return null;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
     }
 
     public function element(): string
@@ -74,12 +84,7 @@ final readonly class ApparelElement implements AvitoBoardElementInterface
         return self::LABEL;
     }
 
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): SweatersAndShirtsProductInterface
+    public function getProduct(): SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

@@ -32,30 +32,32 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *  Одно из значений
  *
  * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта
+ * @TODO ожидает добавление в характеристики продукта поэтому пока isMapping - true| getDefault - string
  */
-final class BrandElement implements AvitoBoardElementInterface
+class BrandElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Brand';
+    public const string ELEMENT_ALIAS = 'product_brand';
 
-    public const string LABEL = 'Бренд';
+    private const string ELEMENT = 'Brand';
+
+    private const string ELEMENT_LABEL = 'Бренд';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
-        private null|string|array $data = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -65,46 +67,47 @@ final class BrandElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): null|string|array
+    public function getDefault(): string
     {
         return '';
     }
 
-    public function setData(string|array $data): void
-    {
-        $this->data = $data;
-    }
-
-    public function data(): string
-    {
-        return $this->data;
-    }
-
-    // @TODO ожидает добавление в характеристики продукта
-    public function getData(string|array $data = null): ?string
-    {
-        return $data;
-        //        return $product['product_brand'];
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): string
+    public function getHelp(): string
     {
         return 'Общее значение для всех продуктов в данной категории';
     }
 
-    public function product(): null
+    public function getProduct(): null
     {
         return $this->product;
     }
 
+    public function setData(string|array $mapper): void
+    {
+        $this->data = $mapper;
+    }
+
+    // @TODO ожидает добавление в характеристики продукта
+    public function fetchData(): string
+    {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return $this->data;
+
+        // @TODO возвращать из свойств продукта, когда бренд будет добавлен
+        // return $product[self::ELEMENT_ALIAS];
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
 }

@@ -23,6 +23,7 @@
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.elements')]
@@ -37,13 +38,6 @@ interface AvitoBoardElementInterface
     public function isRequired(): bool;
 
     public function isChoices(): bool;
-
-    /** Получает название элемента */
-    public function element(): string;
-
-    /** Получает описание элемента */
-    public function label(): string;
-
     /**
      * Для сохранения в базу
      *
@@ -52,14 +46,27 @@ interface AvitoBoardElementInterface
      *
      * @return string|array если данные берутся статически, из описания класса
      */
-    public function getDefault(): null|int|string|array;
+    public function getDefault(): null|string|array;
+
+    public function getHelp(): ?string;
+
+    /**
+     * Вызвать перед getData выдачи в фиде
+     */
+    public function setData(string|array $data): void;
 
     /**
      * Для выдачи в фиде
      */
-    public function getData(string|array $data = null): null|int|string|array;
+    public function fetchData(): ?string;
 
-    public function help(): null|string;
+    /** Получает название элемента */
+    public function element(): string;
 
-    public function product(): mixed;
+    /** Получает описание элемента */
+    public function label(): string;
+
+    public function getProduct(): ?AvitoProductInterface;
+
+    // @TODO добавить метод для сортировки
 }

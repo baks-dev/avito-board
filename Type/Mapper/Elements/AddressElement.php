@@ -33,60 +33,69 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *
  * Элемент обязателен для всех продуктов Авито
  */
-final readonly class AddressElement implements AvitoBoardElementInterface
+class AddressElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Address';
+    public const string ELEMENT_ALIAS = '_address_from_avito_token_profile';
 
-    public const string LABEL = 'Полный адрес объекта';
+    private const string ELEMENT = 'Address';
+
+    private const string ELEMENT_LABEL = 'Полный адрес объекта';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
 
-    // @TODO временный адрес, так как адрес еще не откуда брать
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+        return null;
     }
 
-    public function getData(string|array $product = null): string
+    public function getHelp(): null
     {
-//        return $product['_from_avito_token_profile'];
-        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+        return null;
     }
 
-    public function product(): null
+    public function setData(string|array $profile): void
     {
-        return $this->product;
+        $this->data = (string)$profile[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(): string
+    {
+        // @TODO временный адрес, так как адрес еще не откуда брать
+        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+
+        //        return $product['_from_avito_token_profile'];
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::ELEMENT_LABEL;
     }
 
-    public function help(): null
+    public function getProduct(): null
     {
-        return null;
+        return $this->product;
     }
 }

@@ -25,31 +25,31 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
-final readonly class GoodsSubTypeElement implements AvitoBoardElementInterface
+class GoodsSubTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'GoodsSubType';
+    private const string ELEMENT = 'GoodsSubType';
 
-    public const string LABEL = 'Тип одежды, обуви, аксессуаров';
+    private const string ELEMENT_LABEL = 'Тип одежды, обуви, аксессуаров';
 
     public function __construct(
-        private ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): true
     {
         return true;
     }
@@ -69,37 +69,32 @@ final readonly class GoodsSubTypeElement implements AvitoBoardElementInterface
         ];
     }
 
-    public function getData(string|array $product = null): array
-    {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
-    }
-
-    public function element(): string
-    {
-        return self::FEED_ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function help(): null
+    public function getHelp(): null
     {
         return null;
     }
 
-    public function product(): ?SweatersAndShirtsProductInterface
+    public function setData(string|array $mapper): void
+    {
+        $this->data = $mapper;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::ELEMENT_LABEL;
+    }
+
+    public function getProduct(): ?SweatersAndShirtsProductInterface
     {
         return $this->product;
     }

@@ -41,14 +41,17 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *
  * Элемент обязателен для всех продуктов Авито
  */
-final readonly class IdElement implements AvitoBoardElementInterface
+class IdElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Id';
+    public const string ELEMENT_ALIAS = 'product_article';
 
-    private const string LABEL = 'Идентификатор';
+    private const string ELEMENT = 'Id';
+
+    private const string ELEMENT_LABEL = 'Идентификатор';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
     public function isMapping(): bool
@@ -71,28 +74,38 @@ final readonly class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $data = null): string
+    public function getHelp(): ?string
     {
-        return $data['product_article'];
+        return $this->product->help(self::ELEMENT);
+    }
+
+    public function getProduct(): null
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array $product): void
+    {
+        $this->data = (string)$product[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(string|array $data = null): string
+    {
+        if(null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function help(): ?string
-    {
-        return $this->product->help(self::FEED_ELEMENT);
-    }
-
-    public function product(): null
-    {
-        return $this->product;
+        return self::ELEMENT_LABEL;
     }
 }

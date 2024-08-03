@@ -33,27 +33,28 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *
  * Элемент общий для всех продуктов Авито
  */
-final readonly class AdTypeElement implements AvitoBoardElementInterface
+class AdTypeElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'AdType';
+    private const string ELEMENT = 'AdType';
 
-    public const string LABEL = 'Вид объявления';
-
+    private const string ELEMENT_LABEL = 'Вид объявления';
+    
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -63,28 +64,33 @@ final readonly class AdTypeElement implements AvitoBoardElementInterface
         return 'Товар приобретен на продажу';
     }
 
-    public function getData(string|array $product = null): string
+    public function getHelp(): null
     {
-        return 'Товар приобретен на продажу';
+        return null;
     }
 
-    public function product(): null
+    public function getProduct(): null
     {
         return $this->product;
     }
 
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    public function fetchData(): string
+    {
+        return $this->data;
+    }
+
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
+        return self::ELEMENT_LABEL;
     }
 }

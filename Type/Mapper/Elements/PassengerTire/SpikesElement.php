@@ -25,74 +25,57 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardExtendElementInterface;
 
-/**
- * Состояние
- *
- * Элемент обязателен для всех продуктов Авито:
- * - Легковые шины
- */
-class ConditionElement implements AvitoBoardElementInterface
+final class SpikesElement extends TireTypeElement implements AvitoBoardExtendElementInterface
 {
-    public const string FEED_ELEMENT = 'Condition';
+    private const string ELEMENT = 'Spikes';
 
-    private const string LABEL = 'Состояние';
+    private const string ELEMENT_LABEL = 'Шипы';
 
-    public function __construct(
-        private readonly ?PassengerTireProductInterface $product = null,
-        protected ?string $data = null,
-    ) {}
+    protected ?string $baseData = null;
 
-    public function isMapping(): false
+    public function setBaseData(string $baseData): void
     {
-        return false;
+        $this->baseData = $baseData;
     }
 
-    public function isRequired(): true
+    public function setData(string|array $mapper): void
     {
-        return true;
-    }
-
-    public function isChoices(): false
-    {
-        return false;
-    }
-
-    public function getDefault(): string
-    {
-        return 'Новое';
-    }
-
-    public function getHelp(): null
-    {
-        return null;
-    }
-
-    public function setData(string|array $data): void
-    {
-        $this->data = $data;
+        $this->data = $mapper;
     }
 
     public function fetchData(): string
     {
-        return $this->data;
+        if(null === $this->data || null === $this->baseData)
+        {
+            throw new \Exception('Не вызван метод setData или setBaseData');
+        }
+
+        $extendData = match ($this->data)
+        {
+            'true' => 'шипованные',
+            'false' => 'не шипованные',
+            default => $this->data
+        };
+
+        if ($this->baseData === 'Летние' || $this->baseData === 'Всесезонные')
+        {
+            return $this->baseData;
+        }
+        else
+        {
+            return sprintf('%s %s', $this->baseData, $extendData);
+        }
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function getProduct(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::ELEMENT_LABEL;
     }
 }

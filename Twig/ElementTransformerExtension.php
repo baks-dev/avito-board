@@ -28,8 +28,6 @@ use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-use function Symfony\Component\String\u;
-
 final class ElementTransformerExtension extends AbstractExtension
 {
     public function __construct(
@@ -68,13 +66,15 @@ final class ElementTransformerExtension extends AbstractExtension
         {
             if ($element->getDefault() === null)
             {
-                if ($element->getData($product) === null)
+                $element->setData($product);
+
+                if ($element->fetchData() === null)
                 {
                     // @TODO что делать, если дата окончания у продукта не указана - не отрендерить элемент
                     continue;
                 }
 
-                $elements[$element->element()] = $element->getData($product);
+                $elements[$element->element()] = $element->fetchData();
             }
             else
             {
@@ -96,31 +96,47 @@ final class ElementTransformerExtension extends AbstractExtension
     {
         $mapper = json_decode($mapper, false, 512, JSON_THROW_ON_ERROR);
 
-        $elements = null;
+        $instances = $this->instances($mapper, $category);
+
+        return $this->elements($instances);
+    }
+
+    /**
+     * @return array<class-string, AvitoBoardElementInterface>
+     */
+    private function instances(array $mapper, string $category): array
+    {
         $instances = null;
         foreach ($mapper as $element)
         {
             $instance = $this->mapperProvider->getOneElement($category, $element->element);
             $instance->setData($element->value);
-
-            $elements[$element->element] = $instance->getData($element->value);
-
             $instances[$instance::class] = $instance;
         }
 
+        return $instances;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function elements(array $instances): array
+    {
         foreach ($instances as $className => $instance)
         {
             $baseClass = get_parent_class($className);
 
-            if($baseClass && isset($instances[$baseClass]))
+            if ($baseClass && isset($instances[$baseClass]))
             {
-                $instance->setBaseData($instances[$baseClass]->data());
-                unset($elements[$instance->element()]);
-                $elements[$instances[$baseClass]->element()] = $instance->data();
+                $baseData = $instances[$baseClass]->getData();
+                $instance->setBaseData($baseData);
+
+                $elements[$instances[$baseClass]->element()] = $instance->getData();
             }
+
+            $elements[$instance->element()] = $instance->getData();
         }
 
         return $elements;
     }
-
 }

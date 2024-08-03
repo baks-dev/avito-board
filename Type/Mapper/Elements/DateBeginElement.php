@@ -47,29 +47,30 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
  * тип элемента input: либо данные из ввода, либо из продукта
  */
-final readonly class DateBeginElement implements AvitoBoardElementInterface
+class DateBeginElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT = 'DateBegin';
-
     public const string ELEMENT_ALIAS = 'product_date_begin';
 
-    private const string LABEL = 'Дата и время размещения';
+    private const string ELEMENT = 'DateBegin';
+
+    private const string ELEMENT_LABEL = 'Дата и время размещения';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -79,9 +80,29 @@ final readonly class DateBeginElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $data = null): string
+    public function getHelp(): null
     {
-        return $data[self::ELEMENT_ALIAS];
+        return null;
+    }
+
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array $product): void
+    {
+        $this->data = $product[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(): string
+    {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return $this->data;
     }
 
     public function element(): string
@@ -91,16 +112,6 @@ final readonly class DateBeginElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::ELEMENT_LABEL;
     }
 }

@@ -32,27 +32,30 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  *
  * Элемент общий для всех продуктов Авито
  */
-final readonly class ModelElement implements AvitoBoardElementInterface
+class ModelElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Model';
+    public const string ELEMENT_ALIAS = 'product_name';
 
-    public const string LABEL = 'Модель';
+    private const string ELEMENT = 'Model';
+
+    private const string LABEL = 'Модель';
 
     public function __construct(
-        private ?AvitoProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
-    public function isMapping(): bool
+    public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -62,35 +65,38 @@ final readonly class ModelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getData(string|array $data = null): string
+    public function getHelp(): string
     {
-        if (is_string($data))
+        return 'https://autoload.avito.ru/format/tyres_make.xml';
+    }
+
+    public function getProduct(): null
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array $product): void
+    {
+        $this->data = (string)$product[self::ELEMENT_ALIAS];
+    }
+
+    public function fetchData(): string
+    {
+        if (null === $this->data)
         {
-            return $data;
+            throw new \Exception('Не вызван метод setData');
         }
-        else
-        {
-            return $data['product_name'];
-        }
+
+        return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function help(): string
-    {
-        return 'https://autoload.avito.ru/format/tyres_make.xml';
-    }
-
-    public function product(): null
-    {
-        return $this->product;
     }
 }

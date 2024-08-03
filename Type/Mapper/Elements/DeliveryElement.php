@@ -35,14 +35,15 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  * Одно или несколько значений
  * @TODO тестирую без implements AvitoBoardElementInterface
  */
-final readonly class DeliveryElement
+class DeliveryElement
 {
     public const string ELEMENT = 'Delivery';
 
-    private const string LABEL = 'Доступные способы доставки';
+    private const string ELEMENT_LABEL = 'Доступные способы доставки';
 
     public function __construct(
-        private ?PassengerTireProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected ?string $data = null,
     ) {}
 
     public function isMapping(): bool
@@ -57,7 +58,7 @@ final readonly class DeliveryElement
 
     public function isChoices(): bool
     {
-        return is_array($this->getDefault());
+        return true;
     }
 
     public function getDefault(): array
@@ -78,10 +79,25 @@ final readonly class DeliveryElement
         ];
     }
 
-    /** одно из дефолтных значений либо пользовательский ввод */
-    public function getData(string|array $data = null): ?string
+    public function getHelp(): null
     {
-        return sprintf('<Option>%s</Option>', $data);
+        return null;
+    }
+
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array $data): void
+    {
+        $this->data = $data;
+    }
+
+    /** Одно из дефолтных значений либо пользовательский ввод */
+    public function fetchData(): string
+    {
+        return sprintf('<Option>%s</Option>', $this->data);
     }
 
     public function element(): string
@@ -91,16 +107,6 @@ final readonly class DeliveryElement
 
     public function label(): string
     {
-        return self::LABEL;
-    }
-
-    public function help(): null
-    {
-        return null;
-    }
-
-    public function product(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::ELEMENT_LABEL;
     }
 }
