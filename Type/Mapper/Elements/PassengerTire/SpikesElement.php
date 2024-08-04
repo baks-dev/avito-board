@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardExtendElementInterface;
 
 final class SpikesElement extends TireTypeElement implements AvitoBoardExtendElementInterface
@@ -33,11 +34,11 @@ final class SpikesElement extends TireTypeElement implements AvitoBoardExtendEle
 
     private const string ELEMENT_LABEL = 'Шипы';
 
-    protected ?string $baseData = null;
+    protected ?string $base = null;
 
-    public function setBaseData(string $baseData): void
+    public function setBaseData(AvitoBoardElementInterface $base): void
     {
-        $this->baseData = $baseData;
+        $this->base = $base->fetchData();
     }
 
     public function setData(string|array $mapper): void
@@ -47,9 +48,9 @@ final class SpikesElement extends TireTypeElement implements AvitoBoardExtendEle
 
     public function fetchData(): string
     {
-        if(null === $this->data || null === $this->baseData)
+        if(null === $this->base)
         {
-            throw new \Exception('Не вызван метод setData или setBaseData');
+            throw new \Exception('Не вызван метод setBaseData');
         }
 
         $extendData = match ($this->data)
@@ -59,13 +60,13 @@ final class SpikesElement extends TireTypeElement implements AvitoBoardExtendEle
             default => $this->data
         };
 
-        if ($this->baseData === 'Летние' || $this->baseData === 'Всесезонные')
+        if ($this->base === 'Летние' || $this->base === 'Всесезонные')
         {
-            return $this->baseData;
+            return $this->base;
         }
         else
         {
-            return sprintf('%s %s', $this->baseData, $extendData);
+            return sprintf('%s %s', $this->base, $extendData);
         }
     }
 

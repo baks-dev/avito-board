@@ -30,9 +30,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
 
 class ProductTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'ProductType';
+    private const string PRODUCT_TYPE_ELEMENT = 'ProductType';
 
-    private const string ELEMENT_LABEL = 'Тип товара';
+    private const string PRODUCT_TYPE_LABEL = 'Тип товара';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -74,18 +74,18 @@ class ProductTypeElement implements AvitoBoardElementInterface
         $this->data = $data;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::PRODUCT_TYPE_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::PRODUCT_TYPE_LABEL;
     }
 }

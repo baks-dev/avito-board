@@ -25,6 +25,7 @@ namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardExtendElementInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -49,11 +50,7 @@ final class ElementTransformerExtension extends AbstractExtension
             return null;
         }
 
-        /** Преобразуем массив элементов из маппера*/
-        //        $mappedElements = $this->mappedElementTransform($product['avito_board_mapper']);
-        $mappedElements = $this->mapperTransform($product['avito_board_mapper'], $product['avito_board_avito_category']);
-
-        /** Получаем все элементы по типу продукта, не участвующих в маппинге */
+        /** Получаем элементы по продукту, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
             $this->mapperProvider->filterElements($product['avito_board_avito_category']),
             function (AvitoBoardElementInterface $element) {
@@ -61,6 +58,9 @@ final class ElementTransformerExtension extends AbstractExtension
             }
         );
 
+        /**
+         * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
+         */
         $elements = null;
         foreach ($unmappedElements as $element)
         {
@@ -68,13 +68,15 @@ final class ElementTransformerExtension extends AbstractExtension
             {
                 $element->setData($product);
 
-                if ($element->fetchData() === null)
+                $data = $element->fetchData();
+
+                if ($data === null)
                 {
-                    // @TODO что делать, если дата окончания у продукта не указана - не отрендерить элемент
+                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид
                     continue;
                 }
 
-                $elements[$element->element()] = $element->fetchData();
+                $elements[$element->element()] = $data;
             }
             else
             {
@@ -82,9 +84,12 @@ final class ElementTransformerExtension extends AbstractExtension
             }
         }
 
+        /** Преобразуем строку маппера в массив элементов */
+        $mappedElements = $this->mapperTransform($product['avito_board_mapper'], $product['avito_board_avito_category']);
+
         /**
          * Объединяем массивы элементов по принципу:
-         * - элемент, описанный в классе имеет приоритет над элементом, лученным из маппера
+         * - элемент, описанный в классе имеет приоритет над элементом, полученным из маппера
          *  (элемент класса перезаписывает элемент из маппера)
          */
         $allElements = array_merge($mappedElements, $elements);
@@ -96,15 +101,17 @@ final class ElementTransformerExtension extends AbstractExtension
     {
         $mapper = json_decode($mapper, false, 512, JSON_THROW_ON_ERROR);
 
-        $instances = $this->instances($mapper, $category);
+        $instances = $this->getInstances($mapper, $category);
 
-        return $this->elements($instances);
+        return $this->getElements($instances);
     }
 
     /**
+     * Получаем массив, где ключ - название класса элемента, значение - инстанс класса элемента
+     *
      * @return array<class-string, AvitoBoardElementInterface>
      */
-    private function instances(array $mapper, string $category): array
+    private function getInstances(array $mapper, string $category): array
     {
         $instances = null;
         foreach ($mapper as $element)
@@ -118,23 +125,38 @@ final class ElementTransformerExtension extends AbstractExtension
     }
 
     /**
+     * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
+     * /
+     * @param array<class-string, AvitoBoardElementInterface> $instances
      * @return array<string, string>
      */
-    private function elements(array $instances): array
+    private function getElements(array $instances): array
     {
-        foreach ($instances as $className => $instance)
+        $elements = null;
+
+        foreach ($instances as $instance)
         {
-            $baseClass = get_parent_class($className);
+            $baseClass = get_parent_class($instance);
 
-            if ($baseClass && isset($instances[$baseClass]))
+            if ($baseClass)
             {
-                $baseData = $instances[$baseClass]->getData();
-                $instance->setBaseData($baseData);
+                /** @var AvitoBoardExtendElementInterface $extend */
+                $extend = $instance;
+                $base = $instances[$baseClass];
 
-                $elements[$instances[$baseClass]->element()] = $instance->getData();
+                $extend->setBaseData($base);
+
+                $elements[$base->element()] = $extend->fetchData();
             }
+            else
+            {
+                if(isset($elements[$instance->element()]))
+                {
+                    continue;
+                }
 
-            $elements[$instance->element()] = $instance->getData();
+                $elements[$instance->element()] = $instance->fetchData();
+            }
         }
 
         return $elements;

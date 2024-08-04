@@ -23,32 +23,32 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
 /**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
+ *  Бренд.
+ *  Одно из значений
  *
- * Элемент обязателен для всех продуктов Авито
+ * Элемент общий для всех продуктов Авито
+ * @TODO ожидает добавление в характеристики продукта
  */
-class AddressElement implements AvitoBoardElementInterface
+class BrandElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT_ALIAS = '_address_from_avito_token_profile';
+    private const string BRAND_ELEMENT = 'Brand';
 
-    private const string ELEMENT = 'Address';
-
-    private const string ELEMENT_LABEL = 'Полный адрес объекта';
+    private const string BRAND_LABEL = 'Бренд шины';
 
     public function __construct(
-        private readonly ?AvitoProductInterface $product = null,
+        private readonly ?PassengerTireProductInterface $product = null,
         protected ?string $data = null,
     ) {}
 
-    public function isMapping(): false
+    public function isMapping(): true
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): true
@@ -66,36 +66,39 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): null
+    public function getHelp(): string
     {
-        return null;
+        return 'Общее значение для всех продуктов в данной категории';
     }
 
-    public function setData(string|array $profile): void
+    public function getProduct(): PassengerTireProductInterface
     {
-        // @TODO временный адрес, так как адрес еще не откуда брать
-        $this->data = 'Тамбовская область, Моршанск, Лесная улица, 7';
-
-        //        $this->data = (string)$profile[self::ELEMENT_ALIAS];
+        return $this->product;
     }
 
+    public function setData(string|array $mapper): void
+    {
+        $this->data = $mapper;
+    }
+
+    // @TODO ожидает добавление в характеристики продукта
     public function fetchData(): string
     {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::BRAND_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): null
-    {
-        return $this->product;
+        return self::BRAND_LABEL;
     }
 }

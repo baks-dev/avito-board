@@ -37,9 +37,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  */
 class TitleElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Title';
+    private const string TITLE_ELEMENT = 'Title';
 
-    private const string ELEMENT_LABEL = 'Название объявления';
+    private const string TITLE_LABEL = 'Название объявления';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -76,27 +76,22 @@ class TitleElement implements AvitoBoardElementInterface
     public function setData(string|array $product): void
     {
         // @TODO подумать по какому ключу формировать значение
-        $this->data = $product['product_name'] . $product['product_article'];
+        $this->data = sprintf('%s %s', $product['product_name'], $product['product_article']);;
     }
 
     public function fetchData(): string
     {
-        if (null === $this->data)
-        {
-            throw new \Exception('Не вызван метод setData');
-        }
-
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::TITLE_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::TITLE_LABEL;
     }
 
     public function getProduct(): PassengerTireProductInterface

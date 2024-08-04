@@ -26,5 +26,5 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 interface AvitoBoardExtendElementInterface
 {
-    public function setBaseData(string $baseData): void;
+    public function setBaseData(AvitoBoardElementInterface $base): void;
 }

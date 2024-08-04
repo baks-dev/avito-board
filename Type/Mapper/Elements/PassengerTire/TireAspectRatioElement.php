@@ -30,9 +30,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
 
 class TireAspectRatioElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'TireAspectRatio';
+    private const string TIRE_ASPECT_RATIO_ELEMENT = 'TireAspectRatio';
 
-    private const string ELEMENT_LABEL = 'Высота профиля шины';
+    private const string TIRE_ASPECT_RATIO_LABEL = 'Высота профиля шины';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -81,12 +81,12 @@ class TireAspectRatioElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::TIRE_ASPECT_RATIO_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::TIRE_ASPECT_RATIO_LABEL;
     }
 
     public function getProduct(): PassengerTireProductInterface

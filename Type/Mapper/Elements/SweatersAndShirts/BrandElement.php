@@ -23,26 +23,28 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
+ *  Бренд.
+ *  Одно из значений
  *
- * Элемент обязателен для всех продуктов Авито
+ * Элемент общий для всех продуктов Авито
+ * @TODO ожидает добавление в характеристики продукта поэтому
  */
-class AddressElement implements AvitoBoardElementInterface
+class BrandElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT_ALIAS = '_address_from_avito_token_profile';
+    public const string BRAND_ALIAS = 'product_brand';
 
-    private const string ELEMENT = 'Address';
+    private const string BRAND_ELEMENT = 'Brand';
 
-    private const string ELEMENT_LABEL = 'Полный адрес объекта';
+    private const string BRAND_LABEL = 'Бренд одежды';
 
     public function __construct(
-        private readonly ?AvitoProductInterface $product = null,
+        private readonly ?SweatersAndShirtsProductInterface $product = null,
         protected ?string $data = null,
     ) {}
 
@@ -66,36 +68,41 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): null
+    public function getHelp(): string
     {
-        return null;
+        return 'Общее значение для всех продуктов в данной категории';
+    }
+
+    public function getProduct(): SweatersAndShirtsProductInterface
+    {
+        return $this->product;
     }
 
     public function setData(string|array $profile): void
     {
-        // @TODO временный адрес, так как адрес еще не откуда брать
-        $this->data = 'Тамбовская область, Моршанск, Лесная улица, 7';
+        // @TODO присваивать из свойств продукта, когда бренд будет добавлен - пока из product_name
+        $this->data = (string)$profile['product_name'];
 
         //        $this->data = (string)$profile[self::ELEMENT_ALIAS];
     }
 
     public function fetchData(): string
     {
+        if (null === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::BRAND_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): null
-    {
-        return $this->product;
+        return self::BRAND_LABEL;
     }
 }

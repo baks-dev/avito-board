@@ -72,11 +72,6 @@ class TireTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(): string
     {
-        if (null === $this->data)
-        {
-            throw new \Exception('Не вызван метод setData');
-        }
-
         return match ($this->data)
         {
             TireSeasonEnum::WINTER->value => 'Зимние',

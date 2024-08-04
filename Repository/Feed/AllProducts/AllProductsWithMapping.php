@@ -65,7 +65,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
         $dbal
             ->addSelect('product_active.active_from as '. DateBeginElement::ELEMENT_ALIAS)
             // @TODO не дает задать алиас product_date_end
-            ->addSelect('product_active.active_to as '. DateEndElement::ELEMENT_ALIAS)
+            ->addSelect('product_active.active_to as '. DateEndElement::DATE_END_ALIAS)
             ->join(
                 'product',
                 ProductActive::class,
@@ -583,7 +583,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 
         $dbal->allGroupByExclude();
 
-//        dd($dbal->fetchAllAssociative());
+        dd($dbal->fetchAllAssociative());
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 

@@ -39,14 +39,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  */
 class ResidualTreadElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT = 'ResidualTread';
+    public const string RESIDUAL_TREAD_ELEMENT = 'ResidualTread';
 
-    public const string ELEMENT_LABEL = 'Остаточная глубина протектора шины';
-
-    /**
-     * @TODO Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
-     */
-    private const string DEFAULT = '50';
+    public const string RESIDUAL_TREAD_LABEL = 'Остаточная глубина протектора шины';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -68,6 +63,9 @@ class ResidualTreadElement implements AvitoBoardElementInterface
         return false;
     }
 
+    /**
+     * @TODO Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
+     */
     public function getDefault(): string
     {
         return '50';
@@ -78,28 +76,28 @@ class ResidualTreadElement implements AvitoBoardElementInterface
         return null;
     }
 
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
     public function setData(string|array $data): void
     {
         $this->data = $data;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::RESIDUAL_TREAD_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::RESIDUAL_TREAD_LABEL;
     }
 }

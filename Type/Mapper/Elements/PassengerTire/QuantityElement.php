@@ -38,9 +38,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  */
 class QuantityElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Quantity';
+    private const string QUANTITY_ELEMENT = 'Quantity';
 
-    private const string ELEMENT_LABEL = 'Количество шт. в комплекте';
+    private const string QUANTITY_LABEL = 'Количество покрышек в комплекте';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -72,28 +72,28 @@ class QuantityElement implements AvitoBoardElementInterface
         return null;
     }
 
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
     public function setData(string|array $data): void
     {
         $this->data = $data;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::QUANTITY_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): PassengerTireProductInterface
-    {
-        return $this->product;
+        return self::QUANTITY_LABEL;
     }
 }

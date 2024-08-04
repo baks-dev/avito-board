@@ -79,8 +79,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
                     return new $element($this);
                 }
 
-                if ($element->getProduct() instanceof AvitoBoardProductEnum &&
-                    $element->getProduct()->value === AvitoBoardProductEnum::SweatersAndShirts->value)
+                if ($element->getProduct() instanceof self)
                 {
                     return $element;
                 }

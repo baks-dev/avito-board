@@ -37,9 +37,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  */
 class ConditionElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Condition';
+    public const string CONDITION_ELEMENT = 'Condition';
 
-    private const string LABEL = 'Состояние';
+    private const string CONDITION_LABEL = 'Состояние покрышки';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -76,19 +76,19 @@ class ConditionElement implements AvitoBoardElementInterface
         $this->data = $data;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::CONDITION_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::CONDITION_LABEL;
     }
 
     public function getProduct(): PassengerTireProductInterface

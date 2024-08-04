@@ -42,11 +42,11 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductI
  */
 class DateEndElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT = 'DateEnd';
+    public const string DATE_END = 'DateEnd';
 
-    public const string ELEMENT_ALIAS = 'product_date_over';
+    public const string DATE_END_ALIAS = 'product_date_over';
 
-    private const string ELEMENT_LABEL = 'Дата и время окончания размещения';
+    private const string DATE_END_LABEL = 'Дата и время окончания размещения';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
@@ -85,26 +85,21 @@ class DateEndElement implements AvitoBoardElementInterface
 
     public function setData(string|array $product): void
     {
-        $this->data = $product[self::ELEMENT_ALIAS];
+        $this->data = $product[self::DATE_END_ALIAS];
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
-        if(null === $this->data)
-        {
-            throw new \Exception('Не вызван метод setData');
-        }
-
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::DATE_END;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::DATE_END_LABEL;
     }
 }

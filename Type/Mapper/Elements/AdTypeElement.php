@@ -35,10 +35,10 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  */
 class AdTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'AdType';
+    private const string AD_TYPE_ELEMENT = 'AdType';
 
-    private const string ELEMENT_LABEL = 'Вид объявления';
-    
+    private const string AD_TYPE_LABEL = 'Вид объявления';
+
     public function __construct(
         private readonly ?AvitoProductInterface $product = null,
         protected ?string $data = null,
@@ -79,18 +79,18 @@ class AdTypeElement implements AvitoBoardElementInterface
         $this->data = $data;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::AD_TYPE_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::AD_TYPE_LABEL;
     }
 }
