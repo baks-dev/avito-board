@@ -28,16 +28,27 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
 /**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
+ * Включение интернет-звонков через Авито. По объявлениям смогут звонить по интернету.
  *
- * Элемент обязателен для всех продуктов Авито
+ * Вы не пропустите звонки и не потеряете клиентов: если интернет плохой, в объявлении покажем временный номер,
+ * а вся история вызовов сохранится в чате.
+ *
+ * Интернет-звонки работают корректно, если вы укажете устройство для приёма звонков в параметре CallsDevices.
+ * Преимущества интернет-звонков:
+ * — Легко отличить важные вызовы от спама: видно кто звонит и по какому объявлению.
+ * — Сделки совершаются быстрее: пользователи с включенными интернет-звонками получают на 24% больше звонков.
+ *
+ * Входящие интернет-звонки через Авито можно отключить для всех объявлений в Настройках в любое время.
+ *
+ * Одно из значений:
+ * — Да
+ * — Нет
  */
-class AddressElement implements AvitoBoardElementInterface
+class InternetCallsElement implements AvitoBoardElementInterface
 {
-    private const string ADDRESS_ELEMENT = 'Address';
+    private const string INTERNET_CALLS_ELEMENT = 'InternetCalls';
 
-    private const string ADDRESS_LABEL = 'Полный адрес';
+    private const string INTERNET_CALLS_LABEL = 'Разноширокий комплект шин';
 
     public function __construct(
         private readonly ?AvitoProductInterface $product = null,
@@ -49,9 +60,9 @@ class AddressElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -69,15 +80,20 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function setData(string|array $profile): void
+    public function getProduct(): null
     {
-        // @TODO временный адрес, так как нет таблицы откуда забирать данные
-        $this->data = 'Тамбовская область, Моршанск, Лесная улица, 7';
+        return $this->product;
+    }
+
+    public function setData(string|array $data): void
+    {
+        // @TODO хардкодим временное значение пока, так как нет таблицы откуда забирать данные
+        $this->data = 'Нет';
 
         //                $this->data = $profile['_address_from_avito_token_profile'];
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         if (false === $this->data)
         {
@@ -90,16 +106,11 @@ class AddressElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::ADDRESS_ELEMENT;
+        return self::INTERNET_CALLS_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ADDRESS_LABEL;
-    }
-
-    public function getProduct(): null
-    {
-        return $this->product;
+        return self::INTERNET_CALLS_LABEL;
     }
 }

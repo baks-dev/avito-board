@@ -23,20 +23,27 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
 
-class GoodsSubTypeElement implements AvitoBoardElementInterface
+/**
+ * RunFlat - наличие технологии RunFlat
+ *
+ * Одно из значений:
+ * — Да
+ * — Нет
+ */
+class RunFlatElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'GoodsSubType';
+    private const string RUN_FLAT_ELEMENT = 'RunFlat';
 
-    private const string ELEMENT_LABEL = 'Тип одежды';
+    private const string RUN_FLAT_LABEL = 'Наличие технологии RunFlat';
 
     public function __construct(
-        private readonly ?SweatersAndShirtsProductInterface $product = null,
-        protected ?string $data = null,
+        private readonly ?PassengerTireProductInterface $product = null,
+        protected null|string|false $data = false,
     ) {}
 
     public function isMapping(): true
@@ -44,29 +51,19 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
-    public function isChoices(): true
+    public function isChoices(): false
     {
-        return true;
+        return false;
     }
 
-    public function getDefault(): array
+    public function getDefault(): null
     {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return null;
     }
 
     public function getHelp(): null
@@ -74,28 +71,38 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function setData(string|array $mapper): void
+    public function getProduct(): PassengerTireProductInterface
+    {
+        return $this->product;
+    }
+
+    public function setData(string|array|null $mapper): void
     {
         $this->data = $mapper;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
-        return $this->data;
+        if (false === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
+        return match ($this->data)
+        {
+            'true' => 'Да',
+            'false' => 'Нет',
+            default => null
+        };
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::RUN_FLAT_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): ?SweatersAndShirtsProductInterface
-    {
-        return $this->product;
+        return self::RUN_FLAT_LABEL;
     }
 }

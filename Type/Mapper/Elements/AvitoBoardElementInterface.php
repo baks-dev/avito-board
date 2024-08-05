@@ -31,7 +31,10 @@ interface AvitoBoardElementInterface
 {
     /**
      * @return true если элемент будет участвовать в маппинге и дынные будут браться из БД (маппинга)
+     * в метод setData передаются данные из маппера
+     *
      * @return false если элемент не участвует в маппинге и его не нужно показывать в форме
+     * в метод setData передаются данные из свойств продукта
      */
     public function isMapping(): bool;
 
@@ -51,12 +54,12 @@ interface AvitoBoardElementInterface
     public function getHelp(): ?string;
 
     /**
-     * Вызвать перед getData выдачи в фиде
+     * Вызвать перед getData
      */
     public function setData(string|array $data): void;
 
     /**
-     * Для выдачи в фиде
+     * Формирования данных для отправки (xml, csv, etc)
      */
     public function fetchData(): ?string;
 

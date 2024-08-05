@@ -34,15 +34,13 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  */
 class ModelElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT_ALIAS = 'product_name';
+    private const string MODEL_ELEMENT = 'Model';
 
-    private const string ELEMENT = 'Model';
-
-    private const string LABEL = 'Модель';
+    private const string MODEL_LABEL = 'Модель';
 
     public function __construct(
         private readonly ?AvitoProductInterface $product = null,
-        protected ?string $data = null,
+        protected null|string|false $data = false,
     ) {}
 
     public function isMapping(): false
@@ -77,12 +75,13 @@ class ModelElement implements AvitoBoardElementInterface
 
     public function setData(string|array $product): void
     {
-        $this->data = (string)$product[self::ELEMENT_ALIAS];
+        // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
+        $this->data = $product['product_name'];
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
-        if (null === $this->data)
+        if (false === $this->data)
         {
             throw new \Exception('Не вызван метод setData');
         }
@@ -92,11 +91,11 @@ class ModelElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::MODEL_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::MODEL_LABEL;
     }
 }

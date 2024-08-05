@@ -37,20 +37,21 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  */
 class TitleElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT_ALIAS = 'product_category';
+    // @TODO не уверен, из какого свойства брать название
+    public const string TITLE_ALIAS = 'product_category';
 
-    private const string ELEMENT = 'Title';
+    private const string TITLE_ELEMENT = 'Title';
 
-    private const string ELEMENT_LABEL = 'Название объявления';
+    private const string TITLE_LABEL = 'Название объявления';
 
     public function __construct(
         private readonly ?SweatersAndShirtsProductInterface $product = null,
         protected ?string $data = null,
     ) {}
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): true
@@ -73,9 +74,14 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
+    public function getProduct(): SweatersAndShirtsProductInterface
+    {
+        return $this->product;
+    }
+
     public function setData(string|array $product): void
     {
-        $this->data = (string)$product[self::ELEMENT_ALIAS];
+        $this->data = $product[self::TITLE_ALIAS];
     }
 
     public function fetchData(): string
@@ -90,16 +96,11 @@ class TitleElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::TITLE_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
-    }
-
-    public function getProduct(): SweatersAndShirtsProductInterface
-    {
-        return $this->product;
+        return self::TITLE_LABEL;
     }
 }

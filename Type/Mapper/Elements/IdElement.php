@@ -86,7 +86,7 @@ class IdElement implements AvitoBoardElementInterface
 
     public function setData(string|array $product): void
     {
-        $this->data = (string)$product[self::ELEMENT_ALIAS];
+        $this->data = $product[self::ELEMENT_ALIAS];
     }
 
     public function fetchData(string|array $data = null): string

@@ -27,27 +27,31 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
-use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
-class TireTypeElement implements AvitoBoardElementInterface
+/**
+ * Индекс скорости шины
+ *
+ * Одно из значений Авито
+ */
+class SpeedIndexElement implements AvitoBoardElementInterface
 {
-    private const string FEED_ELEMENT = 'TireType';
+    private const string SPEED_INDEX_ELEMENT = 'SpeedIndex';
 
-    private const string LABEL = 'Сезонность шин';
+    private const string SPEED_INDEX_LABEL = 'Индекс скорости шины';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
         protected null|string|false $data = false,
     ) {}
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -60,9 +64,9 @@ class TireTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): null
+    public function getHelp(): string
     {
-        return null;
+        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/114281/values-xml';
     }
 
     public function getProduct(): PassengerTireProductInterface
@@ -70,9 +74,10 @@ class TireTypeElement implements AvitoBoardElementInterface
         return $this->product;
     }
 
-    public function setData(string|array $mapper): void
+    public function setData(string|array $product): void
     {
-        $this->data = $mapper;
+        // @TODO берем из свойств продукта product_modification_postfix, т.к. знаем, что для шин там всегда значение индекса скорости
+        $this->data = $product['product_modification_postfix'];
     }
 
     public function fetchData(): ?string
@@ -82,22 +87,16 @@ class TireTypeElement implements AvitoBoardElementInterface
             throw new \Exception('Не вызван метод setData');
         }
 
-        return match ($this->data)
-        {
-            TireSeasonEnum::WINTER->value => 'Зимние',
-            TireSeasonEnum::SUMMER->value => 'Летние',
-            TireSeasonEnum::ALL->value => 'Всесезонные',
-            default => null
-        };
+        return preg_replace('/[^a-zA-ZА-Яа-яЁё]/u', '', $this->data);
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::SPEED_INDEX_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::SPEED_INDEX_LABEL;
     }
 }

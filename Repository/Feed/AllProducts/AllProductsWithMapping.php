@@ -9,7 +9,14 @@ use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapper;
 use BaksDev\Avito\Board\Type\Mapper\Elements\DateBeginElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\DateEndElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\DescriptionElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\HeightForDeliveryElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\LengthForDeliveryElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\WeightForDeliveryElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\WidthForDeliveryElement;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
+use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
+use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Entity\Offers\CategoryProductOffers;
 use BaksDev\Products\Category\Entity\Trans\CategoryProductTrans;
@@ -36,9 +43,9 @@ use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
 
-final class AllProductsWithMapping implements AllProductsWithMappingInterface
+final readonly class AllProductsWithMapping implements AllProductsWithMappingInterface
 {
-    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
+    public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
 
     /**
      * Метод получает массив элементов продукции с соотношением свойств
@@ -63,9 +70,9 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
         );
 
         $dbal
-            ->addSelect('product_active.active_from as '. DateBeginElement::ELEMENT_ALIAS)
+            ->addSelect('product_active.active_from as ' . DateBeginElement::ELEMENT_ALIAS)
             // @TODO не дает задать алиас product_date_end
-            ->addSelect('product_active.active_to as '. DateEndElement::DATE_END_ALIAS)
+            ->addSelect('product_active.active_to as ' . DateEndElement::DATE_END_ALIAS)
             ->join(
                 'product',
                 ProductActive::class,
@@ -93,7 +100,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             );
 
         $dbal
-            ->addSelect('product_desc.preview AS product_description')
+            ->addSelect('product_desc.preview AS ' . DescriptionElement::DESCRIPTION_ALIAS)
             ->leftJoin(
                 'product_event',
                 ProductDescription::class,
@@ -427,6 +434,25 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                     END) AS product_images"
         );
 
+        /**  Вес продукта  */
+        if (class_exists(BaksDevDeliveryTransportBundle::class))
+        {
+            $dbal
+                ->addSelect('product_parameter.length AS product_length_delivery')
+                ->addSelect('product_parameter.width AS product_width_delivery')
+                ->addSelect('product_parameter.height AS product_height_delivery')
+                ->addSelect('product_parameter.weight AS product_weight_delivery')
+                ->leftJoin(
+                    'product_modification',
+                    DeliveryPackageProductParameter::class,
+                    'product_parameter',
+                    'product_parameter.product = product.id AND
+                        (product_parameter.offer IS NULL OR product_parameter.offer = product_offer.const) AND
+                        (product_parameter.variation IS NULL OR product_parameter.variation = product_variation.const) AND
+                        (product_parameter.modification IS NULL OR product_parameter.modification = product_modification.const)'
+                );
+        }
+
         /** Avito mapper */
         /**
          * Категория, для которой создан маппер. Для каждой карточки
@@ -460,20 +486,20 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                 'avito_mapper.event = avito_board.event'
             );
 
-//                        $dbal->addSelect(
-//                            "JSON_AGG
-//                                    ( DISTINCT
-//                                            JSONB_BUILD_OBJECT
-//                                            (
-//                                                'element', avito_mapper.element,
-//                                                'field', avito_mapper.product_field,
-//                                                'default', avito_mapper.def
-//                                            )
-//                                    )
-//                                    AS avito_mapper"
-//                        );
-//                $dbal->allGroupByExclude();
-//                dd($dbal->fetchAllAssociative());
+        //                        $dbal->addSelect(
+        //                            "JSON_AGG
+        //                                    ( DISTINCT
+        //                                            JSONB_BUILD_OBJECT
+        //                                            (
+        //                                                'element', avito_mapper.element,
+        //                                                'field', avito_mapper.product_field,
+        //                                                'default', avito_mapper.def
+        //                                            )
+        //                                    )
+        //                                    AS avito_mapper"
+        //                        );
+        //                $dbal->allGroupByExclude();
+        //                dd($dbal->fetchAllAssociative());
 
         /** Получаем значение из СВОЙСТВ товара */
         $dbal
@@ -508,16 +534,16 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
         //                '
         //            );
 
-//        /**
-//         */
-//        $dbal
-//            ->leftJoin(
-//                'avito_mapper',
-//                ProductTrans::class,
-//                'product_name_params',
-//                '
-//                    product_name_params.event = avito_mapper.product_field'
-//            );
+        //        /**
+        //         */
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_mapper',
+        //                ProductTrans::class,
+        //                'product_name_params',
+        //                '
+        //                    product_name_params.event = avito_mapper.product_field'
+        //            );
 
         /**
          * Получаем значение из торговых предложений

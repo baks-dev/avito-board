@@ -27,27 +27,33 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProductInterface;
-use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
-class TireTypeElement implements AvitoBoardElementInterface
+/**
+ * Разноширокий комплект шин
+ *
+ * Одно из значений:
+ * — Да
+ * — Нет
+ */
+class DifferentWidthTiresElement implements AvitoBoardElementInterface
 {
-    private const string FEED_ELEMENT = 'TireType';
+    private const string DIFFERENT_WIDTH_TIRES_ELEMENT = 'DifferentWidthTires';
 
-    private const string LABEL = 'Сезонность шин';
+    private const string DIFFERENT_WIDTH_TIRES_LABEL = 'Разноширокий комплект шин';
 
     public function __construct(
         private readonly ?PassengerTireProductInterface $product = null,
         protected null|string|false $data = false,
     ) {}
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -55,9 +61,10 @@ class TireTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): null
+    /** По умолчанию нет, так как не реализуем разноширокие комплекты */
+    public function getDefault(): string
     {
-        return null;
+        return 'Нет';
     }
 
     public function getHelp(): null
@@ -70,9 +77,9 @@ class TireTypeElement implements AvitoBoardElementInterface
         return $this->product;
     }
 
-    public function setData(string|array $mapper): void
+    public function setData(string|array $data): void
     {
-        $this->data = $mapper;
+        $this->data = $data;
     }
 
     public function fetchData(): ?string
@@ -82,22 +89,16 @@ class TireTypeElement implements AvitoBoardElementInterface
             throw new \Exception('Не вызван метод setData');
         }
 
-        return match ($this->data)
-        {
-            TireSeasonEnum::WINTER->value => 'Зимние',
-            TireSeasonEnum::SUMMER->value => 'Летние',
-            TireSeasonEnum::ALL->value => 'Всесезонные',
-            default => null
-        };
+        return $this->data;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::DIFFERENT_WIDTH_TIRES_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::DIFFERENT_WIDTH_TIRES_LABEL;
     }
 }

@@ -37,11 +37,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
  */
 class DescriptionElement implements AvitoBoardElementInterface
 {
-    public const string ELEMENT = 'Description';
+    // @TODO что получать - краткое или полное описание
+    public const string DESCRIPTION_ALIAS = 'product_description';
 
-    private const string ELEMENT_ALIAS = 'product_name';
+    private const string DESCRIPTION_ELEMENT = 'Description';
 
-    private const string ELEMENT_LABEL = 'Текстовое описание объявления';
+    private const string DESCRIPTION_LABEL = 'Текстовое описание объявления';
 
     public function __construct(
         private readonly ?AvitoProductInterface $product = null,
@@ -80,26 +81,22 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function setData(string|array $product): void
     {
-        $this->data = (string)$product[self::ELEMENT_ALIAS];
+        $this->data = $product[self::DESCRIPTION_ALIAS];
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
-        if(null === $this->data)
-        {
-            throw new \Exception('Не вызван метод setData');
-        }
-
+        // @TODO обрезать $this->data под ограничения Авито
         return sprintf('<![CDATA[%s]]>', $this->data);
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::DESCRIPTION_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::DESCRIPTION_LABEL;
     }
 }

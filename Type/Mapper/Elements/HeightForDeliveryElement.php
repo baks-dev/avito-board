@@ -23,50 +23,44 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoProductInterface;
 
-class GoodsSubTypeElement implements AvitoBoardElementInterface
+/**
+ * Высота товара (см), может использоваться для доставки.
+ *
+ * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
+ */
+class HeightForDeliveryElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'GoodsSubType';
+    private const string HEIGHT_FOR_DELIVERY_ELEMENT = 'HeightForDelivery';
 
-    private const string ELEMENT_LABEL = 'Тип одежды';
+    private const string HEIGHT_FOR_DELIVERY_LABEL = 'Высота товара (см)';
 
     public function __construct(
-        private readonly ?SweatersAndShirtsProductInterface $product = null,
+        private readonly ?AvitoProductInterface $product = null,
         protected ?string $data = null,
     ) {}
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
-    public function isChoices(): true
+    public function isChoices(): false
     {
-        return true;
+        return false;
     }
 
-    public function getDefault(): array
+    public function getDefault(): null
     {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return null;
     }
 
     public function getHelp(): null
@@ -74,27 +68,27 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function setData(string|array $mapper): void
+    public function setData(string|array $product): void
     {
-        $this->data = $mapper;
+        $this->data = $product['product_height_delivery'];
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
         return $this->data;
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::HEIGHT_FOR_DELIVERY_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::HEIGHT_FOR_DELIVERY_LABEL;
     }
 
-    public function getProduct(): ?SweatersAndShirtsProductInterface
+    public function getProduct(): null
     {
         return $this->product;
     }

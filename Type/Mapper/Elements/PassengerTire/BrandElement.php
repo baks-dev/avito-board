@@ -61,9 +61,9 @@ class BrandElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): null
+    public function getDefault(): string
     {
-        return null;
+        return '';
     }
 
     public function getHelp(): string

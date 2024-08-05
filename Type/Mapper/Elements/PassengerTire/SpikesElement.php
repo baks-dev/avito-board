@@ -34,7 +34,7 @@ final class SpikesElement extends TireTypeElement implements AvitoBoardExtendEle
 
     private const string ELEMENT_LABEL = 'Шипы';
 
-    protected ?string $base = null;
+    protected null|string|false $base = false;
 
     public function setBaseData(AvitoBoardElementInterface $base): void
     {
@@ -46,18 +46,22 @@ final class SpikesElement extends TireTypeElement implements AvitoBoardExtendEle
         $this->data = $mapper;
     }
 
-    public function fetchData(): string
+    public function fetchData(): ?string
     {
+        if (false === $this->data)
+        {
+            throw new \Exception('Не вызван метод setData');
+        }
+
         if(null === $this->base)
         {
-            throw new \Exception('Не вызван метод setBaseData');
+            return $this->base;
         }
 
         $extendData = match ($this->data)
         {
             'true' => 'шипованные',
             'false' => 'не шипованные',
-            default => $this->data
         };
 
         if ($this->base === 'Летние' || $this->base === 'Всесезонные')

@@ -61,6 +61,7 @@ final class ElementTransformerExtension extends AbstractExtension
         /**
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
+        // @TODO если у продукта есть свойство null обязательное для Авито - пропускаем продукт, пишем в лог
         $elements = null;
         foreach ($unmappedElements as $element)
         {
@@ -72,7 +73,7 @@ final class ElementTransformerExtension extends AbstractExtension
 
                 if ($data === null)
                 {
-                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид
+                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид, пишем в лог
                     continue;
                 }
 
@@ -92,9 +93,9 @@ final class ElementTransformerExtension extends AbstractExtension
          * - элемент, описанный в классе имеет приоритет над элементом, полученным из маппера
          *  (элемент класса перезаписывает элемент из маппера)
          */
-        $allElements = array_merge($mappedElements, $elements);
+        $feedElements = array_merge($mappedElements, $elements);
 
-        return $allElements;
+        return $feedElements;
     }
 
     private function mapperTransform(string $mapper, string $category): array
@@ -126,7 +127,7 @@ final class ElementTransformerExtension extends AbstractExtension
 
     /**
      * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
-     * /
+     *
      * @param array<class-string, AvitoBoardElementInterface> $instances
      * @return array<string, string>
      */
