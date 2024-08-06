@@ -21,40 +21,30 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Twig;
 
-namespace BaksDev\Avito\Board;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-
-class BaksDevAvitoBoardBundle extends AbstractBundle
+final class ElementFormatterExtension extends AbstractExtension
 {
-    public const string NAMESPACE = __NAMESPACE__ . '\\';
-
-    public const string PATH = __DIR__ . DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function getFunctions(): array
     {
-        $services = $container->services();
+        return [
+            new TwigFunction('element_format', [$this, 'elementFormat']),
+        ];
+    }
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH . '{Entity,Resources,Type}',
-                self::PATH . '**/*Message.php',
-                self::PATH . '**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE . 'Type\Mapper\\',
-            self::PATH . 'Type/Mapper'
-        );
+    public function elementFormat(string $element, string $value): string
+    {
+        return match ($element)
+        {
+            'Description' => sprintf('<![CDATA[%s]]>', $value),
+            'RimDiameter' => preg_replace('/\D/', '', $value),
+            'TireAspectRatio' => preg_replace('/\D/', '', $value),
+            'TireSectionWidth' => preg_replace('/\D/', '', $value),
+            'BackTireAspectRatio' => preg_replace('/\D/', '', $value),
+            default => $value
+        };
     }
 }

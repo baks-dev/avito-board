@@ -23,38 +23,30 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board;
+namespace BaksDev\Avito\Board\UseCase\Mapper\Delete;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
+final class DeleteMapperForm extends AbstractType
 {
-    public const string NAMESPACE = __NAMESPACE__ . '\\';
-
-    public const string PATH = __DIR__ . DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $services = $container->services();
+        $builder->add('delete_mapper', SubmitType::class, [
+            'label' => 'Delete',
+            'label_html' => true,
+            'attr' => ['class' => 'btn-danger']
+        ]);
+    }
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH . '{Entity,Resources,Type}',
-                self::PATH . '**/*Message.php',
-                self::PATH . '**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE . 'Type\Mapper\\',
-            self::PATH . 'Type/Mapper'
-        );
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => DeleteMapperDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
     }
 }

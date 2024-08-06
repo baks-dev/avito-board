@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding='UTF-8'?>
+
+{# <Ads formatVersion='3' target='Avito.ru'> #}
+{#    {% for product in products|filter(v => v.product_price > 0) %} #}
+{#        <Ad> #}
+{#            <Id> #}
+{#                test #}
+{#            </Id> #}
+{#        </Ad> #}
+{#    {% endfor %} #}
+{# </Ads> #}
+
+<Ads formatVersion='3' target='Avito.ru'>
+    {% for product in products|filter(v => v.product_price > 0) %}
+
+{#        {{ dd(CDN_HOST) }}#}
+        {% set tags = element_transform(product) %}
+
+        {% if tags is not null %}
+            <Ad>
+            {% for tag, data in tags %}
+                <{{ tag }}>
+                    {{ data|raw }}
+                </{{ tag }}>
+            {% endfor %}
+            </Ad>
+        {% endif %}
+
+    {% endfor %}
+</Ads>
