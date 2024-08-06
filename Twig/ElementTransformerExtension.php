@@ -25,9 +25,6 @@ namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\UrlHelper;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -37,10 +34,6 @@ final class ElementTransformerExtension extends AbstractExtension
 
     public function __construct(
         private readonly AvitoBoardMapperProvider $mapperProvider,
-        #[Autowire(env: 'CDN_HOST')]
-        private string $cdnHost,
-        private UrlHelper $helper,
-//        private readonly UrlGeneratorInterface $urlHelper,
     ) {}
 
     public function getFunctions(): array
@@ -93,10 +86,6 @@ final class ElementTransformerExtension extends AbstractExtension
             }
         }
 
-        $elements['Images'] = $this->imagesTransform($elements['Images']);
-
-        dd($elements);
-
         /** Преобразуем строку маппера в массив элементов */
         $mappedElements = $this->getElements($product['avito_board_mapper']);
 
@@ -113,27 +102,6 @@ final class ElementTransformerExtension extends AbstractExtension
         });
 
         return $feedElements;
-    }
-
-    private function imagesTransform(string $images)
-    {
-
-        $imagesUrls = null;
-        foreach (json_decode($images, false, 512, JSON_THROW_ON_ERROR) as $image) {
-            dump($image);
-            $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
-            $imgDir = $image->product_img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
-            dump($imgHost. $imgDir. $imgFile);
-            dd($this->helper->getAbsoluteUrl($imgHost. $imgDir. $imgFile));
-            $imagesUrls[] = $imgHost. $imgDir. $imgFile;
-
-        }
-
-//        dump($images);
-//        dump($imagesUrls);
-//        dd();
-        return $imagesUrls;
     }
 
     private function getElements(string $mapper): array

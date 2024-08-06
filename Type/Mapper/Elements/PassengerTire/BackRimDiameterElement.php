@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Диаметр задней оси, дюймы.
@@ -68,7 +68,7 @@ class BackRimDiameterElement
 
     public function getProduct(): string
     {
-        return PassengerTireBoardProduct::class;
+        return PassengerTireProduct::class;
     }
 
     /**

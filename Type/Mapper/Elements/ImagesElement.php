@@ -26,6 +26,8 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\UrlHelper;
 
 /**
  * Фотографии — вложенные элементы, по одному элементу «Image» на каждое изображение.
@@ -43,18 +45,17 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
  * Чтобы изменить фотографию в объявлении, используйте другую ссылку.
  * Новое изображение по-прежнему url-адресу не будет загружено.
  */
-class ImagesElement implements AvitoBoardElementInterface
+final readonly class ImagesElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Images';
 
-    private const string SUB_ELEMENT = 'Image';
-
     private const string LABEL = 'Фотографии';
 
-    public function subElement(): string
-    {
-        return self::SUB_ELEMENT;
-    }
+    public function __construct(
+        private UrlHelper $helper,
+        #[Autowire(env: 'CDN_HOST')]
+        private string $cdnHost,
+    ) {}
 
     public function isMapping(): false
     {
@@ -88,23 +89,22 @@ class ImagesElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
-        return $data['product_images'];
-
         $productImages = $data['product_images'];
 
         $elementImages = null;
         foreach (json_decode($productImages, false, 512, JSON_THROW_ON_ERROR) as $image)
         {
-            /** Если картинок нет - возвращаем null, не рендерим элемент */
+            // @TODO если картинки нет - то элемент не рендерим
             if (null === $image)
             {
                 return null;
             }
 
-
-
-            $path = $image->product_img . '/image.' . $image->product_img_ext;
-            $element = sprintf('<Image url="%s"/>%s', $path, PHP_EOL);
+            $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
+            $imgDir = $image->product_img;
+            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
+            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
             $elementImages .= $element;
         }
 

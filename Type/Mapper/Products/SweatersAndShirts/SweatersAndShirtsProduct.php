@@ -25,19 +25,24 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardProductEnum;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\GoodsTypeElement;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProductInterface
+final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
 {
-    private const string SWEATERS_AND_SHIRTS = 'Кофты и футболки';
+    private const string PRODUCT = 'Кофты и футболки';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
     ) {}
+
+    public function getProduct(): string
+    {
+        return self::PRODUCT;
+    }
 
     public function getElements(): array
     {
@@ -46,13 +51,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
-
-            if ($element->getProduct() === null)
-            {
-                $elements[] = new $element($this);
-            }
-
-            if ($element->getProduct() instanceof self)
+            if ($element->getProduct() === null || $element->getProduct() === self::class)
             {
                 $elements[] = $element;
             }
@@ -60,7 +59,7 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
 
         if (null === $elements)
         {
-            throw new \Exception();
+            throw new \Exception('Не найдено ни одного элемента');
         }
 
         return $elements;
@@ -73,36 +72,25 @@ final readonly class SweatersAndShirtsProduct implements SweatersAndShirtsProduc
         {
             if ($element->element() === $elementName)
             {
-
-                if ($element->getProduct() === null)
-                {
-                    return new $element($this);
-                }
-
-                if ($element->getProduct() instanceof self)
+                if ($element->getProduct() === null || $element->getProduct() === self::class)
                 {
                     return $element;
                 }
             }
         }
 
-        throw new \Exception();
-    }
-
-    public function getProduct(): string
-    {
-        return self::SWEATERS_AND_SHIRTS;
+        throw new \Exception('Не найден элемент');
     }
 
     public function isEqualProduct(string $product): bool
     {
-        return $product === self::SWEATERS_AND_SHIRTS;
+        return $product === self::PRODUCT;
     }
 
     public function __toString(): string
     {
-        $category = (new CategoryElement($this))->getDefault();
-        $variation = (new GoodsTypeElement($this))->getDefault();
+        $category = (new CategoryElement())->getDefault();
+        $variation = (new GoodsTypeElement())->getDefault();
 
         return sprintf('%s / %s', $category, $variation);
     }

@@ -26,18 +26,25 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\CategoryBoardElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\ImagesElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;
+use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-final readonly class PassengerTireProduct implements PassengerTireProductInterface
+final readonly class PassengerTireProduct implements AvitoBoardProductInterface
 {
-    private const string PASSENGER_TIRE = 'Легковые шины';
+    private const string PRODUCT = 'Легковые шины';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
     ) {}
+
+    public function getProduct(): string
+    {
+        return self::PRODUCT;
+    }
 
     public function getElements(): array
     {
@@ -46,13 +53,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
-
-            if ($element->getProduct() === null)
-            {
-                $passengerTireElements[] = new $element($this);
-            }
-
-            if ($element->getProduct() instanceof self)
+            if (null === $element->getProduct() || $element->getProduct() === self::class)
             {
                 $passengerTireElements[] = $element;
             }
@@ -60,7 +61,7 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
 
         if (null === $passengerTireElements)
         {
-            throw new \Exception();
+            throw new \Exception('Не найдено ни одного элемента');
         }
 
         return $passengerTireElements;
@@ -73,37 +74,26 @@ final readonly class PassengerTireProduct implements PassengerTireProductInterfa
         {
             if ($element->element() === $elementName)
             {
-
-                if ($element->getProduct() === null)
-                {
-                    return new $element($this);
-                }
-
-                if ($element->getProduct() instanceof self)
+                if ($element->getProduct() === null || $element->getProduct() === self::class)
                 {
                     return $element;
                 }
             }
         }
 
-        throw new \Exception();
-    }
-
-    public function getProduct(): string
-    {
-        return self::PASSENGER_TIRE;
+        throw new \Exception('Не найден элемент');
     }
 
     public function isEqualProduct(string $product): bool
     {
-        return $product === self::PASSENGER_TIRE;
+        return $product === self::PRODUCT;
     }
 
     public function __toString(): string
     {
-        $category = (new CategoryBoardElement($this))->getDefault();
-        $variation = (new GoodsTypeElement($this))->getDefault();
-        $type = (new ProductTypeElement($this))->getDefault();
+        $category = (new CategoryElement())->getDefault();
+        $variation = (new GoodsTypeElement())->getDefault();
+        $type = (new ProductTypeElement())->getDefault();
 
         return sprintf('%s / %s / %s', $category, $variation, $type);
     }

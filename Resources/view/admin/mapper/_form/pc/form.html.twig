@@ -114,13 +114,12 @@
                 {# форма для пользовательского ввода #}
                 {% if mapper.def is defined %}
 
-                    <div>
-                        {{ include (Template(mapper.def.vars.help)) }}
-                    </div>
-
                     <div class="w-50">
                         {{ form_label(mapper.def) }}
                         {#                        {{ form_help(mapper.def) }} #}
+                        <div>
+                            {{ include (Template(mapper.def.vars.help)) }}
+                        </div>
 
                         {% if mapper.vars.data.elementInstance.isMapping == false %}
                             текст предупреждения!!!

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  * Вид товара.
@@ -82,6 +82,6 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function getProduct(): string
     {
-        return SweatersAndShirtsBoardProduct::class;
+        return SweatersAndShirtsProduct::class;
     }
 }

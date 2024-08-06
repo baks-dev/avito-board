@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Разноширокий комплект шин
@@ -69,7 +69,7 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
 
     public function getProduct(): string
     {
-        return PassengerTireBoardProduct::class;
+        return PassengerTireProduct::class;
     }
 
     public function fetchData(string|array $data = null): ?string

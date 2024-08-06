@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  * Одно из значений
@@ -65,7 +65,7 @@ class ModelElement
 
     public function getProduct(): string
     {
-        return SweatersAndShirtsBoardProduct::class;
+        return SweatersAndShirtsProduct::class;
     }
 
     public function setData(string|array $product): void {}

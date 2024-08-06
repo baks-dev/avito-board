@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Высота профиля шины задней оси.
@@ -72,7 +72,7 @@ class BackTireSectionWidthElement
 
     public function getProduct(): string
     {
-        return PassengerTireBoardProduct::class;
+        return PassengerTireProduct::class;
     }
 
     public function fetchData(string|array $data = null): ?string
