@@ -92,7 +92,6 @@ readonly class ModelElement implements AvitoBoardElementInterface
         //                }
         //                return null;
 
-
         return $this->request->getModel($category, $nameInfo);
     }
 

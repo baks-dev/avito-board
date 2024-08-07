@@ -26,37 +26,27 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 /**
- * Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из форматов:
- * — dd.MM.yyyy
- * — dd.MM.yy
- * — yyyy-MM-dd
+ * Цена в рублях — целое число
  *
- * Чтобы объявление закрылось с точностью до часа, добавьте время через пробел в формате HH:mm:ss или HH:mm.
- * Если хотите явно указать часовой пояс, используйте формат ISO 8601: YYYY-MM-DDTHH:mm:ss+hh:mm.
- *
- * Если вы укажете уже прошедшую дату, автозагрузка не обработает объявление.
- *
- * @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
+ * Элемент обязателен для всех продуктов Авито
  */
-class DateEndElement implements AvitoBoardElementInterface
+class PriceElement implements AvitoBoardElementInterface
 {
-    public const string DATE_END = 'DateEnd';
+    private const string ELEMENT = 'Price';
 
-    public const string DATE_END_ALIAS = 'product_date_over';
+    private const string ELEMENT_LABEL = 'Цена';
 
-    private const string DATE_END_LABEL = 'Дата и время окончания размещения';
-
-    public function isMapping(): false
+    public function isMapping(): bool
     {
         return false;
     }
 
-    public function isRequired(): false
+    public function isRequired(): bool
     {
-        return false;
+        return true;
     }
 
-    public function isChoices(): false
+    public function isChoices(): bool
     {
         return false;
     }
@@ -76,18 +66,24 @@ class DateEndElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(string|array $data = null): string
     {
-        return $data['product_date_over'];
+        $price = $data['product_price'] / 100;
+
+        // @TODO временный хардкод величины процента
+        $total = $price + ($price * (0 / 100));
+        //        $total = $price + ($price * ($data['_from_avito_profile'] / 100));
+
+        return (string)ceil($total);
     }
 
     public function element(): string
     {
-        return self::DATE_END;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::DATE_END_LABEL;
+        return self::ELEMENT_LABEL;
     }
 }

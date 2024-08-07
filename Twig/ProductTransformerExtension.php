@@ -25,25 +25,33 @@ namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-final class ElementTransformerExtension extends AbstractExtension
+final class ProductTransformerExtension extends AbstractExtension
 {
     private ?string $avitoCategory = null;
 
+    private ?string $mapper = null;
+
+    protected LoggerInterface $logger;
+
     public function __construct(
+        LoggerInterface $avitoBoardLogger,
         private readonly AvitoBoardMapperProvider $mapperProvider,
-    ) {}
+    ) {
+        $this->logger = $avitoBoardLogger;
+    }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('element_transform', [$this, 'elementTransform']),
+            new TwigFunction('product_transform', [$this, 'productTransform']),
         ];
     }
 
-    public function elementTransform(array $product): ?array
+    public function productTransform(array $product): ?array
     {
         /** Возвращаем null, если нет маппера для продукта */
         if ($product['avito_board_avito_category'] === null)
@@ -52,6 +60,8 @@ final class ElementTransformerExtension extends AbstractExtension
         }
 
         $this->avitoCategory = $product['avito_board_avito_category'];
+        $this->mapper = $product['avito_board_mapper'];
+
 
         /** Получаем элементы по продукту, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
@@ -64,7 +74,6 @@ final class ElementTransformerExtension extends AbstractExtension
         /**
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
-        // @TODO если у продукта есть свойство null обязательное для Авито - пропускаем продукт, пишем в лог
         $elements = null;
         foreach ($unmappedElements as $element)
         {
@@ -72,9 +81,24 @@ final class ElementTransformerExtension extends AbstractExtension
             {
                 $data = $element->fetchData($product);
 
+                // @TODO если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог
+                if ($data === null && $element->isRequired())
+                {
+                    $this->logger->critical(
+                        sprintf(
+                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название продукта: %s Название элемента: %s',
+                            $product['product_name'],
+                            $element->element()
+                        ),
+                        [__FILE__ . ':' . __LINE__]
+                    );
+
+                    return null;
+                }
+
                 if ($data === null)
                 {
-                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид, пишем в лог
+                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид
                     continue;
                 }
 
@@ -87,7 +111,7 @@ final class ElementTransformerExtension extends AbstractExtension
         }
 
         /** Преобразуем строку маппера в массив элементов */
-        $mappedElements = $this->getElements($product['avito_board_mapper']);
+        $mappedElements = $this->getElements();
 
         /**
          * Объединяем массивы элементов по принципу:
@@ -104,9 +128,9 @@ final class ElementTransformerExtension extends AbstractExtension
         return $feedElements;
     }
 
-    private function getElements(string $mapper): array
+    private function getElements(): array
     {
-        $mapper = $this->mapperTransform($mapper);
+        $mapper = $this->mapperTransform();
 
         array_walk($mapper, function (&$value, $element) use ($mapper) {
             $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
@@ -117,10 +141,10 @@ final class ElementTransformerExtension extends AbstractExtension
         return $mapper;
     }
 
-    private function mapperTransform(string $mapper): array
+    private function mapperTransform(): array
     {
         $transform = null;
-        foreach (json_decode($mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
+        foreach (json_decode($this->mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
         {
             $transform[$element->element] = $element->value;
         }

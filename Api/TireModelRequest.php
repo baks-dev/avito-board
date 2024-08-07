@@ -14,10 +14,10 @@ final class TireModelRequest
     protected LoggerInterface $logger;
 
     public function __construct(
-        LoggerInterface $avitoLogger,
+        LoggerInterface $avitoBoardLogger,
         private readonly AppCacheInterface $cache,
     ) {
-        $this->logger = $avitoLogger;
+        $this->logger = $avitoBoardLogger;
     }
 
     public function getModel(string $category, array $nameInfo): ?string

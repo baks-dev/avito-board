@@ -43,7 +43,6 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * @TODO тестировать оправку фида без этого элемента
  * ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
- * тип элемента input: либо данные из ввода, либо из продукта
  */
 class DateBeginElement implements AvitoBoardElementInterface
 {
@@ -83,6 +82,13 @@ class DateBeginElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): string
     {
+        if ($data['product_quantity'] === 0)
+        {
+            // @TODO на какой срок закрывать объявление?
+            $date = new \DateTimeImmutable('+10 day');
+            return $date->format('Y-m-d H:i:s');
+        }
+
         return $data['product_date_begin'];
     }
 
