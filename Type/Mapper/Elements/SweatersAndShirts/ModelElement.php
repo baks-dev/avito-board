@@ -72,10 +72,10 @@ class ModelElement
 
     public function fetchData(string|array $data = null): ?string
     {
-        // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
+        // @TODO под эту категорию сделать отдельную реализацию запроса брендов
         return 'Adidas';
 
-        //        $this->data = $product['product_name'];
+        //        return $product['product_name'];
     }
 
     public function element(): string

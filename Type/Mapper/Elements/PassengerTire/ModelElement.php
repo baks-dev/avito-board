@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Api\ModelRequest;
+use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
@@ -41,7 +41,7 @@ readonly class ModelElement implements AvitoBoardElementInterface
     private const string LABEL = 'Модель';
 
     public function __construct(
-        private ModelRequest $request,
+        private TireModelRequest $request,
     ) {}
 
     public function isMapping(): false
@@ -78,17 +78,22 @@ readonly class ModelElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
-        $this->request->getModel($data['product_name']);
+        $category = $data['product_category'];
+
+        $name = explode(' ', $data['product_name']);
+
+        $nameInfo = array_filter($name, function (string $info) use ($category) {
+            return $info !== $category;
+        });
+
+        //                if ($data['product_name'] === 'Triangle TR259')
+        //                {
+        //                    $this->request->getModel($category, $nameInfo);
+        //                }
+        //                return null;
 
 
-        dump($data['product_name']);
-
-        dd();
-
-        // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
-        return 'EffeXSport TH202';
-
-        //        $this->data = $product['product_name'];
+        return $this->request->getModel($category, $nameInfo);
     }
 
     public function element(): string
