@@ -78,21 +78,9 @@ readonly class ModelElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
-        $category = $data['product_category'];
+        $search = $this->request->getModel($data['product_name']);
 
-        $name = explode(' ', $data['product_name']);
-
-        $nameInfo = array_filter($name, function (string $info) use ($category) {
-            return $info !== $category;
-        });
-
-        //                if ($data['product_name'] === 'Triangle TR259')
-        //                {
-        //                    $this->request->getModel($category, $nameInfo);
-        //                }
-        //                return null;
-
-        return $this->request->getModel($category, $nameInfo);
+        return $search['model'];
     }
 
     public function element(): string
