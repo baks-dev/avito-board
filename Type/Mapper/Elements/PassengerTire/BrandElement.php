@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
@@ -35,15 +36,19 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * Элемент общий для всех продуктов Авито
  * @TODO ожидает добавление в характеристики продукта
  */
-class BrandElement implements AvitoBoardElementInterface
+readonly class BrandElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Brand';
 
     private const string LABEL = 'Бренд шины';
 
-    public function isMapping(): true
+    public function __construct(
+        private TireModelRequest $request,
+    ) {}
+
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): true
@@ -56,10 +61,9 @@ class BrandElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): false
+    public function getDefault(): null
     {
-        // @TODO чтобы можно отобразить в форме
-        return false;
+        return null;
     }
 
     public function getHelp(): string
@@ -72,15 +76,11 @@ class BrandElement implements AvitoBoardElementInterface
         return PassengerTireProduct::class;
     }
 
-    // @TODO ожидает добавление в характеристики продукта
     public function fetchData(string|array $data = null): ?string
     {
-        if(null === $data)
-        {
-            return $data;
-        }
+        $search = $this->request->getModel($data['product_name']);
 
-        return $data[self::ELEMENT];
+        return $search['brand'];
     }
 
     public function element(): string

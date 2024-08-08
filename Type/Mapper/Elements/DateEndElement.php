@@ -40,11 +40,9 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  */
 class DateEndElement implements AvitoBoardElementInterface
 {
-    public const string DATE_END = 'DateEnd';
+    public const string ELEMENT = 'DateEnd';
 
-    public const string DATE_END_ALIAS = 'product_date_over';
-
-    private const string DATE_END_LABEL = 'Дата и время окончания размещения';
+    private const string LABEL = 'Дата и время окончания размещения';
 
     public function isMapping(): false
     {
@@ -83,11 +81,11 @@ class DateEndElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::DATE_END;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::DATE_END_LABEL;
+        return self::LABEL;
     }
 }

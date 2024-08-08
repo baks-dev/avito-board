@@ -22,6 +22,9 @@ final class TireModelRequest
         $this->logger = $avitoBoardLogger;
     }
 
+    /**
+     * @return array{'model': array{string, int}, 'band': string, 'model': string }
+     */
     public function getModel(string $nameInfo): array
     {
         $this->nameInfo = $nameInfo;
