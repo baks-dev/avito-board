@@ -28,15 +28,22 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
-class GoodsSubTypeElement implements AvitoBoardElementInterface
+/**
+ *  Бренд.
+ *  Одно из значений
+ *
+ * Элемент общий для всех продуктов Авито
+ * @TODO ожидает добавление в характеристики продукта поэтому
+ */
+class SizeElement
 {
-    private const string ELEMENT = 'GoodsSubType';
+    private const string BRAND_ELEMENT = 'Brand';
 
-    private const string LABEL = 'Тип одежды';
+    private const string BRAND_LABEL = 'Бренд одежды';
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): true
@@ -44,29 +51,14 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): true
+    public function isChoices(): false
     {
-        return true;
+        return false;
     }
 
-    public function getProduct(): string
+    public function getDefault(): null
     {
-        return SweatersAndShirtsProduct::class;
-    }
-
-    public function getDefault(): array
-    {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return null;
     }
 
     public function getHelp(): null
@@ -74,23 +66,24 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function getProduct(): string
     {
-        if (null === $data[self::ELEMENT])
-            {
-                return null;
-            }
+        return SweatersAndShirtsProduct::class;
+    }
 
-        return $data[self::ELEMENT];
+    public function fetchData(string|array $data = null): string
+    {
+        // @TODO присваивать из свойств продукта, когда бренд будет добавлен - пока из product_name
+        return $data['product_name'];
     }
 
     public function element(): string
     {
-        return self::ELEMENT;
+        return self::BRAND_ELEMENT;
     }
 
     public function label(): string
     {
-        return self::LABEL;
+        return self::BRAND_LABEL;
     }
 }

@@ -485,21 +485,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 'avito_mapper.event = avito_board.event'
             );
 
-        //                        $dbal->addSelect(
-        //                            "JSON_AGG
-        //                                    ( DISTINCT
-        //                                            JSONB_BUILD_OBJECT
-        //                                            (
-        //                                                'element', avito_mapper.element,
-        //                                                'field', avito_mapper.product_field,
-        //                                                'default', avito_mapper.def
-        //                                            )
-        //                                    )
-        //                                    AS avito_mapper"
-        //                        );
-        //                $dbal->allGroupByExclude();
-        //                dd($dbal->fetchAllAssociative());
-
         /** Получаем значение из СВОЙСТВ товара */
         $dbal
             ->leftJoin(
@@ -510,39 +495,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 product_property.event = product.event AND 
                 product_property.field = avito_mapper.product_field'
             );
-
-        //        /**
-        //         * Получаем ИМЕНОВАННОЕ значение из СВОЙСТВ товара
-        //         */
-        //        $dbal
-        //            ->leftJoin(
-        //                'product_property',
-        //                CategoryProductSectionField::class,
-        //                'product_category_section_field',
-        //                'product_property.field = product_category_section_field.const'
-        //            );
-        //
-        //        $dbal
-        //            ->leftJoin(
-        //                'product_category_section_field',
-        //                CategoryProductSectionFieldTrans::class,
-        //                'product_category_section_field_trans',
-        //                '
-        //                    product_category_section_field_trans.field = product_category_section_field.id AND
-        //                    product_category_section_field_trans.local = :local
-        //                '
-        //            );
-
-        //        /**
-        //         */
-        //        $dbal
-        //            ->leftJoin(
-        //                'avito_mapper',
-        //                ProductTrans::class,
-        //                'product_name_params',
-        //                '
-        //                    product_name_params.event = avito_mapper.product_field'
-        //            );
 
         /**
          * Получаем значение из торговых предложений
@@ -647,7 +599,8 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
         //        dd($dbal->fetchAllAssociative());
 
         return $dbal
-            // ->enableCache('Namespace', 3600)
+            // @TODO не кешируем, потому-что нужно брать актуальную инфу?
+//            ->enableCache('avito-board-products', 3600)
             ->fetchAllAssociative();
     }
 }

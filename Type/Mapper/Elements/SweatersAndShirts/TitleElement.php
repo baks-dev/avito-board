@@ -73,10 +73,15 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(string|array $data = null): ?string
     {
-        // @TODO не уверен, из какого свойства брать название
-        return $data['product_category'];
+        // @TODO по какому ключу формировать значение?
+        if (null === $data['product_name'] || null === $data['product_article'])
+        {
+            return null;
+        }
+
+        return sprintf('%s %s', $data['product_name'], $data['product_article']);
     }
 
     public function element(): string

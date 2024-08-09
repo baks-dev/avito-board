@@ -65,9 +65,9 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(string|array $data = null): null
     {
-        return $data;
+        return null;
     }
 
     public function element(): string

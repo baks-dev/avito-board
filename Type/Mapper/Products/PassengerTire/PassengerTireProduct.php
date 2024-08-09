@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\ImagesElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeElement;
 use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;

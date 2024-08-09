@@ -32,6 +32,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  *
  * Элемент общий для всех продуктов Авито
  */
+// @TODO реализация AvitoBoardElementInterface после реализации реквеста для моделей футболок
 class ModelElement
 {
     private const string ELEMENT = 'Model';
@@ -72,6 +73,7 @@ class ModelElement
 
     public function fetchData(string|array $data = null): ?string
     {
+        dd($data);
         // @TODO под эту категорию сделать отдельную реализацию запроса брендов
         return 'Adidas';
 

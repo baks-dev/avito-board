@@ -71,9 +71,9 @@ class TitleElement implements AvitoBoardElementInterface
         return PassengerTireProduct::class;
     }
 
-    // @TODO подумать по какому ключу формировать значение
     public function fetchData(string|array $data = null): ?string
     {
+        // @TODO по какому ключу формировать значение?
         if (null === $data['product_name'] || null === $data['product_article'])
         {
             return null;

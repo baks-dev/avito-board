@@ -61,9 +61,9 @@ class BrandElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'Общее значение для всех продуктов в данной категории';
+        return null;
     }
 
     public function getProduct(): string

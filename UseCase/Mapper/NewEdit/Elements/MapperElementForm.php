@@ -18,7 +18,6 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -52,7 +51,6 @@ final class MapperElementForm extends AbstractType
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
                 $productFields = $options['product_fields'];
 
-
                 if (null === $element->getDefault())
                 {
                     $form
@@ -72,7 +70,7 @@ final class MapperElementForm extends AbstractType
                         ]);
                 }
 
-                if (false === $element->getDefault())
+                if (null !== $element->getDefault())
                 {
                     if ($element->isChoices())
                     {

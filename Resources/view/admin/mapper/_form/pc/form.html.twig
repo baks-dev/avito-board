@@ -31,9 +31,13 @@
 
                 <div class="w-50">
                     {{ form_label(setting.def) }}
-                    <div>
-                        {{ include (Template(setting.def.vars.help)) }}
-                    </div>
+
+
+                    {% if setting.def.vars.help is not null %}
+                        <div>
+                            {{ include (Template(setting.def.vars.help)) }}
+                        </div>
+                    {% endif %}
 
                     {% if setting.vars.data.elementInstance.isMapping == false %}
                         текст предупреждения!!!
