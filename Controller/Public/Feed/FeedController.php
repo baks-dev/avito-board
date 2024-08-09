@@ -24,7 +24,6 @@ class FeedController extends AbstractController
         $response = $this->render(
             [
                 'products' => $products,
-//                'avitoAuth' => $avitoAuth,
             ],
             file: 'export.html.twig'
         );

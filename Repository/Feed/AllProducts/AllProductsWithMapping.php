@@ -50,7 +50,7 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
     /**
      * Метод получает массив элементов продукции с соотношением свойств
      */
-    public function findAll(UserProfileUid $profile = null): array|bool
+    public function findAll(UserProfileUid $profile): array|bool
     {
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -606,48 +606,45 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
 			AS avito_board_mapper"
         );
 
+        // добавляем данные из авторизации Авито
+        $dbal
+            ->from(AvitoToken::class, 'avito_token')
+            ->where('avito_token.id = :profile')
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
 
-        if(null !== $profile)
-        {
-            $dbal
-                ->from(AvitoToken::class, 'avito_token')
-                ->where('avito_token.id = :profile')
-                ->setParameter('profile', $profile, UserProfileUid::TYPE);
+        $dbal->join(
+            'avito_token',
+            AvitoTokenEvent::class,
+            'avito_token_event',
+            'avito_token_event.id = avito_token.event AND avito_token_event.active = true',
+        );
 
-            $dbal->join(
-                'avito_token',
-                AvitoTokenEvent::class,
-                'avito_token_event',
-                'avito_token_event.id = avito_token.event AND avito_token_event.active = true',
-            );
+        $dbal->join(
+            'avito_token_event',
+            AvitoTokenProfile::class,
+            'avito_token_profile',
+            'avito_token_profile.event = avito_token_event.id',
+        );
 
-            $dbal->join(
-                'avito_token_event',
-                AvitoTokenProfile::class,
-                'avito_token_profile',
-                'avito_token_profile.event = avito_token_event.id',
-            );
+        $dbal->join(
+            'avito_token',
+            UserProfileInfo::class,
+            'info',
+            'info.profile = avito_token.id AND info.status = :status',
+        );
 
-            $dbal->join(
-                'avito_token',
-                UserProfileInfo::class,
-                'info',
-                'info.profile = avito_token.id AND info.status = :status',
-            );
+        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
 
-            $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-            $dbal->addSelect('avito_token_profile.address AS avito_token_address');
-            $dbal->addSelect('avito_token_profile.phone AS avito_token_phone');
-            $dbal->addSelect('avito_token_profile.manager AS avito_token_manager');
-            $dbal->addSelect('avito_token_profile.percent AS avito_token_percent');
-        }
+        $dbal->addSelect('avito_token_profile.address AS avito_token_address');
+        $dbal->addSelect('avito_token_profile.phone AS avito_token_phone');
+        $dbal->addSelect('avito_token_profile.manager AS avito_token_manager');
+        $dbal->addSelect('avito_token_profile.percent AS avito_token_percent');
 
         $dbal->allGroupByExclude();
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-//        dd($dbal->fetchAllAssociative());
+        //        dd($dbal->fetchAllAssociative());
 
         return $dbal
             // ->enableCache('Namespace', 3600)

@@ -40,6 +40,7 @@ final readonly class AvitoBoardMapperProvider
     }
 
     // @TODO подумать, как еще можно получать инстанс элемента
+    // @TODO не выкидывать исключение, а возвращать null?
     public function getElement(string $productCategory, string $elementName): AvitoBoardElementInterface
     {
         /** @var AvitoBoardProductInterface $product */
