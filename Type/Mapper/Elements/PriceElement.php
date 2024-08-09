@@ -70,9 +70,7 @@ class PriceElement implements AvitoBoardElementInterface
     {
         $price = $data['product_price'] / 100;
 
-        // @TODO временный хардкод величины процента
-        $total = $price + ($price * (0 / 100));
-        //        $total = $price + ($price * ($data['_from_avito_profile'] / 100));
+        $total = $price + ($price * ($data['avito_token_percent'] / 100));
 
         return (string)ceil($total);
     }

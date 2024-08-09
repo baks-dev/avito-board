@@ -19,11 +19,12 @@ class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $products = $allProductsWithMapping->findAll();
+        $products = $allProductsWithMapping->findAll($profile);
 
         $response = $this->render(
             [
                 'products' => $products,
+//                'avitoAuth' => $avitoAuth,
             ],
             file: 'export.html.twig'
         );

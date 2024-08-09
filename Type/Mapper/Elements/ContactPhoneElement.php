@@ -26,25 +26,33 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 /**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
+ * Контактный телефон — строка, содержащая только один российский номер телефона.
  *
- * Элемент общий для всех продуктов Авито
+ * Обязательно указать код города или мобильного оператора:
+ * — Код города должен указываться с +7 или 8 в начале
+ * — Код мобильного оператора можно без 8 и 7 в начале
+ *
+ * Корректные примеры:
+ * — +7 (495) 777-10-66
+ * — (81374) 4-55-75
+ * — 8 905 207 04 90
+ * — +7 905 2070490
+ * — 88123855085
  */
-class AddressElement implements AvitoBoardElementInterface
+class ContactPhoneElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Address';
+    private const string ELEMENT = 'ContactPhone';
 
-    private const string LABEL = 'Адрес для объявления';
+    private const string LABEL = 'Контактный телефон';
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -69,7 +77,7 @@ class AddressElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): string
     {
-        return $data['avito_token_address'];
+        return $data['avito_token_phone'];
     }
 
     public function element(): string

@@ -9,10 +9,11 @@
             <Ad>
             {% for tag, data in tags %}
                 <{{ tag }}>
-                    {{ data|raw }}
+                {{ data|raw }}
                 </{{ tag }}>
             {% endfor %}
             </Ad>
+
         {% endif %}
 
     {% endfor %}

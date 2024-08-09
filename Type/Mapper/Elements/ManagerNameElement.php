@@ -26,25 +26,22 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 /**
- * Полный адрес объекта — строка до 256 символов.
- * Является альтернативой параметрам Latitude, Longitude
- *
- * Элемент общий для всех продуктов Авито
+ * Имя менеджера, контактного лица компании по данному объявлению — строка не более 40 символов
  */
-class AddressElement implements AvitoBoardElementInterface
+class ManagerNameElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Address';
+    private const string ELEMENT = 'ManagerName';
 
-    private const string LABEL = 'Адрес для объявления';
+    private const string LABEL = 'Имя менеджера, контактного лица компании';
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -69,7 +66,7 @@ class AddressElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): string
     {
-        return $data['avito_token_address'];
+        return $data['avito_token_manager'];
     }
 
     public function element(): string

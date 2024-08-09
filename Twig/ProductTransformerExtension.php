@@ -62,7 +62,6 @@ final class ProductTransformerExtension extends AbstractExtension
         $this->avitoCategory = $product['avito_board_avito_category'];
         $this->mapper = $product['avito_board_mapper'];
 
-
         /** Получаем элементы по продукту, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
             $this->mapperProvider->filterElements($this->avitoCategory),
