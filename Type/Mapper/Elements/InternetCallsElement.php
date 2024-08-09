@@ -43,8 +43,11 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
  * Одно из значений:
  * — Да
  * — Нет
+ *
+ * @see CallsDevicesElement
  */
-class InternetCallsElement implements AvitoBoardElementInterface
+// @TODO убрал из реализации AvitoBoardElementInterface
+class InternetCallsElement
 {
     private const string INTERNET_CALLS_ELEMENT = 'InternetCalls';
 
@@ -67,8 +70,7 @@ class InternetCallsElement implements AvitoBoardElementInterface
 
     public function getDefault(): string
     {
-        // @TODO хардкодим временное значение пока, так как нет таблицы откуда забирать данные
-        return 'Нет';
+        return 'Да';
     }
 
     public function getHelp(): null

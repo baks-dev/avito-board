@@ -25,7 +25,7 @@ final class TireModelRequest
     /**
      * @return array{'model': array{string, int}, 'band': string, 'model': string }
      */
-    public function getModel(string $nameInfo): array
+    public function getModel(string $nameInfo): ?array
     {
         $this->nameInfo = $nameInfo;
 
@@ -165,6 +165,16 @@ final class TireModelRequest
         {
             $maxValue = max($result['models']);
             $result['model'] = array_search($maxValue, $result['models'], true);
+        }
+
+        if (empty($result))
+        {
+            $this->logger->critical(
+                'Не найдено совпадений для модели ' . $nameInfo,
+                [__FILE__ . ':' . __LINE__]
+            );
+
+            return null;
         }
 
         return $result;

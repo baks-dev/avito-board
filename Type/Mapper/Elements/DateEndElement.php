@@ -35,10 +35,9 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Если хотите явно указать часовой пояс, используйте формат ISO 8601: YYYY-MM-DDTHH:mm:ss+hh:mm.
  *
  * Если вы укажете уже прошедшую дату, автозагрузка не обработает объявление.
- *
- * @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
  */
-class DateEndElement implements AvitoBoardElementInterface
+// @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
+class DateEndElement
 {
     public const string ELEMENT = 'DateEnd';
 

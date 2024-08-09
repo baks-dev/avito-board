@@ -28,6 +28,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 /**
  * Имя менеджера, контактного лица компании по данному объявлению — строка не более 40 символов
  */
+// @TODO мало символов для идентификации - может убрать?
 class ManagerNameElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'ManagerName';

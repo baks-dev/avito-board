@@ -31,12 +31,10 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  *  Бренд.
- *  Одно из значений
  *
- * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта
+ *  Одно из значений
  */
-readonly class BrandElement implements AvitoBoardElementInterface
+final readonly class BrandElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Brand';
 
@@ -79,6 +77,11 @@ readonly class BrandElement implements AvitoBoardElementInterface
     public function fetchData(string|array $data = null): ?string
     {
         $search = $this->request->getModel($data['product_name']);
+
+        if (null == $search)
+        {
+            return null;
+        }
 
         return $search['brand'];
     }

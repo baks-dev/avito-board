@@ -54,9 +54,9 @@ class TireAspectRatioElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/732/values-xml';
+        return null;
     }
 
     public function getProduct(): string
@@ -64,11 +64,11 @@ class TireAspectRatioElement implements AvitoBoardElementInterface
         return PassengerTireProduct::class;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(string|array $data = null): ?string
     {
-        if(null === $data)
+        if(null === $data[self::ELEMENT])
         {
-            return $data;
+            return null;
         }
 
         return preg_replace('/\D/', '', $data[self::ELEMENT]);

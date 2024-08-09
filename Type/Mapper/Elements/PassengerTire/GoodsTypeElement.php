@@ -36,9 +36,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    private const string GOODS_TYPE_ELEMENT = 'GoodsType';
+    private const string ELEMENT = 'GoodsType';
 
-    private const string GOODS_TYPE_LABEL = 'Вид товара';
+    private const string LABEL = 'Вид товара';
 
     public function isMapping(): false
     {
@@ -77,11 +77,11 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::GOODS_TYPE_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::GOODS_TYPE_LABEL;
+        return self::LABEL;
     }
 }

@@ -54,22 +54,9 @@ class DeliveryElement
         return true;
     }
 
-    public function getDefault(): array
+    public function getDefault(): null
     {
-        return [
-            'Выключена',
-            'ПВЗ',
-            'Курьер',
-            'Постамат',
-            'Свой курьер',
-            'Свой партнер СДЭК',
-            'Свой партнер Деловые Линии',
-            'Свой партнер DPD',
-            'Свой партнер ПЭК',
-            'Свой партнер Почта России',
-            'Свой партнер Boxberry',
-            'Свой партнер СДЭК курьер',
-        ];
+        return null;
     }
 
     public function getHelp(): null
@@ -86,6 +73,22 @@ class DeliveryElement
     public function fetchData(string|array $data = null): string
     {
         // @TODO пока не понимаю, откуда брать информацию о доставке
+        //      брать значение из продукта и подбирать соответствие
+        //        [
+        //            'Выключена',
+        //            'ПВЗ',
+        //            'Курьер',
+        //            'Постамат',
+        //            'Свой курьер',
+        //            'Свой партнер СДЭК',
+        //            'Свой партнер Деловые Линии',
+        //            'Свой партнер DPD',
+        //            'Свой партнер ПЭК',
+        //            'Свой партнер Почта России',
+        //            'Свой партнер Boxberry',
+        //            'Свой партнер СДЭК курьер',
+        //        ];
+
         return sprintf('<Option>%s</Option>', $data['product_delivery']);
     }
 

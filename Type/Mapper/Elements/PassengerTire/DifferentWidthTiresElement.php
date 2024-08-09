@@ -37,9 +37,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class DifferentWidthTiresElement implements AvitoBoardElementInterface
 {
-    private const string DIFFERENT_WIDTH_TIRES_ELEMENT = 'DifferentWidthTires';
+    private const string ELEMENT = 'DifferentWidthTires';
 
-    private const string DIFFERENT_WIDTH_TIRES_LABEL = 'Разноширокий комплект шин';
+    private const string LABEL = 'Разноширокий комплект шин';
 
     public function isMapping(): false
     {
@@ -56,7 +56,7 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
         return false;
     }
 
-    /** По умолчанию нет, так как не реализуем разноширокие комплекты */
+    // @TODO По умолчанию Нет, так как не реализуем разноширокие комплекты
     public function getDefault(): string
     {
         return 'Нет';
@@ -79,11 +79,11 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::DIFFERENT_WIDTH_TIRES_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::DIFFERENT_WIDTH_TIRES_LABEL;
+        return self::LABEL;
     }
 }

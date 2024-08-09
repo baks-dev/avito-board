@@ -41,10 +41,10 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Не обязателен для Авито, но обязателен для нас
  *
- * @TODO тестировать оправку фида без этого элемента
- * ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
  */
-class DateBeginElement implements AvitoBoardElementInterface
+// @TODO тестировать оправку фида без этого элемента (исключить из AvitoBoardElementInterface)
+//      ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
+class DateBeginElement
 {
     private const string ELEMENT = 'DateBegin';
 

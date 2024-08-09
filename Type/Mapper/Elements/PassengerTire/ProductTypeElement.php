@@ -28,11 +28,14 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
+/**
+ * Тип товара
+ */
 class ProductTypeElement implements AvitoBoardElementInterface
 {
-    private const string PRODUCT_TYPE_ELEMENT = 'ProductType';
+    private const string ELEMENT = 'ProductType';
 
-    private const string PRODUCT_TYPE_LABEL = 'Тип товара';
+    private const string LABEL = 'Тип товара';
 
     public function isMapping(): false
     {
@@ -71,11 +74,11 @@ class ProductTypeElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::PRODUCT_TYPE_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::PRODUCT_TYPE_LABEL;
+        return self::LABEL;
     }
 }

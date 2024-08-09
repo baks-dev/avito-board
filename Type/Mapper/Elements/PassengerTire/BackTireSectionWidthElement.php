@@ -33,22 +33,24 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
  * Одно из значений от Авито
- * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
+ *
+ * @see TireSectionWidthElement
  */
+// @TODO не реализует AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
 class BackTireSectionWidthElement
 {
-    public const string BACK_TIRE_SECTION_WIDTH_ELEMENT = 'BackTireSectionWidth';
+    public const string ELEMENT = 'BackTireSectionWidth';
 
-    public const string BACK_TIRE_SECTION_WIDTH_LABEL = 'Ширина профиля шины задней оси';
+    public const string LABEL = 'Ширина профиля шины задней оси';
 
     public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -56,18 +58,14 @@ class BackTireSectionWidthElement
         return false;
     }
 
-    /**
-     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see TireSectionWidthElement
-     */
     public function getDefault(): null
     {
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/118794/values-xml';
+        return null;
     }
 
     public function getProduct(): string
@@ -75,23 +73,24 @@ class BackTireSectionWidthElement
         return PassengerTireProduct::class;
     }
 
+    // @TODO Если элемент обязательный, то значение будем брать такое же, как и в элементе TireSectionWidthElement
     public function fetchData(string|array $data = null): ?string
     {
-        if(null === $data)
+        if(null === $data[self::ELEMENT])
         {
-            return $data;
+            return null;
         }
 
-        return preg_replace('/\D/', '', $data);
+        return preg_replace('/\D/', '', $data[self::ELEMENT]);
     }
 
     public function element(): string
     {
-        return self::BACK_TIRE_SECTION_WIDTH_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::BACK_TIRE_SECTION_WIDTH_LABEL;
+        return self::LABEL;
     }
 }

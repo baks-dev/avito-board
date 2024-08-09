@@ -23,40 +23,33 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
-
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
 /**
- * Количество шт. в комплекте
+ * Идентификатор (ID) мобильного устройства, на которые будут приходить интернет-звонки.
+ * Можно выбрать одно или несколько для каждого объявления.
  *
- * Одно из значений:
- * — за 1 шт.
- * — за 2 шт.
- * — за 3 шт.
- * — за 4 шт.
- * — за 5 шт.
- * — за 6 шт.
- * — за 7 шт.
- * — за 8 шт.
+ * Идентификатор устройства (ID) можно посмотреть в Настройках (на мобильных устройствах — в профиле) → «Устройства для приёма звонков через Авито».
  *
- * Не более 8 шт. в комплекте
+ * Если ничего не выбрать, звонки будут поступать на первое устройство из списка.
+ *
+ *  @see InternetCallsElement
  */
-class QuantityElement implements AvitoBoardElementInterface
+// @TODO убрал из реализации AvitoBoardElementInterface
+class CallsDevicesElement
 {
-    private const string QUANTITY_ELEMENT = 'Quantity';
+    private const string ELEMENT = 'CallsDevices';
 
-    private const string QUANTITY_LABEL = 'Количество покрышек в комплекте';
+    private const string ELEMENT_LABEL = 'Идентификатор (ID) мобильного устройства, на которые будут приходить интернет-звонки';
 
-    public function isMapping(): false
+    public function isMapping(): bool
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -64,10 +57,9 @@ class QuantityElement implements AvitoBoardElementInterface
         return false;
     }
 
-    // @TODO публикуем цену за 1 шт.
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'за 1 шт.';
+        return null;
     }
 
     public function getHelp(): null
@@ -75,23 +67,23 @@ class QuantityElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function getProduct(): null
     {
-        return PassengerTireProduct::class;
+        return null;
     }
 
     public function fetchData(string|array $data = null): ?string
     {
-        return $data;
+        return $data['avito_token_phone_id'];
     }
 
     public function element(): string
     {
-        return self::QUANTITY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::QUANTITY_LABEL;
+        return self::ELEMENT_LABEL;
     }
 }

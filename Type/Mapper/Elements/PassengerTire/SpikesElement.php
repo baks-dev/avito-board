@@ -28,35 +28,16 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
+/**
+ * Кастомный тег.
+ *
+ * Связан с @see TireTypeElement
+ */
 final class SpikesElement implements AvitoBoardElementInterface
 {
     public const string ELEMENT = 'Spikes';
 
-    private const string ELEMENT_LABEL = 'Шипы';
-
-    public function fetchData(string|array $data = null): null
-    {
-        // @TODO возвращаю null, чтобы не рендерить элемент
-        return null;
-
-        // @TODO думаю логика при обработке ненужного элемента не нужна
-        // return match ($data[self::ELEMENT])
-        // {
-        //            'true' => 'шипованные',
-        //            'false' => 'не шипованные',
-        //            default => null
-        //        };
-    }
-
-    public function element(): string
-    {
-        return self::ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::ELEMENT_LABEL;
-    }
+    private const string LABEL = 'Шипы';
 
     public function isMapping(): true
     {
@@ -86,5 +67,29 @@ final class SpikesElement implements AvitoBoardElementInterface
     public function getProduct(): string
     {
         return PassengerTireProduct::class;
+    }
+
+    public function fetchData(string|array $data = null): null
+    {
+        // @TODO думаю логика при обработке ненужного элемента не нужна
+        // return match ($data[self::ELEMENT])
+        // {
+        //            'true' => 'шипованные',
+        //            'false' => 'не шипованные',
+        //            default => null
+        //        };
+
+        // @TODO возвращаю null, чтобы не рендерить элемент
+        return null;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
     }
 }

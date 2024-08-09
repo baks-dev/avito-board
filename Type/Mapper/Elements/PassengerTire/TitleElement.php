@@ -37,12 +37,10 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class TitleElement implements AvitoBoardElementInterface
 {
-    private const string TITLE_ELEMENT = 'Title';
+    private const string ELEMENT = 'Title';
 
-    private const string TITLE_LABEL = 'Название объявления';
+    private const string LABEL = 'Название объявления';
 
-    // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
-    // @todo если давать выбор из свойства продукта - как его добавить в выпадающий список
     public function isMapping(): false
     {
         return false;
@@ -73,19 +71,24 @@ class TitleElement implements AvitoBoardElementInterface
         return PassengerTireProduct::class;
     }
 
+    // @TODO подумать по какому ключу формировать значение
     public function fetchData(string|array $data = null): ?string
     {
-        // @TODO подумать по какому ключу формировать значение
+        if (null === $data['product_name'] || $data['product_article'])
+        {
+            return null;
+        }
+
         return sprintf('%s %s', $data['product_name'], $data['product_article']);
     }
 
     public function element(): string
     {
-        return self::TITLE_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::TITLE_LABEL;
+        return self::LABEL;
     }
 }

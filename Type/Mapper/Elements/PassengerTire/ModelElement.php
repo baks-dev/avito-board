@@ -31,10 +31,8 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Одно из значений
- *
- * Элемент общий для всех продуктов Авито
  */
-readonly class ModelElement implements AvitoBoardElementInterface
+final readonly class ModelElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Model';
 
@@ -64,9 +62,9 @@ readonly class ModelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://autoload.avito.ru/format/tyres_make.xml';
+        return null;
     }
 
     public function getProduct(): string
@@ -74,11 +72,14 @@ readonly class ModelElement implements AvitoBoardElementInterface
         return PassengerTireProduct::class;
     }
 
-    public function setData(string|array $product): void {}
-
     public function fetchData(string|array $data = null): ?string
     {
         $search = $this->request->getModel($data['product_name']);
+
+        if (null == $search)
+        {
+            return null;
+        }
 
         return $search['model'];
     }

@@ -29,34 +29,24 @@ use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
- * Количество шт. в комплекте
+ * Индекс нагрузки шины
  *
- * Одно из значений:
- * — за 1 шт.
- * — за 2 шт.
- * — за 3 шт.
- * — за 4 шт.
- * — за 5 шт.
- * — за 6 шт.
- * — за 7 шт.
- * — за 8 шт.
- *
- * Не более 8 шт. в комплекте
+ * Одно из значений Авито
  */
-class QuantityElement implements AvitoBoardElementInterface
+class LoadIndexElement implements AvitoBoardElementInterface
 {
-    private const string QUANTITY_ELEMENT = 'Quantity';
+    private const string ELEMENT = 'LoadIndex';
 
-    private const string QUANTITY_LABEL = 'Количество покрышек в комплекте';
+    private const string LABEL = 'Индекс нагрузки шины';
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -64,10 +54,9 @@ class QuantityElement implements AvitoBoardElementInterface
         return false;
     }
 
-    // @TODO публикуем цену за 1 шт.
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'за 1 шт.';
+        return null;
     }
 
     public function getHelp(): null
@@ -82,16 +71,21 @@ class QuantityElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
-        return $data;
+        if(null === $data['product_modification_postfix'])
+        {
+            return null;
+        }
+
+        return preg_replace('/\D/', '', $data['product_modification_postfix']);
     }
 
     public function element(): string
     {
-        return self::QUANTITY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::QUANTITY_LABEL;
+        return self::LABEL;
     }
 }

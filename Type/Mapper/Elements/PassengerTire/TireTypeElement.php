@@ -29,7 +29,7 @@ use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
-class TireTypeElement implements AvitoBoardElementInterface
+final class TireTypeElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'TireType';
 
@@ -67,16 +67,21 @@ class TireTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
+        if(null === $data[self::ELEMENT])
+        {
+            return null;
+        }
+
+        // если связанный элемент NULL, то не рендерим ОБЯЗАТЕЛЬНЫЙ элемент
         if (!isset($data[SpikesElement::ELEMENT]))
         {
-            throw new \Exception('В маппере отсутствует связанные элемент ' . SpikesElement::ELEMENT);
+            return null;
         }
 
         $spikes = match ($data[SpikesElement::ELEMENT])
         {
             'true' => 'шипованные',
             'false' => 'не шипованные',
-            default => null
         };
 
         $tireType = match ($data[self::ELEMENT])
@@ -84,7 +89,6 @@ class TireTypeElement implements AvitoBoardElementInterface
             TireSeasonEnum::WINTER->value => 'Зимние',
             TireSeasonEnum::SUMMER->value => 'Летние',
             TireSeasonEnum::ALL->value => 'Всесезонные',
-            default => null
         };
 
         if ($tireType === 'Летние' || $tireType === 'Всесезонные')

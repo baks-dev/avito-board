@@ -38,9 +38,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class ResidualTreadElement implements AvitoBoardElementInterface
 {
-    public const string RESIDUAL_TREAD_ELEMENT = 'ResidualTread';
+    public const string ELEMENT = 'ResidualTread';
 
-    public const string RESIDUAL_TREAD_LABEL = 'Остаточная глубина протектора шины';
+    public const string LABEL = 'Остаточная глубина протектора шины';
 
     public function isMapping(): false
     {
@@ -82,11 +82,11 @@ class ResidualTreadElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::RESIDUAL_TREAD_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::RESIDUAL_TREAD_LABEL;
+        return self::LABEL;
     }
 }

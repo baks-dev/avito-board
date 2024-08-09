@@ -30,15 +30,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Состояние
- *
- * Элемент обязателен для всех продуктов Авито:
- * - Легковые шины
  */
 class ConditionElement implements AvitoBoardElementInterface
 {
-    public const string CONDITION_ELEMENT = 'Condition';
+    public const string ELEMENT = 'Condition';
 
-    private const string CONDITION_LABEL = 'Состояние покрышки';
+    private const string LABEL = 'Состояние покрышки';
 
     public function isMapping(): false
     {
@@ -77,11 +74,11 @@ class ConditionElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::CONDITION_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::CONDITION_LABEL;
+        return self::LABEL;
     }
 }

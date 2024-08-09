@@ -41,12 +41,12 @@ class PriceElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): true
     {
         return true;
     }
 
-    public function isChoices(): bool
+    public function isChoices(): false
     {
         return false;
     }
@@ -72,6 +72,7 @@ class PriceElement implements AvitoBoardElementInterface
 
         $total = $price + ($price * ($data['avito_token_percent'] / 100));
 
+        // @TODO округляю в большую сторону?
         return (string)ceil($total);
     }
 

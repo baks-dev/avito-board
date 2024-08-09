@@ -44,6 +44,7 @@ use Symfony\Component\HttpFoundation\UrlHelper;
  * Чтобы изменить фотографию в объявлении, используйте другую ссылку.
  * Новое изображение по-прежнему url-адресу не будет загружено.
  */
+// @TODO разобраться с валидацией
 final readonly class ImagesElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Images';

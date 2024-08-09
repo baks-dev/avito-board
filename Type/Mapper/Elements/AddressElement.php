@@ -29,7 +29,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Полный адрес объекта — строка до 256 символов.
  * Является альтернативой параметрам Latitude, Longitude
  *
- * Элемент общий для всех продуктов Авито
+ * Элемент обязательный для всех продуктов Авито
  */
 class AddressElement implements AvitoBoardElementInterface
 {

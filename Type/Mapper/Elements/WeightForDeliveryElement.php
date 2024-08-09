@@ -29,8 +29,6 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 
 /**
  * Вес товара (кг), может использоваться для доставки.
- *
- * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
  */
 class WeightForDeliveryElement implements AvitoBoardElementInterface
 {

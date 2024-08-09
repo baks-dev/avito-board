@@ -39,6 +39,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Элемент обязателен для всех продуктов Авито
  */
+// @TODO валидация длины не нужна - 100 знаков
 class IdElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Id';

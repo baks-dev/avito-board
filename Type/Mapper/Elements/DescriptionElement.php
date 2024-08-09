@@ -33,6 +33,8 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Элемент обязателен для всех продуктов Авито
  */
+// @TODO html только для оплаченного тарифа!
+// @TODO валидация длинны описания не нужна - допуски огромные
 class DescriptionElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Description';
@@ -72,7 +74,6 @@ class DescriptionElement implements AvitoBoardElementInterface
     public function fetchData(string|array $data = null): ?string
     {
         // @TODO что получать - краткое или полное описание
-        // @TODO обрезать $this->data под ограничения Авито
         return sprintf('<![CDATA[%s]]>', $data['product_description']);
     }
 
