@@ -21,7 +21,9 @@ final class ShirtModelRequest
     }
 
     /**
-     * @return array{'model': array{string, int}, 'band': string, 'model': string }
+     * @return array{'band': string }
+     *     |array{'model': array{string, int}, 'band': string, 'model': string }
+     *     |null
      */
     public function getModel(string $nameInfo): ?array
     {
@@ -50,11 +52,10 @@ final class ShirtModelRequest
 
         $searchArray = explode(" ", $string);
 
-        $result = [];
+        $result = null;
 
         foreach ($brands['brand'] as $brand)
         {
-
             // Получаем название бренда в Авито
             $brandName = trim(strtok($brand['@attributes']['name'], " "));
 
@@ -91,7 +92,6 @@ final class ShirtModelRequest
                             }
                         }
 
-
                         // пробуем удалить в строке символы «-»
                         if ($isset === 0)
                         {
@@ -104,7 +104,6 @@ final class ShirtModelRequest
                                 $count++; // увеличиваем вес
                             }
                         }
-
 
                         // пробуем заменить в строке символы «-» на пробел
                         if ($isset === 0)
@@ -134,19 +133,19 @@ final class ShirtModelRequest
 
                     if ($count > 0)
                     {
-                        $result['model_dlya_tipa_tovara'][$models['@attributes']['name']] = $count;
+                        $result['model'][$models['@attributes']['name']] = $count;
                     }
                 }
             }
         }
 
-        if (isset($result['model_dlya_tipa_tovara']))
+        if (isset($result['model']))
         {
-            $maxValue = max($result['model_dlya_tipa_tovara']);
-            $result['model_dlya_tipa_tovara'] = array_search($maxValue, $result['model_dlya_tipa_tovara'], true);
+            $maxValue = max($result['model']);
+            $result['model'] = array_search($maxValue, $result['model'], true);
         }
 
-        if (empty($result))
+        if (null === $result)
         {
             $this->logger->critical(
                 'Не найдено совпадений бренда или модели для продукта ' . $nameInfo,

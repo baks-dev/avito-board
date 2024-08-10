@@ -53,16 +53,10 @@ final class ProductTransformerExtension extends AbstractExtension
 
     public function productTransform(array $product): ?array
     {
-        /** Возвращаем null, если нет маппера для продукта */
-        if ($product['avito_board_avito_category'] === null)
-        {
-            return null;
-        }
-
         $this->avitoCategory = $product['avito_board_avito_category'];
         $this->mapper = $product['avito_board_mapper'];
 
-        /** Получаем элементы по продукту, НЕ УЧАСТВУЮЩИЕ в маппинге */
+        /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
             $this->mapperProvider->filterElements($this->avitoCategory),
             function (AvitoBoardElementInterface $element) {
@@ -117,12 +111,7 @@ final class ProductTransformerExtension extends AbstractExtension
          * - элемент, описанный в классе имеет приоритет над элементом, полученным из маппера
          *  (элемент класса перезаписывает элемент из маппера)
          */
-        $allElements = array_merge($mappedElements, $elements);
-
-        /** Убираем значение равные null */
-        $feedElements = array_filter($allElements, function (?string $value) {
-            return $value !== null;
-        });
+        $feedElements = array_merge($mappedElements, $elements);
 
         return $feedElements;
     }
@@ -131,15 +120,31 @@ final class ProductTransformerExtension extends AbstractExtension
     {
         $mapper = $this->mapperTransform();
 
+        /**
+         * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
+         */
         array_walk($mapper, function (&$value, $element) use ($mapper) {
             $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 
             $value = $instance->fetchData($mapper);
         });
 
-        return $mapper;
+        // @TODO тестировать отправку фида с кастомными связанными элементами
+        /** Убираем значение, равные null (кастомные связанные элементы) */
+        $filterMapper = array_filter($mapper, function (?string $value) {
+            return $value !== null;
+        });
+
+        return $filterMapper;
     }
 
+    /**
+     * Преобразовываем маппер в массив элементов, где:
+     * - ключ - название элемента;
+     * - значение - значением из свойств маппера (без форматирования элементом!).
+     *
+     * @return array<string, string>
+     */
     private function mapperTransform(): array
     {
         $transform = null;

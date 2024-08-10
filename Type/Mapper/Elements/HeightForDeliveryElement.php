@@ -32,9 +32,9 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  */
 class HeightForDeliveryElement implements AvitoBoardElementInterface
 {
-    private const string HEIGHT_FOR_DELIVERY_ELEMENT = 'HeightForDelivery';
+    private const string ELEMENT = 'HeightForDelivery';
 
-    private const string HEIGHT_FOR_DELIVERY_LABEL = 'Высота товара (см)';
+    private const string LABEL = 'Высота товара (см)';
 
     public function isMapping(): false
     {
@@ -73,11 +73,11 @@ class HeightForDeliveryElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::HEIGHT_FOR_DELIVERY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::HEIGHT_FOR_DELIVERY_LABEL;
+        return self::LABEL;
     }
 }

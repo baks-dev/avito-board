@@ -44,7 +44,7 @@ class IdElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Id';
 
-    private const string ELEMENT_LABEL = 'Идентификатор';
+    private const string LABEL = 'Идентификатор';
 
     public function isMapping(): bool
     {
@@ -88,6 +88,6 @@ class IdElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
     }
 }

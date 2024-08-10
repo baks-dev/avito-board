@@ -37,8 +37,6 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  */
 class TitleElement implements AvitoBoardElementInterface
 {
-    public const string TITLE_ALIAS = 'product_category';
-
     private const string ELEMENT = 'Title';
 
     private const string LABEL = 'Название объявления';

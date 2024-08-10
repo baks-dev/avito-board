@@ -32,9 +32,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
  */
 class WeightForDeliveryElement implements AvitoBoardElementInterface
 {
-    private const string WEIGHT_FOR_DELIVERY_ELEMENT = 'WeightForDelivery';
+    private const string ELEMENT = 'WeightForDelivery';
 
-    private const string WEIGHT_FOR_DELIVERY_LABEL = 'Вес товара (кг)';
+    private const string LABEL = 'Вес товара (кг)';
 
     public function isMapping(): false
     {
@@ -73,11 +73,11 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::WEIGHT_FOR_DELIVERY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::WEIGHT_FOR_DELIVERY_LABEL;
+        return self::LABEL;
     }
 }

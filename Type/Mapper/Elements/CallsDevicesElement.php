@@ -40,7 +40,7 @@ class CallsDevicesElement
 {
     private const string ELEMENT = 'CallsDevices';
 
-    private const string ELEMENT_LABEL = 'Идентификатор (ID) мобильного устройства, на которые будут приходить интернет-звонки';
+    private const string LABEL = 'Идентификатор (ID) мобильного устройства, на которые будут приходить интернет-звонки';
 
     public function isMapping(): bool
     {
@@ -84,6 +84,6 @@ class CallsDevicesElement
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
     }
 }

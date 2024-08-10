@@ -35,9 +35,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  */
 class CategoryElement implements AvitoBoardElementInterface
 {
-    private const string CATEGORY_ELEMENT = 'Category';
+    private const string ELEMENT = 'Category';
 
-    private const string CATEGORY_LABEL = 'Категория объявления';
+    private const string LABEL = 'Категория объявления';
 
     public function isMapping(): false
     {
@@ -76,11 +76,11 @@ class CategoryElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::CATEGORY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::CATEGORY_LABEL;
+        return self::LABEL;
     }
 }

@@ -45,9 +45,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class QuantityElement implements AvitoBoardElementInterface
 {
-    private const string QUANTITY_ELEMENT = 'Quantity';
+    private const string ELEMENT = 'Quantity';
 
-    private const string QUANTITY_LABEL = 'Количество покрышек в комплекте';
+    private const string LABEL = 'Количество покрышек в комплекте';
 
     public function isMapping(): false
     {
@@ -87,11 +87,11 @@ class QuantityElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::QUANTITY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::QUANTITY_LABEL;
+        return self::LABEL;
     }
 }

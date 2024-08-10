@@ -72,8 +72,8 @@ final class TireTypeElement implements AvitoBoardElementInterface
             return null;
         }
 
-        // если связанный элемент NULL, то не рендерим ОБЯЗАТЕЛЬНЫЙ элемент
-        if (!isset($data[SpikesElement::ELEMENT]))
+        /** если связанный элемент не присутствует в маппере или его значение null, то не рендерим ОБЯЗАТЕЛЬНЫЙ элемент */
+        if (false === isset($data[SpikesElement::ELEMENT]) || null === $data[SpikesElement::ELEMENT])
         {
             return null;
         }

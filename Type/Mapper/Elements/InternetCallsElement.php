@@ -49,9 +49,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 // @TODO убрал из реализации AvitoBoardElementInterface
 class InternetCallsElement
 {
-    private const string INTERNET_CALLS_ELEMENT = 'InternetCalls';
+    private const string ELEMENT = 'InternetCalls';
 
-    private const string INTERNET_CALLS_LABEL = 'Интернет-звонки через Авито';
+    private const string LABEL = 'Интернет-звонки через Авито';
 
     public function isMapping(): false
     {
@@ -90,11 +90,11 @@ class InternetCallsElement
 
     public function element(): string
     {
-        return self::INTERNET_CALLS_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::INTERNET_CALLS_LABEL;
+        return self::LABEL;
     }
 }

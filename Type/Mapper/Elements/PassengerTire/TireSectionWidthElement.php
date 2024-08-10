@@ -32,7 +32,7 @@ class TireSectionWidthElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'TireSectionWidth';
 
-    private const string ELEMENT_LABEL = 'Ширина профиля шины';
+    private const string LABEL = 'Ширина профиля шины';
 
     public function isMapping(): true
     {
@@ -81,6 +81,6 @@ class TireSectionWidthElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
     }
 }

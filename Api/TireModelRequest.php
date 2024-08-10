@@ -23,7 +23,7 @@ final class TireModelRequest
     }
 
     /**
-     * @return array{'model': array{string, int}, 'band': string, 'model': string }
+     * @return array{'model': array{string, int}, 'band': string, 'model': string }|null
      */
     public function getModel(string $nameInfo): ?array
     {
@@ -50,7 +50,6 @@ final class TireModelRequest
             return json_decode($json, true);
         });
 
-
         // @TODO забрать примеры для тестирования
         // $string = "Triangle Sportex XL TH201";
         // $string = "Sport SA-37 Westlake";
@@ -69,7 +68,7 @@ final class TireModelRequest
         $string = mb_strtolower($this->nameInfo);
         $searchArray = explode(" ", $string);
 
-        $result = null;
+        $result = [];
 
         foreach ($array['make'] as $make)
         {
@@ -109,7 +108,6 @@ final class TireModelRequest
                             }
                         }
 
-
                         // пробуем удалить в строке символы «-»
                         if ($isset === 0)
                         {
@@ -122,7 +120,6 @@ final class TireModelRequest
                                 $count++; // увеличиваем вес
                             }
                         }
-
 
                         // пробуем заменить в строке символы «-» на пробел
                         if ($isset === 0)
@@ -154,7 +151,6 @@ final class TireModelRequest
                     {
                         $result['models'][$models['@attributes']['name']] = $count;
                     }
-
                 }
 
                 if (isset($result['models']))
@@ -172,7 +168,7 @@ final class TireModelRequest
             $result['model'] = array_search($maxValue, $result['models'], true);
         }
 
-        if (null === $result)
+        if (empty($result))
         {
             $this->logger->critical(
                 'Не найдено совпадений бренда или модели для продукта ' . $nameInfo,

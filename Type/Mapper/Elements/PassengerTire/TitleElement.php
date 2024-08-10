@@ -31,9 +31,6 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 /**
  * Название объявления — строка до 50 символов.
  * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
- *
- * Элемент обязателен для продуктов:
- * - Кофты и футболки
  */
 class TitleElement implements AvitoBoardElementInterface
 {

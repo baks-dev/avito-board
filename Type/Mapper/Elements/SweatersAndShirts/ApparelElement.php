@@ -30,7 +30,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
 
 class ApparelElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Apparel';
+    public const string ELEMENT = 'Apparel';
 
     public const string LABEL = 'Тип товара';
 
@@ -71,7 +71,7 @@ class ApparelElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string

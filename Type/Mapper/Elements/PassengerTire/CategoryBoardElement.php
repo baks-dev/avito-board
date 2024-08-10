@@ -35,7 +35,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  */
 class CategoryBoardElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Category';
+    public const string ELEMENT = 'Category';
 
     public const string LABEL = 'Категория объявления';
 
@@ -76,7 +76,7 @@ class CategoryBoardElement implements AvitoBoardElementInterface
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string

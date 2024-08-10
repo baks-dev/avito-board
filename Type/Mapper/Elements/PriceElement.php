@@ -34,7 +34,7 @@ class PriceElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Price';
 
-    private const string ELEMENT_LABEL = 'Цена';
+    private const string LABEL = 'Цена';
 
     public function isMapping(): bool
     {
@@ -83,6 +83,6 @@ class PriceElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
     }
 }
