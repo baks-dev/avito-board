@@ -91,10 +91,16 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
 
     public function fetchData(string|array $data = null): ?string
     {
-        $productImages = $data['product_images'];
+        $images = null;
 
-        $elementImages = null;
-        foreach (json_decode($productImages, false, 512, JSON_THROW_ON_ERROR) as $image)
+        /**
+         * @var object{
+         *     product_img: string,
+         *     product_img_cdn: bool,
+         *     product_img_ext: string,
+         *     product_img_root: bool} $image
+         */
+        foreach (json_decode($data['product_images'], false, 512, JSON_THROW_ON_ERROR) as $image)
         {
             // @TODO если картинки нет - то элемент не рендерим
             if (null === $image)
@@ -102,15 +108,23 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
                 return null;
             }
 
-            $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
-            $imgDir = $image->product_img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
-            $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
-            $elementImages .= $element;
+            // @TODO валидация JPEG, PNG?
+            if ($image->product_img_ext === 'jpg' || $image->product_img_ext === 'png')
+            {
+                $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
+                $imgDir = $image->product_img;
+                $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
+                $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+                $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
+                $images .= $element;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        return $elementImages;
+        return $images;
     }
 
     public function element(): string

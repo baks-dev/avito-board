@@ -48,7 +48,7 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
     public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
 
     /**
-     * Метод получает массив элементов продукции с соотношением свойств
+     * Метод получает массив свойств продукта с маппингом и данными токена
      */
     public function findAll(UserProfileUid $profile): array|bool
     {
@@ -596,7 +596,7 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        //        dd($dbal->fetchAllAssociative());
+//                dd($dbal->fetchAllAssociative());
 
         return $dbal
             // @TODO не кешируем, потому-что нужно брать актуальную инфу?

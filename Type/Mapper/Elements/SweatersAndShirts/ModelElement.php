@@ -25,28 +25,34 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Api\ShirtModelRequest;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
- * Одно из значений
- *
- * Элемент общий для всех продуктов Авито
+ * Параметр нужно заполнить одинаково во всех объявлениях с разными вариантами товара.
+ * Название модели от производителя или ваше. Например: Air Max для кроссовок Nike или «Беговая 21» для футболки.
+ * Не используйте символы (#, -, /, *, + и другие), только буквы и цифры. Название модели покупатели не увидят.
  */
 // @TODO реализация AvitoBoardElementInterface после реализации реквеста для моделей футболок
-class ModelElement
+final readonly class ModelElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Model';
 
     private const string LABEL = 'Модель';
+
+    public function __construct(
+        private ShirtModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -73,11 +79,19 @@ class ModelElement
 
     public function fetchData(string|array $data = null): ?string
     {
-        dd($data);
-        // @TODO под эту категорию сделать отдельную реализацию запроса брендов
-        return 'Adidas';
+        $search = $this->request->getModel($data['product_name']);
 
-        //        return $product['product_name'];
+        if (null == $search)
+        {
+            return null;
+        }
+
+        if(in_array('model', $search))
+        {
+            return $search['model'];
+        }
+
+        return $data['product_name'];
     }
 
     public function element(): string

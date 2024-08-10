@@ -29,17 +29,40 @@ use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
- *  Бренд.
- *  Одно из значений
+ * Размер. Мужская одежда
+ * Одно из значений
  *
- * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта поэтому
+ * <Size>40 (XXS)</Size>
+ * <Size>42 (XS)</Size>
+ * <Size>44 (XS/S)</Size>
+ * <Size>46 (S)</Size>
+ * <Size>48 (M)</Size>
+ * <Size>50 (L)</Size>
+ * <Size>52 (L/XL)</Size>
+ * <Size>54 (XL)</Size>
+ * <Size>56 (XXL)</Size>
+ * <Size>58 (XXL)</Size>
+ * <Size>60 (3XL)</Size>
+ * <Size>62 (4XL)</Size>
+ * <Size>64 (5XL)</Size>
+ * <Size>66 (6XL)</Size>
+ * <Size>68 (7XL)</Size>
+ * <Size>70 (7XL)</Size>
+ * <Size>72 (8XL)</Size>
+ * <Size>74 (8XL)</Size>
+ * <Size>76 (9XL)</Size>
+ * <Size>78 (10XL)</Size>
+ * <Size>80 (10XL)</Size>
+ * <Size>82+ (10XL+)</Size>
+ * <Size>One size</Size>
+ * <Size>Без размера</Size>
  */
-class SizeElement
+// @TODO разобраться откуда брать значение
+class SizeElement implements AvitoBoardElementInterface
 {
-    private const string BRAND_ELEMENT = 'Brand';
+    private const string ELEMENT = 'Size';
 
-    private const string BRAND_LABEL = 'Бренд одежды';
+    private const string LABEL = 'Размер. Мужская одежда';
 
     public function isMapping(): false
     {
@@ -56,9 +79,10 @@ class SizeElement
         return false;
     }
 
-    public function getDefault(): null
+    // @TODO либо Без размера, либо из свойств продукта через метод fetchData в соответствии со значениями из Авито
+    public function getDefault(): string
     {
-        return null;
+        return 'Без размера';
     }
 
     public function getHelp(): null
@@ -71,19 +95,25 @@ class SizeElement
         return SweatersAndShirtsProduct::class;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(string|array $data = null): ?string
     {
-        // @TODO присваивать из свойств продукта, когда бренд будет добавлен - пока из product_name
-        return $data['product_name'];
+        return null;
+
+        //        if(in_array('_size', $data))
+        //        {
+        //            return $data['_size'];
+        //        }
+        //
+        //        return 'Без размера';
     }
 
     public function element(): string
     {
-        return self::BRAND_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::BRAND_LABEL;
+        return self::LABEL;
     }
 }

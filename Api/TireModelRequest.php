@@ -50,6 +50,7 @@ final class TireModelRequest
             return json_decode($json, true);
         });
 
+
         // @TODO забрать примеры для тестирования
         // $string = "Triangle Sportex XL TH201";
         // $string = "Sport SA-37 Westlake";
@@ -58,14 +59,17 @@ final class TireModelRequest
         // $string = "Sailun Atrezzo ZSR";
         // $string = "Zmax Gallopro H-T";
         // $string = "Zmax Zealion";
-        // $string = "iLINK L-Zeal56";
+        //         $string = "iLINK L-Zeal56";
         // $string = "Sailun Atrezzo ECO";
         // $string = "Taganca МШЗ М-233";
+        // $string = "Triangle";
+
+        // $string = mb_strtolower($string);
 
         $string = mb_strtolower($this->nameInfo);
         $searchArray = explode(" ", $string);
 
-        $result = [];
+        $result = null;
 
         foreach ($array['make'] as $make)
         {
@@ -73,6 +77,7 @@ final class TireModelRequest
 
             if (in_array(mb_strtolower($brandName), $searchArray, false))
             {
+                // удаляем название бренда из массива для поиска
                 $unset = array_search(mb_strtolower($brandName), $searchArray);
                 unset($searchArray[$unset]);
 
@@ -167,10 +172,10 @@ final class TireModelRequest
             $result['model'] = array_search($maxValue, $result['models'], true);
         }
 
-        if (empty($result))
+        if (null === $result)
         {
             $this->logger->critical(
-                'Не найдено совпадений для модели ' . $nameInfo,
+                'Не найдено совпадений бренда или модели для продукта ' . $nameInfo,
                 [__FILE__ . ':' . __LINE__]
             );
 

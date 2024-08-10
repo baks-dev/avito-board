@@ -85,9 +85,9 @@ final class ProductTransformerExtension extends AbstractExtension
                 {
                     $this->logger->critical(
                         sprintf(
-                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название продукта: %s Название элемента: %s',
-                            $product['product_name'],
-                            $element->element()
+                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
+                            $element->element(),
+                            $product['product_name']
                         ),
                         [__FILE__ . ':' . __LINE__]
                     );
