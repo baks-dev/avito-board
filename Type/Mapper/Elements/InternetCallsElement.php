@@ -78,14 +78,9 @@ class InternetCallsElement
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): null
     {
         return null;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
     }
 
     public function element(): string
@@ -96,5 +91,10 @@ class InternetCallsElement
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

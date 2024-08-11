@@ -68,7 +68,7 @@ class ModelElement implements AvitoBoardElementInterface
 
     public function setData(string|array $product): void {}
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
         return 'EffeXSport TH202';

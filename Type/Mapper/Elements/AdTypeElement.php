@@ -62,14 +62,9 @@ class AdTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): null
     {
         return null;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
     }
 
     public function element(): string
@@ -80,5 +75,10 @@ class AdTypeElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

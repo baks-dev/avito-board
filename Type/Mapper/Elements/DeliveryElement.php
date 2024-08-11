@@ -64,17 +64,12 @@ class DeliveryElement
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
     /** Одно из дефолтных значений либо пользовательский ввод */
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): string
     {
         // @TODO пока не понимаю, откуда брать информацию о доставке
         //      брать значение из продукта и подбирать соответствие
-        //        [
+        // [
         //            'Выключена',
         //            'ПВЗ',
         //            'Курьер',
@@ -87,7 +82,7 @@ class DeliveryElement
         //            'Свой партнер Почта России',
         //            'Свой партнер Boxberry',
         //            'Свой партнер СДЭК курьер',
-        //        ];
+        // ];
 
         return sprintf('<Option>%s</Option>', $data['product_delivery']);
     }
@@ -100,5 +95,10 @@ class DeliveryElement
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

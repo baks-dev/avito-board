@@ -59,14 +59,9 @@ class ApparelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return SweatersAndShirtsProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
@@ -77,5 +72,10 @@ class ApparelElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

@@ -52,11 +52,6 @@ class AddressElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -67,7 +62,7 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): string
     {
         return $data['avito_token_address'];
     }
@@ -80,5 +75,10 @@ class AddressElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

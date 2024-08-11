@@ -87,7 +87,7 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         $productImages = $data['product_images'];
 

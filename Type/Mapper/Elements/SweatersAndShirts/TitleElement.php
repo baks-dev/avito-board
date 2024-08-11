@@ -56,11 +56,6 @@ class TitleElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -71,7 +66,7 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         // @TODO по какому ключу формировать значение?
         if (null === $data['product_name'] || null === $data['product_article'])
@@ -90,5 +85,10 @@ class TitleElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

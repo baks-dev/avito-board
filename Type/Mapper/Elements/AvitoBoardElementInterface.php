@@ -37,34 +37,45 @@ interface AvitoBoardElementInterface
      */
     public function isMapping(): bool;
 
+    /**
+     * @return true если значение ОБЯЗАТЕЛЬНО для элемента Авито и для нас
+     * @return false если значение НЕ ОБЯЗАТЕЛЬНО для элемента Авито и для нас
+     */
     public function isRequired(): bool;
 
     public function isChoices(): bool;
+
     /**
-     * Для сохранения в базу
-     *
-     * @return null если данные берутся не из класса,
-     * а из БД (поля продукта) по соответствующему ключу методом ->productData(string|array $data)
+     * @return null|false если данные берутся не из класса,
+     * а из БД (свойства продукта) по соответствующему ключу методом ->productData(string|array $data)
      *
      * @return string|array если данные берутся статически, из описания класса
      */
     public function getDefault(): null|string|array|false;
 
-    public function getHelp(): null|string;
+    /**
+     * Возвращает название шаблона формата <@domain:path-to-folder>
+     */
+    public function getHelp(): ?string;
 
     /**
-     * Формирования данных для отправки (xml, csv, etc)
+     * Извлекает данные из массива данных, форматирует их (опционально)
      */
-    public function fetchData(string|array $data = null): ?string;
+    public function fetchData(array $data): ?string;
 
-    /** Получает название элемента */
+    /**
+     * Получает название элемента из константы класса ELEMENT
+     */
     public function element(): string;
 
-    /** Получает описание элемента */
+    /**
+     * Получает описание элемента из константы класса LABEL
+     */
     public function label(): string;
 
-    /** @return class-string|null */
+    /**
+     * Возвращает название класса реализации @return class-string|null
+     * @see AvitoBoardProductInterface
+     */
     public function getProduct(): ?string;
-
-    // @TODO добавить метод для сортировки
 }

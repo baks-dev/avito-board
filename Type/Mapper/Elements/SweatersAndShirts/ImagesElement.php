@@ -74,11 +74,6 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -89,7 +84,7 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         $images = null;
 
@@ -135,5 +130,10 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

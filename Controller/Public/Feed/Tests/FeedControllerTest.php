@@ -18,7 +18,7 @@
 
 namespace BaksDev\Avito\Board\Controller\Public\Feed\Tests;
 
-use BaksDev\Users\User\Tests\TestUserAccount;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -26,15 +26,18 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class FeedControllerTest extends WebTestCase
 {
-    private const URL = '/avito-board/feed.xml';
-
+    private const string URL = '/avito-board/%s/feed.xml';
 
     /** Доступ по без роли */
     public function testGuestFiled(): void
     {
+        $url = sprintf(self::URL, UserProfileUid::TEST);
+//        dd($url);
+//        $url = sprintf(self::URL, '019053da-5c80-7345-b227-8609dd8380f3');
+
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->request('GET', self::URL);
+        $client->request('GET', $url);
 
         // Full authentication is required to access this resource
         self::assertResponseStatusCodeSame(200);

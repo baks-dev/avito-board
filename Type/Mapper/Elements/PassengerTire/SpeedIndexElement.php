@@ -64,12 +64,7 @@ class SpeedIndexElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return PassengerTireProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         if(null === $data['product_modification_postfix'])
         {
@@ -87,5 +82,10 @@ class SpeedIndexElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

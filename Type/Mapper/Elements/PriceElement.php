@@ -61,12 +61,7 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): string
     {
         $price = $data['product_price'] / 100;
 
@@ -84,5 +79,10 @@ class PriceElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

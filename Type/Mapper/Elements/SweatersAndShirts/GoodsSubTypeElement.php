@@ -28,6 +28,20 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
+/**
+ * Тип одежды, обуви, аксессуаров
+ *
+ * Одно из значений:
+ * — Футболка
+ * — Поло
+ * — Майка
+ * — Свитшот
+ * — Толстовка / худи
+ * — Джемпер
+ * — Свитер
+ * — Кардиган
+ * — Кофта
+ */
 class GoodsSubTypeElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'GoodsSubType';
@@ -47,11 +61,6 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
     public function isChoices(): true
     {
         return true;
-    }
-
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
     }
 
     public function getDefault(): array
@@ -74,12 +83,12 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         if (null === $data[self::ELEMENT])
-            {
-                return null;
-            }
+        {
+            return null;
+        }
 
         return $data[self::ELEMENT];
     }
@@ -92,5 +101,10 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

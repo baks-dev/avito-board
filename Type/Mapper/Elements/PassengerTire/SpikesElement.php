@@ -64,12 +64,7 @@ final class SpikesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return PassengerTireProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): null
+    public function fetchData(array $data): null
     {
         // @TODO думаю логика при обработке ненужного элемента не нужна
         // return match ($data[self::ELEMENT])
@@ -91,5 +86,10 @@ final class SpikesElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

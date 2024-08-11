@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\UrlHelper;
 
@@ -73,11 +74,6 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -88,7 +84,7 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         $images = null;
 
@@ -134,5 +130,10 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

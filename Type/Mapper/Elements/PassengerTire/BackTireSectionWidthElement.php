@@ -68,13 +68,8 @@ class BackTireSectionWidthElement
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return PassengerTireProduct::class;
-    }
-
     // @TODO Если элемент обязательный, то значение будем брать такое же, как и в элементе TireSectionWidthElement
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         if(null === $data[self::ELEMENT])
         {
@@ -92,5 +87,10 @@ class BackTireSectionWidthElement
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

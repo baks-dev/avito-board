@@ -70,14 +70,9 @@ final readonly class ModelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
-    }
-
     public function setData(string|array $product): void {}
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         $search = $this->request->getModel($data['product_name']);
 
@@ -102,5 +97,10 @@ final readonly class ModelElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

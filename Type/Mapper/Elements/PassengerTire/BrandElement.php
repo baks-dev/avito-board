@@ -69,12 +69,7 @@ final readonly class BrandElement implements AvitoBoardElementInterface
         return '@avito-board/admin/mapper/elements/tire/brand.html.twig';
     }
 
-    public function getProduct(): string
-    {
-        return PassengerTireProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         $search = $this->request->getModel($data['product_name']);
 
@@ -94,5 +89,10 @@ final readonly class BrandElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

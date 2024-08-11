@@ -67,13 +67,8 @@ class DescriptionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
     // @TODO что получать - краткое или полное описание
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         // @TODO для тестирования
         // $str = '
@@ -114,5 +109,10 @@ class DescriptionElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

@@ -90,12 +90,7 @@ class SizeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         return null;
 
@@ -115,5 +110,10 @@ class SizeElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }
