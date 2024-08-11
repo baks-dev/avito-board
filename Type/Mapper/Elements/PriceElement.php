@@ -63,9 +63,19 @@ class PriceElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
+        /**
+         * @var object{
+         *     id: string,
+         *     phone: string,
+         *     address: string,
+         *     manager: string,
+         *     percent: int} $profile
+         */
+        $profile = current(json_decode($data['avito_token_profile'], false, 512, JSON_THROW_ON_ERROR));
+
         $price = $data['product_price'] / 100;
 
-        $total = $price + ($price * ($data['avito_token_percent'] / 100));
+        $total = $price + ($price * ($profile->percent / 100));
 
         // @TODO округляю в большую сторону?
         return (string)ceil($total);

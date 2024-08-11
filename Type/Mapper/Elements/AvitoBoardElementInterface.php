@@ -29,11 +29,9 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 interface AvitoBoardElementInterface
 {
     /**
-     * @return true если элемент будет участвовать в маппинге и дынные будут браться из БД (маппинга)
-     * в метод setData передаются данные из маппера
+     * @return true если элемент будет участвовать в маппинге и данные будут браться из маппера
      *
-     * @return false если элемент не участвует в маппинге и его не нужно показывать в форме
-     * в метод setData передаются данные из свойств продукта
+     * @return false если элемент не участвует в маппинге и его не нужно показывать в форме соответствия
      */
     public function isMapping(): bool;
 
@@ -46,8 +44,7 @@ interface AvitoBoardElementInterface
     public function isChoices(): bool;
 
     /**
-     * @return null|false если данные берутся не из класса,
-     * а из БД (свойства продукта) по соответствующему ключу методом ->productData(string|array $data)
+     * @return null|false если данные берутся не из класса, а из свойства продукта по соответствующему ключу
      *
      * @return string|array если данные берутся статически, из описания класса
      */

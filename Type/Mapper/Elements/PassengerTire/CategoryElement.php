@@ -33,7 +33,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  *
  * Элемент общий для всех продуктов Авито
  */
-class CategoryBoardElement implements AvitoBoardElementInterface
+class CategoryElement implements AvitoBoardElementInterface
 {
     public const string ELEMENT = 'Category';
 

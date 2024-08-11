@@ -39,52 +39,34 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_NEW')]
-final class NewController extends AbstractController
+#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_BEFORE_NEW')]
+final class BeforeNewController extends AbstractController
 {
     /**
-     * Создание формы сопоставления элементов категорий
+     * Маппим локальную категорию с категорией Авито для создания формы сопоставления
      */
-    #[Route(
-        '/admin/avito-board/mapper/new/{localCategory}/{avitoCategory}',
-        name: 'admin.mapper.new',
-        requirements: [
-            'localCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$',
-        // @TODO добавить валидатор для категории Авито
-        // 'avitoCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'
-        ],
-        methods: ['GET', 'POST']
-    )]
-    public function new(
-        Request                      $request,
-        MapperHandler                $handler,
-        #[MapEntity] CategoryProduct $localCategory,
-        string                       $avitoCategory
-    ): Response {
+    #[Route('/admin/avito-board/mapper/before_new', name: 'admin.mapper.beforenew', methods: ['POST', 'GET'])]
+    public function beforeNew(Request $request): Response
+    {
+        $categoryMapperDTO = new CategoryMapperDTO();
 
-        $mapperDTO = new MapperDTO();
-        $mapperDTO->setCategory($localCategory);
-        $mapperDTO->setAvito($avitoCategory);
+        $form = $this->createForm(CategoryMapperForm::class, $categoryMapperDTO, [
+            'action' => $this->generateUrl('avito-board:admin.mapper.beforenew'),
+        ]);
 
-        $form = $this->createForm(MapperForm::class, $mapperDTO);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
+        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_before_new'))
         {
             $this->refreshTokenForm($form);
 
-            $result = $handler->handle($mapperDTO);
-
-            if ($result instanceof AvitoBoard)
-            {
-                $this->addFlash('page.new', 'success.new', 'avito-board.admin');
-
-                return $this->redirectToRoute('avito-board:admin.mapper.index');
-            }
-
-            $this->addFlash('page.new', 'danger.new', 'avito-board.admin', $result);
-
-            return $this->redirectToReferer();
+            return $this->redirectToRoute(
+                'avito-board:admin.mapper.new',
+                [
+                    'localCategory' => $categoryMapperDTO->localCategory,
+                    'avitoCategory' => $categoryMapperDTO->avitoCategory->getProduct(),
+                ]
+            );
         }
 
         return $this->render(['form' => $form->createView()]);

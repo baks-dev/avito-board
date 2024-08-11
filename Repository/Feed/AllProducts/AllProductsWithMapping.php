@@ -43,15 +43,97 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
-final readonly class AllProductsWithMapping implements AllProductsWithMappingInterface
+final class AllProductsWithMapping implements AllProductsWithMappingInterface
 {
-    public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
+    private ?UserProfileUid $profile = null;
+
+    public function __construct(
+        private readonly DBALQueryBuilder $DBALQueryBuilder,
+    ) {}
+
+    private function findTokenProfile(): ?string
+    {
+        // добавляем данные из профиля авторизации Авито
+        $token = $this->DBALQueryBuilder
+            ->createQueryBuilder(self::class);
+
+        // @TODO не получается забиндить параметры
+        $token
+            ->from(AvitoToken::class, 'avito_token')
+            ->where("avito_token.id = '$this->profile'")
+//            ->where('avito_token.id = :profile')
+//            ->setParameter('profile', $profile, UserProfileUid::TYPE)
+        ;
+
+        $token->join(
+            'avito_token',
+            AvitoTokenEvent::class,
+            'avito_token_event',
+            '
+                avito_token_event.id = avito_token.event AND 
+                avito_token_event.active = TRUE',
+        );
+
+        $token
+            ->join(
+                'avito_token_event',
+                AvitoTokenProfile::class,
+                'avito_token_profile',
+                'avito_token_profile.event = avito_token_event.id',
+            );
+
+        $status = (new UserProfileStatus(UserProfileStatusActive::class))->getUserProfileStatusValue();
+        $token->join(
+            'avito_token',
+            UserProfileInfo::class,
+            'info',
+            "
+                info.profile = avito_token.id AND 
+                info.status = '$status'",
+        );
+
+        //        $token->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+        $token->addSelect(
+            "JSON_AGG
+			(
+                DISTINCT
+					JSONB_BUILD_OBJECT
+                        (
+                        'id', avito_token.id,
+                        'address', avito_token_profile.address,
+                        'phone', avito_token_profile.phone,
+                        'manager', avito_token_profile.manager,
+                        'percent', avito_token_profile.percent
+                        )) AS avito_token_profile"
+        );
+
+        if (current($token->fetchAllAssociative())['avito_token_profile'] === null)
+        {
+            return null;
+        }
+        else
+        {
+            return $token->getSQL();
+        }
+    }
 
     /**
      * Метод получает массив свойств продукта с маппингом и данными токена
      */
     public function findAll(UserProfileUid $profile): array|bool
     {
+        $this->profile = $profile;
+
+        /** Ищем профиль */
+        $tokenSQL = $this->findTokenProfile();
+
+        if (null === $tokenSQL)
+        {
+            // @TODO логгируем?
+            return false;
+        }
+
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -123,7 +205,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 'product_offer',
                 'product_offer.event = product_event.id'
             );
-
 
         /**
          * Тип торгового предложения
@@ -558,111 +639,18 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
 			AS avito_board_mapper"
         );
 
-        // добавляем данные из авторизации Авито
-        //        $dbal
-        //            ->from(AvitoToken::class, 'avito_token')
-        //            ->where('avito_token.id = :profile')
-        //            ->setParameter('profile', $profile, UserProfileUid::TYPE);
-        //
-        //
-        //        $dbal->join(
-        //            'avito_token',
-        //            AvitoTokenEvent::class,
-        //            'avito_token_event',
-        //            'avito_token_event.id = avito_token.event AND avito_token_event.active = true',
-        //        );
-        //
-        //        $dbal->join(
-        //            'avito_token_event',
-        //            AvitoTokenProfile::class,
-        //            'avito_token_profile',
-        //            'avito_token_profile.event = avito_token_event.id',
-        //        );
-        //
-        //        $dbal->join(
-        //            'avito_token',
-        //            UserProfileInfo::class,
-        //            'info',
-        //            'info.profile = avito_token.id AND info.status = :status',
-        //        );
-        //
-        //        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-        //
-        //        $dbal->addSelect('avito_token.id AS avito_token_profile_id');
-        //        $dbal->addSelect('avito_token_profile.address AS avito_token_address');
-        //        $dbal->addSelect('avito_token_profile.phone AS avito_token_phone');
-        //        $dbal->addSelect('avito_token_profile.manager AS avito_token_manager');
-        //        $dbal->addSelect('avito_token_profile.percent AS avito_token_percent');
-
-
-        //        $dbal->addSelect(
-        //            "
-        //					CASE
-        //					   WHEN avito_token.id ='{$profile->getValue()}'
-        //					   THEN avito_token.id
-        //
-        //					   ELSE null
-        //					END AS avito_token_profile_id"
-        //        );
-
-
-        $token = $this->DBALQueryBuilder
-            ->createQueryBuilder(self::class);
-
-        $token
-            ->addSelect('avito_token.id')
-//            ->addSelect('avito_token_profile.address AS avito_token_address')
-            ->from(AvitoToken::class, 'avito_token')
-            ->where("avito_token.id = '{$profile->getValue()}'")
-//                    ->where('avito_token.id = :profile')
-//                    ->setParameter('profile', $profile, UserProfileUid::TYPE)
-        ;
-
-        $token->join(
-            'avito_token',
-            AvitoTokenEvent::class,
-            'avito_token_event',
-            'avito_token_event.id = avito_token.event AND avito_token_event.active = true',
-        );
-
-        $token
-            ->join(
-                'avito_token_event',
-                AvitoTokenProfile::class,
-                'avito_token_profile',
-                'avito_token_profile.event = avito_token_event.id',
-            );
-
-        //        $token->join(
-        //            'avito_token',
-        //            UserProfileInfo::class,
-        //            'info',
-        //            'info.profile = avito_token.id AND info.status = :status',
-        //        );
-        //
-        //        $token->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-
-        //        dd($token->getSQL());
-
-        $dbal->addSelect("({$token->getSQL()}) AS avito_token_profile_id");
-
-        //
-        //        $dbal->allGroupByExclude();
-        //
-        //        dump($dbal->fetchAllAssociative());
-        //        dump($token->fetchAllAssociative());
-        //        dd();
-
+        /** Добавляем подзапрос на профиль токена */
+        $dbal->addSelect("($tokenSQL)");
 
         $dbal->allGroupByExclude();
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
-        //        $dbal->where("avito_token.id = '{$profile->getValue()}'");
 
-        dump($dbal->fetchAllAssociative());
-        dump($profile->getValue());
-        dd();
+        //        dump($dbal->fetchAllAssociative());
+        //        dump($profile->getValue());
+        //        dd();
+
+        $dbal->andWhere('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
         return $dbal
             // @TODO не кешируем, потому-что нужно брать актуальную инфу?

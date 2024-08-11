@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding='UTF-8'?>
 
 <Ads formatVersion='3' target='Avito.ru'>
-    {% for product in products|filter(v => v.product_price > 0) %}
 
-        {% set tags = product_transform(product) %}
+    {% if products is not empty %}
 
-        {% if tags is not null %}
-            <Ad>
-            {% for tag, data in tags %}
-                <{{ tag }}>
-                {{ data|raw }}
-                </{{ tag }}>
-            {% endfor %}
-            </Ad>
+        {% for product in products|filter(v => v.product_price > 0) %}
 
-        {% endif %}
+            {% set tags = product_transform(product) %}
 
-    {% endfor %}
+            {% if tags is not null %}
+                <Ad>
+                {% for tag, data in tags %}
+                    <{{ tag }}>
+                    {{ data|raw }}
+                    </{{ tag }}>
+                {% endfor %}
+                </Ad>
+
+            {% endif %}
+
+        {% endfor %}
+
+    {% endif %}
+
 </Ads>
