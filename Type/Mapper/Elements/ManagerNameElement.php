@@ -62,17 +62,7 @@ class ManagerNameElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
-        /**
-         * @var object{
-         *     id: string,
-         *     phone: string,
-         *     address: string,
-         *     manager: string,
-         *     percent: int} $profile
-         */
-        $profile = current(json_decode($data['avito_token_profile'], false, 512, JSON_THROW_ON_ERROR));
-
-        return $profile->manager;
+        return $data['avito_profile_manager'];
     }
 
     public function element(): string

@@ -26,6 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @see AvitoBoardMapper
+ *
+ * Для передачи в форму
+ * @see MapperElementForm
  */
 final class MapperElementDTO implements AvitoBoardMapperInterface
 {
@@ -36,7 +39,6 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
      * Связь на свойство продукта в категории
      */
     #[Assert\Uuid]
-//    #[Assert\NotBlank()]
     #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
     private ?CategoryProductSectionFieldUid $productField = null;
 
@@ -44,11 +46,9 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
     private ?string $def = null;
 
     /**
-     *  Для передачи в форму
-     *  @see MapperElementForm
-     *
-     * Элемент соответствия для построения фида для Авито
-     */
+     * Для передачи в форму
+     * @see MapperElementForm
+     *  */
     #[Assert\NotBlank]
     private ?AvitoBoardElementInterface $elementInstance = null;
 

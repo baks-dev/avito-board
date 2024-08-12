@@ -23,10 +23,8 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\UrlHelper;
 
@@ -46,7 +44,7 @@ use Symfony\Component\HttpFoundation\UrlHelper;
  * Чтобы изменить фотографию в объявлении, используйте другую ссылку.
  * Новое изображение по-прежнему url-адресу не будет загружено.
  */
-// @TODO тестировать отправку формата webp пока без валидация ext JPEG, PNG
+// @TODO разобраться с валидацией
 final readonly class ImagesElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Images';
@@ -64,14 +62,19 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
     {
         return false;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 
     public function getDefault(): null
@@ -84,18 +87,12 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(string|array $data = null): ?string
     {
-        $images = null;
+        $productImages = $data['product_images'];
 
-        /**
-         * @var object{
-         *     product_img: string,
-         *     product_img_cdn: bool,
-         *     product_img_ext: string,
-         *     product_img_root: bool} $image
-         */
-        foreach (json_decode($data['product_images'], false, 512, JSON_THROW_ON_ERROR) as $image)
+        $elementImages = null;
+        foreach (json_decode($productImages, false, 512, JSON_THROW_ON_ERROR) as $image)
         {
             // @TODO если картинки нет - то элемент не рендерим
             if (null === $image)
@@ -108,10 +105,10 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
             $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
             $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
             $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
-            $images .= $element;
+            $elementImages .= $element;
         }
 
-        return $images;
+        return $elementImages;
     }
 
     public function element(): string
@@ -122,10 +119,5 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
-    }
-
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
     }
 }

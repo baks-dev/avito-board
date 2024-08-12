@@ -18,8 +18,9 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
 
-use BaksDev\Avito\Entity\AvitoToken;
-use BaksDev\Avito\Type\Event\AvitoTokenEventUid;
+use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -27,25 +28,28 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
- * @group avito-board-controllers
+ * @group avito-board-controllers-delete
  */
 #[When(env: 'test')]
 final class DeleteControllerTest extends WebTestCase
 {
-    private const string URL = '/admin/avito/token/delete/%s';
+    private const string URL = '/admin/avito-board/mapper/delete/%s';
 
-    private const string ROLE = 'ROLE_AVITO_TOKEN_DELETE';
+    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_DELETE';
 
-    private static ?AvitoTokenEventUid $eventId = null;
+    private static ?AvitoBoardEventUid $eventId = null;
 
     public static function setUpBeforeClass(): void
     {
-        // Получаем одно из событий
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        self::$eventId = $em->getRepository(AvitoToken::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+
+        $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
+        self::$eventId = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent())->getId();
 
         $em->clear();
-        //$em->close();
     }
 
     /** Доступ по роли */

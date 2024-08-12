@@ -31,6 +31,8 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 /**
  * Кастомный тег.
  *
+ * Авито игнорирует кастомные теги.
+ *
  * Связан с @see TireTypeElement
  */
 final class SpikesElement implements AvitoBoardElementInterface
@@ -64,18 +66,15 @@ final class SpikesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): null
+    public function fetchData(array $data): string
     {
         // @TODO думаю логика при обработке ненужного элемента не нужна
-        // return match ($data[self::ELEMENT])
-        // {
-        //            'true' => 'шипованные',
-        //            'false' => 'не шипованные',
-        //            default => null
-        //        };
-
-        // @TODO возвращаю null, чтобы не рендерить элемент
-        return null;
+        return match ($data[self::ELEMENT])
+        {
+            'true' => 'шипованные',
+            'false' => 'не шипованные',
+            default => null
+        };
     }
 
     public function element(): string

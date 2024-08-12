@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
@@ -35,7 +34,8 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * — Да
  * — Нет
  */
-class DifferentWidthTiresElement implements AvitoBoardElementInterface
+// @TODO без реализации AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
+class DifferentWidthTiresElement
 {
     private const string ELEMENT = 'DifferentWidthTires';
 
@@ -56,7 +56,6 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
         return false;
     }
 
-    // @TODO По умолчанию Нет, так как не реализуем разноширокие комплекты
     public function getDefault(): string
     {
         return 'Нет';

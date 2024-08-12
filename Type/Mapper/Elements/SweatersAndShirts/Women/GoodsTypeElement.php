@@ -23,36 +23,31 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Elements;
+namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\Women;
+
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\Women\SweatersAndShirtsProduct;
 
 /**
- * Контактный телефон — строка, содержащая только один российский номер телефона.
+ * Вид товара.
+ * Одно из значений
  *
- * Обязательно указать код города или мобильного оператора:
- * — Код города должен указываться с +7 или 8 в начале
- * — Код мобильного оператора можно без 8 и 7 в начале
- *
- * Корректные примеры:
- * — +7 (495) 777-10-66
- * — (81374) 4-55-75
- * — 8 905 207 04 90
- * — +7 905 2070490
- * — 88123855085
+ * Элемент обязательный для всех продуктов Авито
  */
-class ContactPhoneElement implements AvitoBoardElementInterface
+class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'ContactPhone';
+    private const string ELEMENT = 'GoodsType';
 
-    private const string LABEL = 'Контактный телефон';
+    private const string LABEL = 'Вид товара';
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): false
+    public function isRequired(): true
     {
-        return false;
+        return true;
     }
 
     public function isChoices(): false
@@ -60,19 +55,19 @@ class ContactPhoneElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): null
+    public function getDefault(): string
+    {
+        return 'Женская одежда';
+    }
+
+    public function getHelp(): ?string
     {
         return null;
     }
 
-    public function getHelp(): null
+    public function fetchData(array $data): null
     {
         return null;
-    }
-
-    public function fetchData(array $data): string
-    {
-        return $data['avito_profile_phone'];
     }
 
     public function element(): string
@@ -85,8 +80,8 @@ class ContactPhoneElement implements AvitoBoardElementInterface
         return self::LABEL;
     }
 
-    public function getProduct(): null
+    public function getProduct(): string
     {
-        return null;
+        return SweatersAndShirtsProduct::class;
     }
 }

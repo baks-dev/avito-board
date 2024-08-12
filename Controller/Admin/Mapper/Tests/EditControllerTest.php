@@ -18,8 +18,9 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
 
-use BaksDev\Avito\Entity\AvitoToken;
-use BaksDev\Avito\Type\Event\AvitoTokenEventUid;
+use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -27,22 +28,26 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
- * @group avito-board-controllers
+ * @group avito-board-controllers-edit
  */
 #[When(env: 'test')]
 final class EditControllerTest extends WebTestCase
 {
-    private const string URL = '/admin/avito/token/edit/%s';
+    private const string URL = '/admin/avito-board/mapper/edit/%s';
 
-    private const string ROLE = 'ROLE_AVITO_TOKEN_EDIT';
+    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_EDIT';
 
-    private static ?AvitoTokenEventUid $eventId = null;
+    private static ?AvitoBoardEventUid $eventId = null;
 
     public static function setUpBeforeClass(): void
     {
-        // Получаем одно из событий
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-        self::$eventId = $em->getRepository(AvitoToken::class)->findOneBy([], ['id' => 'DESC'])?->getEvent();
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+
+        $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
+        self::$eventId = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent())->getId();
 
         $em->clear();
     }
@@ -65,7 +70,7 @@ final class EditControllerTest extends WebTestCase
                 $usr = TestUserAccount::getModer(self::ROLE);
 
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $eventId->getValue()));
+                $client->request('GET', sprintf(self::URL, $eventId));
 
                 self::assertResponseIsSuccessful();
             }
@@ -80,6 +85,7 @@ final class EditControllerTest extends WebTestCase
         // Получаем одно из событий
         $eventId = self::$eventId;
 
+
         if ($eventId)
         {
             self::ensureKernelShutdown();
@@ -91,7 +97,7 @@ final class EditControllerTest extends WebTestCase
                 $usr = TestUserAccount::getAdmin();
 
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $eventId->getValue()));
+                $client->request('GET', sprintf(self::URL, $eventId));
 
                 self::assertResponseIsSuccessful();
             }
@@ -117,7 +123,7 @@ final class EditControllerTest extends WebTestCase
 
                 $usr = TestUserAccount::getUsr();
                 $client->loginUser($usr, 'user');
-                $client->request('GET', sprintf(self::URL, $eventId->getValue()));
+                $client->request('GET', sprintf(self::URL, $eventId));
 
                 self::assertResponseStatusCodeSame(403);
             }
@@ -141,7 +147,7 @@ final class EditControllerTest extends WebTestCase
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-                $client->request('GET', sprintf(self::URL, $eventId->getValue()));
+                $client->request('GET', sprintf(self::URL, $eventId));
 
                 // Full authentication is required to access this resource
                 self::assertResponseStatusCodeSame(401);

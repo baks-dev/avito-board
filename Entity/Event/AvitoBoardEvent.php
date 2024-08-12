@@ -54,11 +54,6 @@ class AvitoBoardEvent extends EntityEvent
     #[ORM\OneToMany(targetEntity: AvitoBoardMapper::class, mappedBy: 'event', cascade: ['all'])]
     private Collection $mapperSetting;
 
-
-//    #[Assert\Valid]
-//    #[ORM\OneToMany(targetEntity: AvitoBoardMapper::class, mappedBy: 'event', cascade: ['all'])]
-//    private Collection $properties;
-
     public function __construct()
     {
         $this->id = new AvitoBoardEventUid();
@@ -120,5 +115,10 @@ class AvitoBoardEvent extends EntityEvent
     public function getCategory(): CategoryProductUid
     {
         return $this->category;
+    }
+
+    public function getAvito(): string
+    {
+        return $this->avito;
     }
 }

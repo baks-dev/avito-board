@@ -36,8 +36,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Если вы укажете уже прошедшую дату, автозагрузка не обработает объявление.
  */
-// @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
-class DateEndElement
+class DateEndElement implements AvitoBoardElementInterface
 {
     public const string ELEMENT = 'DateEnd';
 
@@ -68,9 +67,16 @@ class DateEndElement
         return null;
     }
 
+    // @TODO нужно ли учитывать смещение часового пояса?
     public function fetchData(array $data): ?string
     {
-        return $data['product_date_over'];
+        if (null !== $data['product_date_over'])
+        {
+            return $data['product_date_over'];
+
+        }
+
+        return null;
     }
 
     public function element(): string

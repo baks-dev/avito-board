@@ -64,7 +64,7 @@ final class BeforeNewController extends AbstractController
                 'avito-board:admin.mapper.new',
                 [
                     'localCategory' => $categoryMapperDTO->localCategory,
-                    'avitoCategory' => $categoryMapperDTO->avitoCategory->getProduct(),
+                    'avitoCategory' => $categoryMapperDTO->avitoCategory->getProductCategory(),
                 ]
             );
         }

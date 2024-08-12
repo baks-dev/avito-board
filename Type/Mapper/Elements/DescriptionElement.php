@@ -33,9 +33,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Элемент обязателен для всех продуктов Авито
  */
-// @TODO html только для оплаченного тарифа!
-// @TODO валидация длинны описания не нужна - допуски огромные
-// @TODO не понятно, что делает Авито, если в тегах есть аттрибуты
+// @TODO тестировать с отправкой без валидации тегов
 class DescriptionElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Description';
@@ -67,7 +65,6 @@ class DescriptionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    // @TODO что получать - краткое или полное описание
     public function fetchData(array $data): ?string
     {
         // @TODO для тестирования
@@ -83,20 +80,11 @@ class DescriptionElement implements AvitoBoardElementInterface
         //</li></a></ul></em><strong></br></p>
         //';
 
-        $pattern = '/<\/?(?!p|br|strong|em|ul|ol|li\b)[a-z][a-z0-9]*[^>]*>/i';
+        $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
 
-        $desc = $data['product_description'];
-
-        if (preg_match($pattern, $desc))
-        {
-            $stripTags = strip_tags($desc);
-
-            return sprintf('<![CDATA[%s]]>', $stripTags);
-
-            // @TODO тестировать со знаком переноса строки
-            // $clear = str_replace(PHP_EOL, "", $stripTags);
-            // return sprintf('<![CDATA[%s]]>', $clear);
-        }
+        // @TODO тестировать со знаком переноса строки
+        // $clear = str_replace(PHP_EOL, "", $desc);
+        // return sprintf('<![CDATA[%s]]>', $clear);
 
         return sprintf('<![CDATA[%s]]>', $desc);
     }

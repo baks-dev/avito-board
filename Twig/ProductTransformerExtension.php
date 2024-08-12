@@ -129,13 +129,7 @@ final class ProductTransformerExtension extends AbstractExtension
             $value = $instance->fetchData($mapper);
         });
 
-        // @TODO тестировать отправку фида с кастомными связанными элементами
-        /** Убираем значение, равные null (кастомные связанные элементы) */
-        $filterMapper = array_filter($mapper, function (?string $value) {
-            return $value !== null;
-        });
-
-        return $filterMapper;
+        return $mapper;
     }
 
     /**

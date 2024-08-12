@@ -30,7 +30,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 interface AvitoBoardProductInterface
 {
     /** Название продукта */
-    public function getProduct(): string;
+    public function getProductCategory(): string;
 
     /**
      * Получаем все элементы, относящиеся к определенной категории продукта Авито
@@ -41,5 +41,5 @@ interface AvitoBoardProductInterface
 
     public function getElement(string $elementName): ?AvitoBoardElementInterface;
 
-    public function isEqualProduct(string $product): bool;
+    public function isEqual(string $productCategory): bool;
 }

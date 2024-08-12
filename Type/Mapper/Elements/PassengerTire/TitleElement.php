@@ -65,7 +65,7 @@ class TitleElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        // @TODO по какому ключу формировать значение?
+        // @TODO по какому ключу формировать значение? - фильтр по тп
         if (null === $data['product_name'] || null === $data['product_article'])
         {
             return null;

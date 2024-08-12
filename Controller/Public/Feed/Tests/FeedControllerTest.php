@@ -22,7 +22,9 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/** @group avito-board */
+/**
+ * @group avito-board
+ */
 #[When(env: 'test')]
 final class FeedControllerTest extends WebTestCase
 {
@@ -32,8 +34,6 @@ final class FeedControllerTest extends WebTestCase
     public function testGuestFiled(): void
     {
         $url = sprintf(self::URL, UserProfileUid::TEST);
-//        dd($url);
-        $url = sprintf(self::URL, '0191363e-8dbc-7536-ba46-f8ded7e9d754');
 
         self::ensureKernelShutdown();
         $client = static::createClient();

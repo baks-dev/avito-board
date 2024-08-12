@@ -18,7 +18,10 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
 
+use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Users\User\Tests\TestUserAccount;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -31,11 +34,21 @@ final class NewControllerTest extends WebTestCase
 {
     private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_NEW';
 
-    private static string $url;
+    private static ?string $url = null;
 
     public static function setUpBeforeClass(): void
     {
-        self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', '01909923-8fec-7b8b-aef8-eb3df2d4ccf3', 'Легковые шины');
+        $container = self::getContainer();
+
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+
+        $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
+        $event = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent());
+
+        self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', $event->getCategory(), $event->getAvito());
+
+        $em->clear();
     }
 
     /** Доступ по роли  */

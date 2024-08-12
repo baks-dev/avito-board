@@ -23,18 +23,17 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire;
+namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\Women;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\CategoryElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\GoodsTypeElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire\ProductTypeElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;
+use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\Women\GoodsTypeElement;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
-final readonly class PassengerTireProduct implements AvitoBoardProductInterface
+final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
 {
-    private const string PRODUCT_CATEGORY = 'Легковые шины';
+    private const string PRODUCT_CATEGORY = 'Топы и футболки';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
@@ -47,23 +46,23 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
 
     public function getElements(): array
     {
-        $passengerTireElements = null;
+        $elements = null;
 
         /** @var AvitoBoardElementInterface $element */
         foreach ($this->elements as $element)
         {
-            if (null === $element->getProduct() || $element->getProduct() === self::class)
+            if ($element->getProduct() === null || $element->getProduct() === self::class)
             {
-                $passengerTireElements[] = $element;
+                $elements[] = $element;
             }
         }
 
-        if (null === $passengerTireElements)
+        if (null === $elements)
         {
             throw new \Exception('Не найдено ни одного элемента');
         }
 
-        return $passengerTireElements;
+        return $elements;
     }
 
     public function getElement(string $elementName): ?AvitoBoardElementInterface
@@ -92,8 +91,7 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
     {
         $category = (new CategoryElement())->getDefault();
         $variation = (new GoodsTypeElement())->getDefault();
-        $type = (new ProductTypeElement())->getDefault();
 
-        return sprintf('%s / %s / %s', $category, $variation, $type);
+        return sprintf('%s / %s', $category, $variation);
     }
 }

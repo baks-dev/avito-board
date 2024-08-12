@@ -33,15 +33,15 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
 {
-    private const string PRODUCT = 'Кофты и футболки';
+    private const string PRODUCT_CATEGORY = 'Кофты и футболки';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
     ) {}
 
-    public function getProduct(): string
+    public function getProductCategory(): string
     {
-        return self::PRODUCT;
+        return self::PRODUCT_CATEGORY;
     }
 
     public function getElements(): array
@@ -82,9 +82,9 @@ final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterf
         throw new \Exception('Не найден элемент');
     }
 
-    public function isEqualProduct(string $product): bool
+    public function isEqual(string $productCategory): bool
     {
-        return $product === self::PRODUCT;
+        return $productCategory === self::PRODUCT_CATEGORY;
     }
 
     public function __toString(): string

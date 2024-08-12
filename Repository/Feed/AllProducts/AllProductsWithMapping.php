@@ -45,95 +45,15 @@ use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
 final class AllProductsWithMapping implements AllProductsWithMappingInterface
 {
-    private ?UserProfileUid $profile = null;
-
     public function __construct(
         private readonly DBALQueryBuilder $DBALQueryBuilder,
     ) {}
-
-    private function findTokenProfile(): ?string
-    {
-        // добавляем данные из профиля авторизации Авито
-        $token = $this->DBALQueryBuilder
-            ->createQueryBuilder(self::class);
-
-        // @TODO не получается забиндить параметры
-        $token
-            ->from(AvitoToken::class, 'avito_token')
-            ->where("avito_token.id = '$this->profile'")
-//            ->where('avito_token.id = :profile')
-//            ->setParameter('profile', $profile, UserProfileUid::TYPE)
-        ;
-
-        $token->join(
-            'avito_token',
-            AvitoTokenEvent::class,
-            'avito_token_event',
-            '
-                avito_token_event.id = avito_token.event AND 
-                avito_token_event.active = TRUE',
-        );
-
-        $token
-            ->join(
-                'avito_token_event',
-                AvitoTokenProfile::class,
-                'avito_token_profile',
-                'avito_token_profile.event = avito_token_event.id',
-            );
-
-        $status = (new UserProfileStatus(UserProfileStatusActive::class))->getUserProfileStatusValue();
-        $token->join(
-            'avito_token',
-            UserProfileInfo::class,
-            'info',
-            "
-                info.profile = avito_token.id AND 
-                info.status = '$status'",
-        );
-
-        //        $token->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
-
-        $token->addSelect(
-            "JSON_AGG
-			(
-                DISTINCT
-					JSONB_BUILD_OBJECT
-                        (
-                        'id', avito_token.id,
-                        'address', avito_token_profile.address,
-                        'phone', avito_token_profile.phone,
-                        'manager', avito_token_profile.manager,
-                        'percent', avito_token_profile.percent
-                        )) AS avito_token_profile"
-        );
-
-        if (current($token->fetchAllAssociative())['avito_token_profile'] === null)
-        {
-            return null;
-        }
-        else
-        {
-            return $token->getSQL();
-        }
-    }
 
     /**
      * Метод получает массив свойств продукта с маппингом и данными токена
      */
     public function findAll(UserProfileUid $profile): array|bool
     {
-        $this->profile = $profile;
-
-        /** Ищем профиль */
-        $tokenSQL = $this->findTokenProfile();
-
-        if (null === $tokenSQL)
-        {
-            // @TODO логгируем?
-            return false;
-        }
-
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -142,6 +62,51 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
             ->select('product.id')
             ->addSelect('product.event')
             ->from(Product::class, 'product');
+
+        /** Проверяю, есть ли соответствующий профиль */
+        $dbal
+            ->join(
+                'product',
+                AvitoToken::class,
+                'avito_token',
+                'avito_token.id = :profile'
+            )
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+
+
+        $dbal
+            ->join(
+                'avito_token',
+                AvitoTokenEvent::class,
+                'avito_token_event',
+                '
+                        avito_token_event.id = avito_token.event AND
+                        avito_token_event.active = TRUE',
+            );
+
+        $dbal->join(
+            'avito_token',
+            UserProfileInfo::class,
+            'info',
+            '
+                info.profile = avito_token.id AND
+                info.status = :status',
+        );
+
+        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+        $dbal
+            ->addSelect('avito_token_profile.address AS avito_profile_address')
+            ->addSelect('avito_token_profile.percent AS avito_profile_percent')
+            ->addSelect('avito_token_profile.manager AS avito_profile_manager')
+            ->addSelect('avito_token_profile.phone AS avito_profile_phone')
+            ->join(
+                'avito_token',
+                AvitoTokenProfile::class,
+                'avito_token_profile',
+                '
+                        avito_token_profile.event = avito_token.event'
+            );
 
         // @TODO если ли смысл в этом объединении, так как в корне и тк активное событие, а из события никакой полезной информации не получить
         $dbal->leftJoin(
@@ -639,22 +604,12 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 			AS avito_board_mapper"
         );
 
-        /** Добавляем подзапрос на профиль токена */
-        $dbal->addSelect("($tokenSQL)");
-
         $dbal->allGroupByExclude();
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        //        dump($dbal->fetchAllAssociative());
-        //        dump($profile->getValue());
-        //        dd();
-
-        $dbal->andWhere('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
-
         return $dbal
-            // @TODO не кешируем, потому-что нужно брать актуальную инфу?
-//            ->enableCache('avito-board-products', 3600)
+            ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
     }
 }

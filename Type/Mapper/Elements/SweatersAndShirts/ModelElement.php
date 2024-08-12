@@ -34,7 +34,6 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Название модели от производителя или ваше. Например: Air Max для кроссовок Nike или «Беговая 21» для футболки.
  * Не используйте символы (#, -, /, *, + и другие), только буквы и цифры. Название модели покупатели не увидят.
  */
-// @TODO реализация AvitoBoardElementInterface после реализации реквеста для моделей футболок
 final readonly class ModelElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Model';

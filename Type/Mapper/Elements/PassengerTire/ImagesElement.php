@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\UrlHelper;
  * Чтобы изменить фотографию в объявлении, используйте другую ссылку.
  * Новое изображение по-прежнему url-адресу не будет загружено.
  */
-// @TODO разобраться с валидацией
+// @TODO тестировать отправку формата webp пока без валидация ext JPEG, PNG
 final readonly class ImagesElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Images';
@@ -103,20 +103,12 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
                 return null;
             }
 
-            // @TODO валидация JPEG, PNG?
-            if ($image->product_img_ext === 'jpg' || $image->product_img_ext === 'png')
-            {
-                $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
-                $imgDir = $image->product_img;
-                $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
-                $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
-                $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
-                $images .= $element;
-            }
-            else
-            {
-                return null;
-            }
+            $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
+            $imgDir = $image->product_img;
+            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
+            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
+            $images .= $element;
         }
 
         return $images;

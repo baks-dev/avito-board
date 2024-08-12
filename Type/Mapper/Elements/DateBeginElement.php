@@ -40,11 +40,10 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * — Публикация объявления по DateBegin не зависит от расписания загрузки вашего файла и произойдёт в указанную дату и время.
  *
  * Не обязателен для Авито, но обязателен для нас
- *
  */
 // @TODO тестировать оправку фида без этого элемента (исключить из AvitoBoardElementInterface)
 //      ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
-class DateBeginElement
+class DateBeginElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'DateBegin';
 
@@ -79,12 +78,13 @@ class DateBeginElement
     {
         if ($data['product_quantity'] === 0)
         {
-            // @TODO на какой срок закрывать объявление?
-            $date = new \DateTimeImmutable('+10 day');
+            // @TODO на какой срок закрывать объявление? - тестировать
+            $date = new \DateTimeImmutable('+1 year');
             return $date->format('Y-m-d H:i:s');
         }
 
-        return $data['product_date_begin'];
+        $date = new \DateTimeImmutable($data['product_date_begin']);
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function element(): string

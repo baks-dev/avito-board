@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 
+use BaksDev\Reference\Money\Type\Money;
+
 /**
  * Цена в рублях — целое число
  *
@@ -63,22 +65,12 @@ class PriceElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
-        /**
-         * @var object{
-         *     id: string,
-         *     phone: string,
-         *     address: string,
-         *     manager: string,
-         *     percent: int} $profile
-         */
-        $profile = current(json_decode($data['avito_token_profile'], false, 512, JSON_THROW_ON_ERROR));
+        $money = new Money($data['product_price']);
 
-        $price = $data['product_price'] / 100;
+        $percent = $money->percent($data['avito_profile_percent']);
 
-        $total = $price + ($price * ($profile->percent / 100));
-
-        // @TODO округляю в большую сторону?
-        return (string)ceil($total);
+        $total = ($money->getValue() + $percent->getValue()) / 100;
+        return (string)$total;
     }
 
     public function element(): string
