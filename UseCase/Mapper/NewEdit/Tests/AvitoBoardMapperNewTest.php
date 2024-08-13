@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
+ * @group avito-board
  * @group avito-board-usecase
  */
 #[When(env: 'test')]

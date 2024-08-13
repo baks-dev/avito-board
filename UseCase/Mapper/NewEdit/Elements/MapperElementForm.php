@@ -46,6 +46,10 @@ final class MapperElementForm extends AbstractType
                 /** @var AvitoBoardProductInterface $avitoProduct */
                 $avitoProduct = $options['avito_product'];
                 $element = $avitoProduct->getElement($mapperElementDTO->getElement());
+
+                /**
+                 * Для доступа к методам объекта в форме @see MapperElementDTO
+                 */
                 $mapperElementDTO->setElementInstance($element);
 
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */

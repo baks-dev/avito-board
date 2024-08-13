@@ -611,7 +611,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 //        dd($dbal->fetchAllAssociative());
 
         return $dbal
-//            ->enableCache('orders-order', 3600)
+            ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
     }
 }

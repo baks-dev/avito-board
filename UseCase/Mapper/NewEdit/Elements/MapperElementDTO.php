@@ -21,14 +21,10 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapperInterface;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @see AvitoBoardMapper
- *
- * Для передачи в форму
- * @see MapperElementForm
  */
 final class MapperElementDTO implements AvitoBoardMapperInterface
 {
@@ -46,10 +42,8 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
     private ?string $def = null;
 
     /**
-     * Для передачи в форму
-     * @see MapperElementForm
-     *  */
-    #[Assert\NotBlank]
+     * Для доступа к методам объекта в форме @see MapperElementForm
+     */
     private ?AvitoBoardElementInterface $elementInstance = null;
 
     public function getElementInstance(): ?AvitoBoardElementInterface

@@ -85,8 +85,6 @@ class GoodsSubTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-//        dd($data);
-
         if (null === $data[self::ELEMENT])
         {
             return null;

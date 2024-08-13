@@ -56,7 +56,6 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function getDefault(): null
     {
-//        return ['Мужская одежда', 'Женская одежда'];
         return null;
     }
 
@@ -67,8 +66,6 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-
-//        dd($data);
         if (null === $data[self::ELEMENT])
         {
             return null;

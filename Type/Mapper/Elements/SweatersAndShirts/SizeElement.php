@@ -83,8 +83,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * <Size>78+ (8XL+)</Size>
  * <Size>One size</Size>
  * <Size>Без размера</Size>
- * 40(XXS) 42(XS) 44(XS/S) 46(S) 48(M) 50(L) 52(L/XL) 54(XL) 56(XXL) 58(XXL) 60(3XL) 62(4XL) 64(5XL) 66(6XL) 68(7XL) 70(7XL) 72(8XL) 74(8XL) 76(9XL) 78(10XL) 80(10XL) 82+(10XL+)
- *
  */
 // @TODO разобраться откуда брать значение
 class SizeElement implements AvitoBoardElementInterface
@@ -124,21 +122,39 @@ class SizeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        if (null === $data[self::ELEMENT])
+        $size = $data[self::ELEMENT];
+
+        if (null === $size)
         {
             return null;
         }
 
-        $size = $data[self::ELEMENT];
-
-        $trans = $this->translator->trans($size, [], 'avito-board.mapper.men');
-
-        if ($size === $trans)
+        if ($data[GoodsTypeElement::ELEMENT] === 'Мужской')
         {
-            return 'Без размера';
+            $men = $this->translator->trans($size, [], 'avito-board.mapper.size.men');
+
+            if ($men === $size)
+            {
+                return 'Без размера';
+            }
+
+            return $men;
         }
 
-        return $trans;
+        if ($data[GoodsTypeElement::ELEMENT] === 'Женский')
+        {
+            $women = $this->translator->trans($size, [], 'avito-board.mapper.size.women');
+
+            if ($women === $size)
+            {
+                return 'Без размера';
+            }
+
+            return $women;
+        }
+
+
+        return null;
     }
 
     public function element(): string

@@ -39,6 +39,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
+ * @group avito-board
  * @group avito-board-usecase
  *
  * @depends BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests\AvitoBoardMapperEditTest::class

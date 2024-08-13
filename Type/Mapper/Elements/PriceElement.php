@@ -65,6 +65,11 @@ class PriceElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
+        if($data['product_price'] === 0)
+        {
+            return (string)$data['product_price'];
+        }
+
         $money = new Money($data['product_price']);
 
         $percent = $money->percent($data['avito_profile_percent']);
