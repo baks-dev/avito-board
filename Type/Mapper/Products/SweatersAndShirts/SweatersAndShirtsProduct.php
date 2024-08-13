@@ -27,7 +27,6 @@ namespace BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\CategoryElement;
-use BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts\GoodsTypeElement;
 use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
@@ -90,8 +89,7 @@ final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterf
     public function __toString(): string
     {
         $category = (new CategoryElement())->getDefault();
-        $variation = (new GoodsTypeElement())->getDefault();
 
-        return sprintf('%s / %s', $category, $variation);
+        return sprintf('%s / %s', $category, 'Одежда');
     }
 }

@@ -30,19 +30,18 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
 
 /**
  * Вид товара.
- * Одно из значений
  *
- * Элемент обязательный для всех продуктов Авито
- */
+ * Мужская одежда', 'Женская одежда
+ **/
 class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'GoodsType';
+    public const string ELEMENT = 'GoodsType';
 
-    private const string LABEL = 'Вид товара';
+    private const string LABEL = 'Для кого';
 
-    public function isMapping(): false
+    public function isMapping(): true
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): true
@@ -55,9 +54,10 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Мужская одежда';
+//        return ['Мужская одежда', 'Женская одежда'];
+        return null;
     }
 
     public function getHelp(): ?string
@@ -65,9 +65,16 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): null
+    public function fetchData(array $data): ?string
     {
-        return null;
+
+//        dd($data);
+        if (null === $data[self::ELEMENT])
+        {
+            return null;
+        }
+
+        return $data[self::ELEMENT];
     }
 
     public function element(): string

@@ -80,6 +80,11 @@ class DescriptionElement implements AvitoBoardElementInterface
         //</li></a></ul></em><strong></br></p>
         //';
 
+        if(null === $data['product_description'])
+        {
+            return null;
+        }
+
         $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
 
         // @TODO тестировать со знаком переноса строки

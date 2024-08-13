@@ -35,6 +35,8 @@ final class ProductTransformerExtension extends AbstractExtension
 
     private ?string $mapper = null;
 
+    private ?string $product = null;
+
     protected LoggerInterface $logger;
 
     public function __construct(
@@ -55,6 +57,7 @@ final class ProductTransformerExtension extends AbstractExtension
     {
         $this->avitoCategory = $product['avito_board_avito_category'];
         $this->mapper = $product['avito_board_mapper'];
+        $this->product = $product['product_name'];
 
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
@@ -74,14 +77,15 @@ final class ProductTransformerExtension extends AbstractExtension
             {
                 $data = $element->fetchData($product);
 
-                // @TODO если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог
+                /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
                 if ($data === null && $element->isRequired())
                 {
+                    // @TODO не логгирует
                     $this->logger->critical(
                         sprintf(
                             'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
                             $element->element(),
-                            $product['product_name']
+                            $this->product
                         ),
                         [__FILE__ . ':' . __LINE__]
                     );
@@ -89,9 +93,9 @@ final class ProductTransformerExtension extends AbstractExtension
                     return null;
                 }
 
+                /** Если значение свойства продукта null - пропускать элемент, не добавлять в фид */
                 if ($data === null)
                 {
-                    // @TODO если значение свойства продукта null - пропускать элемент, не добавлять в фид
                     continue;
                 }
 
@@ -106,6 +110,11 @@ final class ProductTransformerExtension extends AbstractExtension
         /** Преобразуем строку маппера в массив элементов */
         $mappedElements = $this->getElements();
 
+        if (null === $mappedElements)
+        {
+            return null;
+        }
+
         /**
          * Объединяем массивы элементов по принципу:
          * - элемент, описанный в классе имеет приоритет над элементом, полученным из маппера
@@ -116,18 +125,40 @@ final class ProductTransformerExtension extends AbstractExtension
         return $feedElements;
     }
 
-    private function getElements(): array
+    private function getElements(): ?array
     {
         $mapper = $this->mapperTransform();
+        $require = false;
 
         /**
          * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
          */
-        array_walk($mapper, function (&$value, $element) use ($mapper) {
+        array_walk($mapper, function (&$value, $element) use ($mapper, &$require) {
             $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 
             $value = $instance->fetchData($mapper);
+
+            /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
+            if (null === $value && $instance->isRequired())
+            {
+                $require = true;
+
+                // @TODO не логгирует
+                $this->logger->warning(
+                    sprintf(
+                        'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
+                        $instance->element(),
+                        $this->product
+                    ),
+                    [__FILE__ . ':' . __LINE__]
+                );
+            }
         });
+
+        if ($require === true)
+        {
+            return null;
+        }
 
         return $mapper;
     }

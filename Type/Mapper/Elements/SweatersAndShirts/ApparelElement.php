@@ -49,9 +49,9 @@ class ApparelElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Кофты и футболки';
+        return null;
     }
 
     public function getHelp(): null
@@ -59,8 +59,27 @@ class ApparelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): null
+    public function fetchData(array $data): ?string
     {
+        // @TODO или же проверять свойства продукта?
+        /**
+         * @var object{
+         *     value: string,
+         *     element: string} $element
+         */
+        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        {
+            if ($element->element === GoodsTypeElement::ELEMENT)
+            {
+                return match ($element->value)
+                {
+                    'Мужской' => 'Кофты и футболки',
+                    'Женский' => 'Топы и футболки',
+                    default => null
+                };
+            }
+        }
+
         return null;
     }
 

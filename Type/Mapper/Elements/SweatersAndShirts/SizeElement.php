@@ -27,11 +27,13 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Размер. Мужская одежда
+ * Размер
  * Одно из значений
  *
+ * Men
  * <Size>40 (XXS)</Size>
  * <Size>42 (XS)</Size>
  * <Size>44 (XS/S)</Size>
@@ -56,17 +58,48 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * <Size>82+ (10XL+)</Size>
  * <Size>One size</Size>
  * <Size>Без размера</Size>
+ *
+ * Women
+ * <Size>38 (XXS)</Size>
+ * <Size>40 (XS)</Size>
+ * <Size>42 (S)</Size>
+ * <Size>44 (S/M)</Size>
+ * <Size>46 (M)</Size>
+ * <Size>48 (L)</Size>
+ * <Size>50 (L/XL)</Size>
+ * <Size>52 (XL)</Size>
+ * <Size>54 (XXL)</Size>
+ * <Size>56 (3XL)</Size>
+ * <Size>58 (4XL)</Size>
+ * <Size>60 (5XL)</Size>
+ * <Size>62 (5XL)</Size>
+ * <Size>64 (6XL)</Size>
+ * <Size>66 (6XL)</Size>
+ * <Size>68 (7XL)</Size>
+ * <Size>70 (7XL)</Size>
+ * <Size>72 (8XL)</Size>
+ * <Size>74 (8XL)</Size>
+ * <Size>76 (8XL)</Size>
+ * <Size>78+ (8XL+)</Size>
+ * <Size>One size</Size>
+ * <Size>Без размера</Size>
+ * 40(XXS) 42(XS) 44(XS/S) 46(S) 48(M) 50(L) 52(L/XL) 54(XL) 56(XXL) 58(XXL) 60(3XL) 62(4XL) 64(5XL) 66(6XL) 68(7XL) 70(7XL) 72(8XL) 74(8XL) 76(9XL) 78(10XL) 80(10XL) 82+(10XL+)
+ *
  */
 // @TODO разобраться откуда брать значение
 class SizeElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Size';
 
-    private const string LABEL = 'Размер. Мужская одежда';
+    private const string LABEL = 'Размер';
 
-    public function isMapping(): false
+    public function __construct(
+        private TranslatorInterface $translator,
+    ) {}
+
+    public function isMapping(): true
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): true
@@ -79,10 +112,9 @@ class SizeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    // @TODO либо Без размера, либо из свойств продукта через метод fetchData в соответствии со значениями из Авито
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Без размера';
+        return null;
     }
 
     public function getHelp(): null
@@ -92,14 +124,21 @@ class SizeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        return null;
+        if (null === $data[self::ELEMENT])
+        {
+            return null;
+        }
 
-        //        if(in_array('_size', $data))
-        //        {
-        //            return $data['_size'];
-        //        }
-        //
-        //        return 'Без размера';
+        $size = $data[self::ELEMENT];
+
+        $trans = $this->translator->trans($size, [], 'avito-board.mapper.men');
+
+        if ($size === $trans)
+        {
+            return 'Без размера';
+        }
+
+        return $trans;
     }
 
     public function element(): string

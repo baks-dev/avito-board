@@ -28,6 +28,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
+ * @group avito-board-controllers
  * @group avito-board-controllers-delete
  */
 #[When(env: 'test')]

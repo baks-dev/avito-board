@@ -24,6 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
+ * @group avito-board-controllers
  * @group avito-board-controllers-before-new
  */
 #[When(env: 'test')]
