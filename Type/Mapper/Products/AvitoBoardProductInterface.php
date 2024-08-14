@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,40 +21,25 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Type\Mapper\Products;
 
-namespace BaksDev\Avito\Board;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-
-class BaksDevAvitoBoardBundle extends AbstractBundle
+#[AutoconfigureTag('baks.avito.board.products')]
+interface AvitoBoardProductInterface
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    /** Название продукта */
+    public function getProductCategory(): string;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    /**
+     * Получаем все элементы, относящиеся к определенной категории продукта Авито
+     *
+     * @return list<AvitoBoardElementInterface>
+     */
+    public function getElements(): array;
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-        $services = $container->services();
+    public function getElement(string $elementName): ?AvitoBoardElementInterface;
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
-    }
+    public function isEqual(string $productCategory): bool;
 }

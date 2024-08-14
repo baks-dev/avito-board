@@ -21,40 +21,29 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-namespace BaksDev\Avito\Board;
+use Symfony\Config\FrameworkConfig;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+return static function (FrameworkConfig $framework) {
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    $messenger = $framework->messenger();
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    $messenger
+        ->transport('avito-board')
+        ->dsn('redis://%env(REDIS_PASSWORD)%@%env(REDIS_HOST)%:%env(REDIS_PORT)%?auto_setup=true')
+        ->options(['stream' => 'avito-board'])
+        ->failureTransport('failed-avito-board')
+        ->retryStrategy()
+        ->maxRetries(3)
+        ->delay(1000)
+        ->maxDelay(0)
+        ->multiplier(3)
+        ->service(null);
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-        $services = $container->services();
+    $failure = $framework->messenger();
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
-    }
-}
+    $failure->transport('failed-avito-board')
+        ->dsn('%env(MESSENGER_TRANSPORT_DSN)%')
+        ->options(['queue_name' => 'failed-avito-board']);
+};

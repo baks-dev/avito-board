@@ -21,40 +21,15 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Repository\Mapper\AllProductName;
 
-namespace BaksDev\Avito\Board;
+use BaksDev\Products\Category\Entity\CategoryProduct;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-
-class BaksDevAvitoBoardBundle extends AbstractBundle
+interface AllProductNameInterface
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public function category(CategoryProduct|CategoryProductUid|string $category): self;
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-        $services = $container->services();
-
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
-    }
+    public function findAll(): ?CategoryProductSectionFieldUid;
 }

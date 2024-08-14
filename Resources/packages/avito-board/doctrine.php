@@ -21,40 +21,26 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
-namespace BaksDev\Avito\Board;
+use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventType;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardType;
+use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardUid;
+use Symfony\Config\DoctrineConfig;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+return static function (DoctrineConfig $doctrine): void {
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
-{
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
+    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
-        $services = $container->services();
-
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
-
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
-    }
-}
+    $emDefault->mapping('avito-board')
+        ->type('attribute')
+        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
+        ->isBundle(false)
+        ->prefix('BaksDev\Avito\Board\Entity')
+        ->alias('avito-board');
+};

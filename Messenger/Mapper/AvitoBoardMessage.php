@@ -23,38 +23,40 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board;
+namespace BaksDev\Avito\Board\Messenger\Mapper;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 
-class BaksDevAvitoBoardBundle extends AbstractBundle
+final readonly class AvitoBoardMessage
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public function __construct(
+        private CategoryProductUid $id,
+        private AvitoBoardEventUid $event,
+        private ?AvitoBoardEventUid $last = null,
+    ) {}
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
-
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    /**
+     * Идентификатор
+     */
+    public function getId(): CategoryProductUid
     {
-        $services = $container->services();
+        return $this->id;
+    }
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
+    /**
+     * Идентификатор текущего события
+     */
+    public function getCurrentEvent(): AvitoBoardEventUid
+    {
+        return $this->event;
+    }
 
-
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
-            ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
+    /**
+     * Идентификатор предыдущего события
+     */
+    public function getPreviousEvent(): ?AvitoBoardEventUid
+    {
+        return $this->last;
     }
 }
