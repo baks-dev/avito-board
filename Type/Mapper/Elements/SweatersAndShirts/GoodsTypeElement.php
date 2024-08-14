@@ -31,7 +31,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
 /**
  * Вид товара.
  *
- * Мужская одежда', 'Женская одежда
+ * Мужская одежда', 'Женская одежда'
  **/
 class GoodsTypeElement implements AvitoBoardElementInterface
 {
@@ -66,12 +66,18 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
+
         if (null === $data[self::ELEMENT])
         {
             return null;
         }
 
-        return $data[self::ELEMENT];
+        return match ($data[self::ELEMENT])
+        {
+            'Мужской' => 'Мужская одежда',
+            'Женский' => 'Женская одежда',
+            default => null
+        };
     }
 
     public function element(): string

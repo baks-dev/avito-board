@@ -19,7 +19,6 @@ final class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        // @TODO если false - пустой фид или исключение?
         $products = $allProductsWithMapping->findAll($profile);
 
         $response = $this->render(
