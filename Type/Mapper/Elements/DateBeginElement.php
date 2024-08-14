@@ -83,9 +83,8 @@ class DateBeginElement implements AvitoBoardElementInterface
         }
 
         $date = new \DateTimeImmutable($data['product_date_begin']);
-        $dateBegin = $date->modify('-1 day');
 
-        return $dateBegin->format('Y-m-d H:i:s');
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function element(): string

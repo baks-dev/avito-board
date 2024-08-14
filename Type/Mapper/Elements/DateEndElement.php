@@ -67,15 +67,13 @@ class DateEndElement implements AvitoBoardElementInterface
         return null;
     }
 
-    // @TODO нужно ли учитывать смещение часового пояса?
     public function fetchData(array $data): ?string
     {
-        if (null !== $data['product_date_over'])
+        if (null !== $data['product_date_begin'])
         {
-            $date = new \DateTimeImmutable($data['product_date_over']);
-            $dateEnd = $date->modify('-1 day');
+            $date = new \DateTimeImmutable($data['product_date_begin']);
 
-            return $dateEnd->format('Y-m-d H:i:s');
+            return $date->format('Y-m-d H:i:s');
         }
 
         return null;
