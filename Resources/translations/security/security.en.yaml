@@ -1,5 +1,5 @@
 # Role
-ROLE_AVITO_MAPPER_BOARD:
+ROLE_AVITO_BOARD_MAPPER:
   header: 'Avito'
   name: 'Property ratio for Avito'
   desc: 'Property ratio for Avito'
