@@ -44,7 +44,7 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  */
 class GoodsSubTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'GoodsSubType';
+    public const string ELEMENT = 'GoodsSubType';
 
     private const string LABEL = 'Тип одежды';
 

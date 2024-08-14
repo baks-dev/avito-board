@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
@@ -32,11 +33,15 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * Название объявления — строка до 50 символов.
  * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
  */
-class TitleElement implements AvitoBoardElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Title';
 
     private const string LABEL = 'Название объявления';
+
+    public function __construct(
+        private TireModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
@@ -65,13 +70,14 @@ class TitleElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        // @TODO по какому ключу формировать значение? - фильтр по тп
-        if (null === $data['product_name'] || null === $data['product_article'])
+        $search = $this->request->getModel($data['product_name']);
+
+        if (null == $search)
         {
             return null;
         }
 
-        return sprintf('%s %s', $data['product_name'], $data['product_article']);
+        return sprintf('%s %s', $search['brand'], $data['product_article']);
     }
 
     public function element(): string

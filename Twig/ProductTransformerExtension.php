@@ -80,7 +80,6 @@ final class ProductTransformerExtension extends AbstractExtension
                 /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
                 if ($data === null && $element->isRequired())
                 {
-                    // @TODO не логгирует
                     $this->logger->critical(
                         sprintf(
                             'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
@@ -143,7 +142,6 @@ final class ProductTransformerExtension extends AbstractExtension
             {
                 $require = true;
 
-                // @TODO не логгирует
                 $this->logger->warning(
                     sprintf(
                         'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',

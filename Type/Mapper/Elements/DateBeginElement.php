@@ -78,13 +78,14 @@ class DateBeginElement implements AvitoBoardElementInterface
     {
         if ($data['product_quantity'] === 0)
         {
-            // @TODO на какой срок закрывать объявление? - тестировать
             $date = new \DateTimeImmutable('+1 year');
             return $date->format('Y-m-d H:i:s');
         }
 
         $date = new \DateTimeImmutable($data['product_date_begin']);
-        return $date->format('Y-m-d H:i:s');
+        $dateBegin = $date->modify('-1 day');
+
+        return $dateBegin->format('Y-m-d H:i:s');
     }
 
     public function element(): string

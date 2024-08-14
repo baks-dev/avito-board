@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
@@ -35,11 +36,15 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
  */
-class TitleElement implements AvitoBoardElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Title';
 
     private const string LABEL = 'Название объявления';
+
+    public function __construct(
+        private ShirtModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
@@ -66,15 +71,40 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
+    // @TODO как формировать title?
     public function fetchData(array $data): ?string
     {
-        // @TODO по какому ключу формировать значение - product_offer_value + product_variation_value + product_modification_value
-        if (null === $data['product_name'] || null === $data['product_article'])
+        $search = $this->request->getModel($data['product_name']);
+
+        if (null == $search)
         {
             return null;
         }
 
-        return sprintf('%s %s', $data['product_name'], $data['product_article']);
+        $type = null;
+        $size = null;
+
+        /**
+         * @var object{
+         *     value: string,
+         *     element: string} $element
+         */
+        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        {
+            if ($element->element === GoodsSubTypeElement::ELEMENT)
+            {
+                $type = $element->value;
+                continue;
+            }
+
+            if ($element->element === SizeElement::ELEMENT)
+            {
+                $size = 'Размер ' . $element->value;
+            }
+        }
+
+
+        return sprintf('%s %s %s', $type, $search['brand'], $size);
     }
 
     public function element(): string

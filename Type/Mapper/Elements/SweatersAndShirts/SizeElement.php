@@ -84,10 +84,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * <Size>One size</Size>
  * <Size>Без размера</Size>
  */
-// @TODO разобраться откуда брать значение
 class SizeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Size';
+    public const string ELEMENT = 'Size';
 
     private const string LABEL = 'Размер';
 

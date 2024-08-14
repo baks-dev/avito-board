@@ -72,8 +72,10 @@ class DateEndElement implements AvitoBoardElementInterface
     {
         if (null !== $data['product_date_over'])
         {
-            return $data['product_date_over'];
+            $date = new \DateTimeImmutable($data['product_date_over']);
+            $dateEnd = $date->modify('-1 day');
 
+            return $dateEnd->format('Y-m-d H:i:s');
         }
 
         return null;

@@ -90,8 +90,6 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
 
             $event->getDto($deleteMapperDTO);
 
-            $container = self::getContainer();
-
             /** @var DeleteMapperHandler $handler */
             $handler = $container->get(DeleteMapperHandler::class);
             $deleteAvitoBoard = $handler->handle($deleteMapperDTO);
