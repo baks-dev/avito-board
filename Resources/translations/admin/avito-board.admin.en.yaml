@@ -1,0 +1,31 @@
+page:
+  index: 'Avito board mapper'
+  new: 'Add mapper'
+  edit: 'Edit mapper'
+  update: 'Update Avito board mapper'
+  delete: 'Delete mapper'
+  get: 'Get new Avito board mapper'
+
+breadcrumb:
+  index: 'Avito board mapper'
+  new: 'Add a Avito board mapper'
+  edit: 'Edit Avito board mapper'
+  update: 'Update Avito board mapper'
+  delete: 'Delete Avito board mapper'
+  restore: 'Restore Avito board mapper'
+
+success:
+  new: 'Avito board mapper has been successfully added'
+  edit: 'Avito board mapper has been successfully updated'
+  update: 'Avito board mapper has been successfully added to the queue for updating'
+  delete: 'Avito board mapper was successfully deleted'
+  restore: 'Avito board mapper has been restored'
+  get: 'Avito board mapper squat update added to queue'
+
+danger:
+  new: '%s: Error adding a Avito board mapper'
+  edit: '%s: Error updating the Avito board mapper'
+  update: '%s: Error updating the Avito board mapper'
+  delete: '%s: Error when deleting Avito board mapper'
+  restore: '%s: Error while restoring Avito board mapper'
+  get: "There's already been an update! Please try again in 5 minutes!"
