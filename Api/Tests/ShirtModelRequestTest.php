@@ -35,191 +35,143 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class ShirtModelRequestTest extends KernelTestCase
 {
-    public function brandHasModelsAndModelExist(): array
+    public static array $productNames;
+    public static ShirtModelRequest $request;
+
+    public static function setUpBeforeClass(): void
     {
-        return [
-            ["Nike Air Fear Of God 1 High"],
-            ["Adidas By Stella McCartney"],
-            ["Adidas 3-Stripes"],
-            ["Adidas 4DFWD 2"],
-            ["Adidas A.E. 1 Low"],
-            ["Adidas Yeezy 500 Stone Salt"],
-            ["Adidas Yeezy YEEZY 450 Resin"],
-            ["1811 Eighteen One One"],
+        self::bootKernel();
+        $container = static::getContainer();
+
+        self::$request = $container->get(ShirtModelRequest::class);
+
+        self::$productNames = [
+            'brandHasModelsAndModelExist' =>
+                [
+                    "Nike Air Fear Of God 1 High",
+                    "Adidas By Stella McCartney",
+                    "Adidas 3-Stripes",
+                    "Adidas 4DFWD 2",
+                    "Adidas A.E. 1 Low",
+                    "Adidas Yeezy 500 Stone Salt",
+                    "Adidas Yeezy YEEZY 450 Resin",
+                    "1811 Eighteen One One",
+                ],
+            'brandHasModelsAndModelNotExist' =>
+                [
+                    [
+                        'productName' => "Nike",
+                        'brand' => "Nike"
+                    ],
+                    [
+                        'productName' => "Nike Air",
+                        'brand' => "Nike"
+                    ],
+                    [
+                        'productName' => "Adidas",
+                        'brand' => "Adidas"
+                    ],
+                    [
+                        'productName' => "Adidas Original",
+                        'brand' => "Adidas"
+                    ],
+                    [
+                        'productName' => "Adidas Yeezy Stone",
+                        'brand' => "Adidas"
+                    ],
+                ],
+            'brandHasNoModels' =>
+                [
+                    "& Other Stories",
+                    "12 STOREEZ",
+                ],
+            'brandAndModelNotExist' =>
+                [
+                    "qweqwewq",
+                    "qweq-wewq",
+                    "qweq wewq",
+                    "1122",
+                    "11-22",
+                    "11 22",
+                ],
         ];
     }
 
-    /**
-     * @dataProvider brandHasModelsAndModelExist
-     */
-    public function testBrandHasModelsAndModelExist(string $model): void
+    public function testBrandHasModelsAndModelExist(): void
     {
-        self::bootKernel();
-        $container = static::getContainer();
+        $productNames = self::$productNames['brandHasModelsAndModelExist'];
 
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
+        foreach ($productNames as $productName)
+        {
+            $result = self::$request->getModel($productName);
+            self::assertNotNull($result);
 
-        $result = $request->getModel($model);
-        self::assertNotNull($result);
+            $random = $this->random($productName);
+
+            $result = self::$request->getModel($random);
+            self::assertNotNull($result);
+        }
     }
 
-    /**
-     * @dataProvider brandHasModelsAndModelExist
-     */
-    public function testBrandHasModelsAndModelExistLower(string $model): void
+    public function testBrandHasModelsAndModelNotExist(): void
     {
-        $model = mb_strtolower($model);
+        $productNames = self::$productNames['brandHasModelsAndModelNotExist'];
 
-        self::bootKernel();
-        $container = static::getContainer();
+        foreach ($productNames as $productName)
+        {
+            $result = self::$request->getModel($productName['productName']);
+            self::assertNotNull($result);
+            self::assertSame($productName['brand'], $result['brand']);
+            self::assertSame('Другая', $result['model']);
 
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
+            $random = $this->random($productName['productName']);
 
-        $result = $request->getModel($model);
-        self::assertNotNull($result);
+            $result = self::$request->getModel($random);
+            self::assertNotNull($result);
+            self::assertSame($productName['brand'], $result['brand']);
+            self::assertSame('Другая', $result['model']);
+        }
     }
 
-    /**
-     * @dataProvider brandHasModelsAndModelExist
-     */
-    public function testBrandHasModelsAndModelExistRandom(string $model): void
+
+    public function testBrandHasNoModels(): void
     {
-        $prepare = explode(' ', $model);
-        natcasesort($prepare);
-        $model = implode(' ', $prepare);
+        $productNames = self::$productNames['brandHasNoModels'];
 
-        self::bootKernel();
-        $container = static::getContainer();
+        foreach ($productNames as $productName)
+        {
+            $result = self::$request->getModel($productName);
+            self::assertNotNull($result);
+            self::assertSame(null, $result['model']);
 
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
+            $random = $this->random($productName);
 
-        $result = $request->getModel($model);
-        self::assertNotNull($result);
+            $result = self::$request->getModel($random);
+            self::assertNotNull($result);
+            self::assertSame(null, $result['model']);
+        }
     }
 
-    public function brandHasModelsAndModelNotExist(): array
+    public function testBrandAndModelNotExist(): void
     {
-        return [
-            ["Nike", "Nike"],
-            ["Nike Air", 'Nike'],
-            ["Adidas", 'Adidas'],
-            ["Adidas Original", 'Adidas'],
-            ["Adidas Yeezy Stone", 'Adidas'],
-        ];
+        $productNames = self::$productNames['brandAndModelNotExist'];
+
+        foreach ($productNames as $productName)
+        {
+            $result = self::$request->getModel($productName);
+            self::assertNull($result);
+
+            $random = $this->random($productName);
+
+            $result = self::$request->getModel($random);
+            self::assertNull($result);
+        }
     }
 
-    /**
-     * @dataProvider brandHasModelsAndModelNotExist
-     */
-    public function testBrandHasModelsAndModelNotExist(string $productName, string $brand): void
+    private function random(string $productName): string
     {
-        self::bootKernel();
-        $container = static::getContainer();
-
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
-
-        $result = $request->getModel($productName);
-        self::assertNotNull($result);
-        self::assertSame($brand, $result['brand']);
-        self::assertSame('Другая', $result['model']);
-    }
-
-    /**
-     * @dataProvider brandHasModelsAndModelNotExist
-     */
-    public function testBrandHasModelsAndModelNotExistLower(string $productName, string $brand): void
-    {
-        $lowModel = mb_strtolower($productName);
-
-        self::bootKernel();
-        $container = static::getContainer();
-
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
-
-        $result = $request->getModel($lowModel);
-
-        self::assertNotNull($result);
-        self::assertSame($brand, $result['brand']);
-        self::assertSame('Друга', $result['model']);
-    }
-
-    /**
-     * @dataProvider brandHasModelsAndModelNotExist
-     */
-    public function testBrandHasModelsAndModelNotExistRandom(string $productName, string $brand): void
-    {
-        $prepare = explode(' ', $productName);
-        natcasesort($prepare);
-        $model = implode(' ', $prepare);
-
-        self::bootKernel();
-        $container = static::getContainer();
-
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
-
-        $result = $request->getModel($model);
-
-        self::assertNotNull($result);
-        self::assertSame($brand, $result['brand']);
-        self::assertSame('Другая', $result['model']);
-    }
-
-    public function brandHasNoModels(): array
-    {
-        return [
-            ["& Other Stories"],
-            ["12 STOREEZ"],
-        ];
-    }
-
-    /**
-     * @dataProvider brandHasNoModels
-     */
-    public function testRequestHasNotModel(string $model): void
-    {
-        self::bootKernel();
-        $container = static::getContainer();
-
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
-
-        $result = $request->getModel($model);
-
-        self::assertNotNull($result);
-        self::assertSame(null, $result['model']);
-    }
-
-    public function brandAndModelNotExist(): array
-    {
-        return [
-            ["qweqwewq"],
-            ["qweq-wewq"],
-            ["qweq wewq"],
-            ["1122"],
-            ["11-22"],
-            ["11 22"],
-        ];
-    }
-
-    /**
-     * @dataProvider brandAndModelNotExist
-     */
-    public function testBrandAndModelNotExist(string $model): void
-    {
-        self::bootKernel();
-        $container = static::getContainer();
-
-        /** @var ShirtModelRequest $request */
-        $request = $container->get(ShirtModelRequest::class);
-
-        $result = $request->getModel($model);
-
-        self::assertNull($result);
+        $part = explode(' ', $productName);
+        natcasesort($part);
+        return implode(' ', $part);
     }
 }
