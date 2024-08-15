@@ -21,16 +21,19 @@ final class ShirtModelRequest
     }
 
     /**
-     * @return array{'band': string, 'cached': bool }
-     *     |array{'model_matches': array{string, int}, 'band': string, 'model': string, 'cached': bool }
-     *     |null
+     * @return array{'band': string, 'model': null, 'cached': bool }
+     *
+     * @return array{'band': string, 'model': string, 'cached': bool, 'model_matches': array{string, int} }
+     *
+     * @return null
      */
-    public function getModel(string $nameInfo): ?array
+    public function getModel(string $productName): ?array
     {
+        // флаг для отслеживания кеширования
         $cached = true;
         $cache = $this->cache->init('avito-board');
 
-        $brands = $cache->get('avito-board-model-' . $nameInfo, function (ItemInterface $item) use (&$cached): array {
+        $brands = $cache->get('avito-board-model-' . $productName, function (ItemInterface $item) use (&$cached): array {
             $cached = false;
 
             $item->expiresAfter(3600);
@@ -50,65 +53,61 @@ final class ShirtModelRequest
             return json_decode($json, true);
         });
 
+        $productNameLower = mb_strtolower($productName);
 
-        $string = mb_strtolower($nameInfo);
+        $productNameParts = explode(" ", $productNameLower);
 
-        $nameParts = explode(" ", $string);
+        $search = null;
 
-        $result = null;
-
-        //        foreach ($brands['brand'] as $brand)
-        //        {
-        //            // Получаем название бренда в Авито
-        //            $avitoBrand = trim(strtok($brand['@attributes']['name'], " "));
-        //
-        //            if (in_array(mb_strtolower($avitoBrand), $nameParts, false))
-        //            {
-        //
-        //                if (array_key_exists('model_dlya_tipa_tovara', $brand))
-        //                {
-        //                    dump($brand['@attributes']['name']);
-        //                    dump($brand['model_dlya_tipa_tovara']);
-        //                }
-        //                else
-        //                {
-        //                    dump($brand['@attributes']['name']);
-        //
-        //                }
-        //            }
-        //        }
-        //                dd();
+        $brandSearch = null;
 
         foreach ($brands['brand'] as $brand)
         {
-            // Получаем название бренда в Авито
-            $avitoBrand = trim(strtok($brand['@attributes']['name'], " "));
+            // Получаем название бренда в Авито и разбиваем на токены
+            $avitoBrandToken = trim(strtok($brand['@attributes']['name'], " "));
 
-            if (in_array(mb_strtolower($avitoBrand), $nameParts, false))
+            // Ищем токены в строке с названием продукта
+            if (in_array(mb_strtolower($avitoBrandToken), $productNameParts, false))
             {
-                // удаляем название бренда из массива для поиска
-                //                $unset = array_search(mb_strtolower($avitoBrand), $nameParts);
-                //                unset($nameParts[$unset]);
 
+                // В найденном бренде Авито проверяем наличие массива с моделями
                 if (array_key_exists('model_dlya_tipa_tovara', $brand) === false)
                 {
-                    // Присваиваем в результирующий массив бренд, т.к. футболка может быть без модели
-                    $result['brand'] = $brand['@attributes']['name'];
+                    // Присваиваем в результирующий массив бренд. Так как бренд без модели, model = NULL (футболка может быть без модели)
+                    $search['brand'] = $brand['@attributes']['name'];
+                    $search['model'] = null;
                     break;
                 }
 
-                // Определяем, есть ли у бренда список моделей
-                if (array_key_exists('model_dlya_tipa_tovara', $brand) === true)
+                // Если у бренда есть модели
+                if (array_key_exists('model_dlya_tipa_tovara', $brand))
                 {
                     // Присваиваем в результирующий массив бренд, т.к. футболка может быть без модели
-                    $result['brand'] = $brand['@attributes']['name'];
+                    $search['brand'] = $brand['@attributes']['name'];
 
-                    // Получаем массив моделей
+                    // Ранжирование всех одинаковых брендов с моделями
+                    $avitoBrandLow = mb_strtolower($brand['@attributes']['name']);
+                    $avitoBrandParts = explode(' ', $avitoBrandLow);
+
+                    $brandCount = 0;
+                    foreach ($avitoBrandParts as $avitoBrandToken)
+                    {
+                        $match = mb_substr_count($avitoBrandLow, $avitoBrandToken);
+
+                        if ($match !== 0)
+                        {
+                            $brandCount++;
+                            $brandSearch['brand_matches'][$brand['@attributes']['name']] = $brandCount;
+                            $search['brand_matches'][$brand['@attributes']['name']] = $brandCount;
+                        }
+                    }
+
+                    // Цикл для поиска совпадения модели
                     foreach ($brand['model_dlya_tipa_tovara'] as $model)
                     {
                         $count = 0;
 
-                        foreach ($nameParts as $namePart)
+                        foreach ($productNameParts as $namePart)
                         {
                             $avitoModel = mb_strtolower($model['@attributes']['name']);
 
@@ -124,7 +123,7 @@ final class ShirtModelRequest
                                 // проверяем соответствие модели строке поиска
                                 foreach ($avitoModelParts as $avitoModelPart)
                                 {
-                                    if (stripos($string, $avitoModelPart) === false)
+                                    if (stripos($productNameLower, $avitoModelPart) === false)
                                     {
                                         $count--; // снимаем вес если не соответствует
                                     }
@@ -170,46 +169,55 @@ final class ShirtModelRequest
                             }
                         }
 
-
                         if ($count > 0)
                         {
-                            $result['model_matches'][$model['@attributes']['name']] = $count;
+                            $search['model_matches'][$model['@attributes']['name']] = $count;
                         }
                         else
                         {
-                            $result['model'] = 'Другая';
+                            $search['model'] = 'Другая';
                         }
                     }
 
-                    if (isset($result['model_matches']))
+                    if (isset($search['model_matches']))
                     {
                         // Если модель найдена - перезаписываем брендом, к которому принадлежит модель
-                        $result['brand'] = $brand['@attributes']['name'];
+                        $search['brand'] = $brand['@attributes']['name'];
                         break;
                     }
                 }
             }
         }
 
-        if (null === $result)
+        // Если результатов поиска нет - нет обязательного
+        if (null === $search)
         {
             $this->logger->critical(
-                'Не найдено совпадений бренда или модели для продукта ' . $nameInfo,
+                'Не найдено совпадений бренда или модели для продукта ' . $productName,
                 [__FILE__ . ':' . __LINE__]
             );
 
             return null;
         }
 
-        if (isset($result['model_matches']))
+        // если было несколько одинаковых брендов
+        if ($brandSearch !== null)
         {
-            $maxValue = max($result['model_matches']);
+            $min = min($brandSearch['brand_matches']);
 
-            $result['model'] = array_search($maxValue, $result['model_matches'], true);
+            $search['brand'] = array_search($min, $brandSearch['brand_matches'], true);
+            $search['model'] = 'Другая';
         }
 
-        $result['cached'] = $cached;
+        if (isset($search['model_matches']))
+        {
+            $maxValue = max($search['model_matches']);
 
-        return $result;
+            $search['model'] = array_search($maxValue, $search['model_matches'], true);
+        }
+
+        $search['cached'] = $cached;
+
+        return $search;
     }
 }
