@@ -31,6 +31,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
+ * @group avito-board-model-tire
  */
 #[When(env: 'test')]
 final class TireModelRequestTest extends KernelTestCase
@@ -54,7 +55,7 @@ final class TireModelRequestTest extends KernelTestCase
     /**
      * @dataProvider modelProvider
      */
-    public function testRequest($model): void
+    public function testRequest(string $productName): void
     {
         self::bootKernel();
         $container = static::getContainer();
@@ -62,8 +63,18 @@ final class TireModelRequestTest extends KernelTestCase
         /** @var TireModelRequest $request */
         $request = $container->get(TireModelRequest::class);
 
-        $result = $request->getModel($model);
-
+        $result = $request->getModel($productName);
         self::assertNotNull($result);
+
+        $random = $this->random($productName);
+        $result = $request->getModel($random);
+        self::assertNotNull($result);
+    }
+
+    private function random(string $productName): string
+    {
+        $part = explode(' ', $productName);
+        natcasesort($part);
+        return implode(' ', $part);
     }
 }

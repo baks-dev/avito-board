@@ -31,6 +31,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
+ * @group avito-board-model-shirt
  */
 #[When(env: 'test')]
 final class ShirtModelRequestTest extends KernelTestCase
@@ -52,6 +53,7 @@ final class ShirtModelRequestTest extends KernelTestCase
                     "Adidas By Stella McCartney",
                     "Adidas 3-Stripes",
                     "Adidas 4DFWD 2",
+                    "Adidas 3-Stripe",
                     "Adidas A.E. 1 Low",
                     "Adidas Yeezy 500 Stone Salt",
                     "Adidas Yeezy YEEZY 450 Resin",
@@ -132,7 +134,6 @@ final class ShirtModelRequestTest extends KernelTestCase
             self::assertSame('Другая', $result['model']);
         }
     }
-
 
     public function testBrandHasNoModels(): void
     {

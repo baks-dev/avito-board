@@ -80,7 +80,7 @@ final readonly class ModelElement implements AvitoBoardElementInterface
             return null;
         }
 
-        if(array_key_exists('model', $search))
+        if($search['model'])
         {
             return $search['model'];
         }
