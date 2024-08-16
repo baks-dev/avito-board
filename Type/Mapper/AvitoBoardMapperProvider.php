@@ -52,8 +52,6 @@ final readonly class AvitoBoardMapperProvider
         throw new \Exception('Не найдены элементы, относящиеся к категории ' . $productCategory);
     }
 
-    // @TODO подумать, как еще можно получать инстанс элемента
-    // @TODO не выкидывать исключение, а возвращать null?
     public function getElement(string $productCategory, string $elementName): AvitoBoardElementInterface
     {
         /** @var AvitoBoardProductInterface $product */

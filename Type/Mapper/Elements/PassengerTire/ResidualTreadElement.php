@@ -35,6 +35,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * В диапазоне 1-10 мм включительно можно использовать дробные значения.
  *
  * Применимо, если в поле Condition указано значение 'Б/у'
+ *
+ *  Список элементов для категории "Легковые шины"
+ *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
 class ResidualTreadElement implements AvitoBoardElementInterface
 {
@@ -57,9 +60,7 @@ class ResidualTreadElement implements AvitoBoardElementInterface
         return false;
     }
 
-    /**
-     * @TODO Хардкодим значение. Т.к. не реализуем б/у, значение будет максимально возможное
-     */
+    // Т.к. не реализуем б/у, значение будет максимально возможное
     public function getDefault(): string
     {
         return '50';

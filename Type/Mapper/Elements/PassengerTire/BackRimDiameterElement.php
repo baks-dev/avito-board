@@ -32,9 +32,13 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  *
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
+ * Список элементов для категории "Легковые шины"
+ * https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
+ *
+ * -- не используем, так как не реализуем разноширокие комплекты --
+ * -- если элемент обязательный, то значение будем брать такое же, как и в элементе RimDiameterElement --
  * @see RimDiameterElement
  */
-// @TODO не реализует AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
 class BackRimDiameterElement
 {
     public const string ELEMENT = 'BackRimDiameter';
@@ -66,7 +70,6 @@ class BackRimDiameterElement
         return null;
     }
 
-    // @TODO Если элемент обязательный, то значение будем брать такое же, как и в элементе RimDiameterElement
     public function fetchData(array $data): ?string
     {
         if(null === $data[self::ELEMENT])

@@ -42,6 +42,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * — за 8 шт.
  *
  * Не более 8 шт. в комплекте
+ *
+ *  Список элементов для категории "Легковые шины"
+ *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
 class QuantityElement implements AvitoBoardElementInterface
 {
@@ -64,7 +67,7 @@ class QuantityElement implements AvitoBoardElementInterface
         return false;
     }
 
-    // @TODO публикуем цену за 1 шт.
+    // публикуем цену за 1 шт.
     public function getDefault(): string
     {
         return 'за 1 шт.';

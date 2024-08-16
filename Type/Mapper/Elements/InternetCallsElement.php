@@ -46,7 +46,6 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
  *
  * @see CallsDevicesElement
  */
-// @TODO убрал из реализации AvitoBoardElementInterface
 class InternetCallsElement
 {
     private const string ELEMENT = 'InternetCalls';

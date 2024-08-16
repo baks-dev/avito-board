@@ -40,9 +40,12 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * — Публикация объявления по DateBegin не зависит от расписания загрузки вашего файла и произойдёт в указанную дату и время.
  *
  * Не обязателен для Авито, но обязателен для нас
+ *
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
+ *
+ * -- ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты --
  */
-// @TODO тестировать оправку фида без этого элемента (исключить из AvitoBoardElementInterface)
-//      ТЕОРЕТИЧЕСКИ если отправить дату в будущем объявление должно закрыться до отправленной даты
 class DateBeginElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'DateBegin';

@@ -86,9 +86,6 @@ class AvitoBoardEvent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    /**
-     * @TODO добавить описание поведения
-     */
     public function setEntity($dto): mixed
     {
         if ($dto instanceof AvitoBoardEventInterface)

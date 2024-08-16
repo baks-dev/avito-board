@@ -35,6 +35,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  *
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
+ *
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
 final readonly class TitleElement implements AvitoBoardElementInterface
 {
@@ -71,7 +74,6 @@ final readonly class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    // @TODO как формировать title?
     public function fetchData(array $data): ?string
     {
         $search = $this->request->getModel($data['product_name']);

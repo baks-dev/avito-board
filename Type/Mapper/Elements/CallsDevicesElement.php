@@ -33,9 +33,11 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Если ничего не выбрать, звонки будут поступать на первое устройство из списка.
  *
+ *  Список элементов для категории "Легковые шины"
+ *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
+ *
  *  @see InternetCallsElement
  */
-// @TODO убрал из реализации AvitoBoardElementInterface
 class CallsDevicesElement
 {
     private const string ELEMENT = 'CallsDevices';

@@ -33,8 +33,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * Одно из значений:
  * — Да
  * — Нет
+ *
+ *  Список элементов для категории "Легковые шины"
+ *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
+ *
+ *   -- не используем, так как не реализуем разноширокие комплекты --
  */
-// @TODO без реализации AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
 class DifferentWidthTiresElement
 {
     private const string ELEMENT = 'DifferentWidthTires';
