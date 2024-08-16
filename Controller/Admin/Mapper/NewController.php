@@ -50,8 +50,6 @@ final class NewController extends AbstractController
         name: 'admin.mapper.new',
         requirements: [
             'localCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$',
-            // @TODO добавить валидатор для категории Авито
-            // 'avitoCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'
         ],
         methods: ['GET', 'POST']
     )]

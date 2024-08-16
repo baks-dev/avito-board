@@ -61,7 +61,6 @@ class ApparelElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        // @TODO или же проверять свойства продукта?
         /**
          * @var object{
          *     value: string,

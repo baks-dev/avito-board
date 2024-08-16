@@ -32,8 +32,10 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Для формата XML описание должно быть внутри CDATA. Использовать можно только HTML-теги из списка: p, br, strong, em, ul, ol, li.
  *
  * Элемент обязателен для всех продуктов Авито
+ *
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
-// @TODO тестировать с отправкой без валидации тегов
 class DescriptionElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Description';
@@ -67,29 +69,12 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        // @TODO для тестирования
-        // $str = '
-        //<p><br><strong><em><ul><ol><li>
-        //Triangle EffeXSport TH202
-        //</li></ol>></ul></em><strong></br></p>
-        //';
-        //
-        //        $str = '
-        //<p><br><strong><em><ul><a><li>
-        //Triangle EffeXSport TH202
-        //</li></a></ul></em><strong></br></p>
-        //';
-
         if(null === $data['product_description'])
         {
             return null;
         }
 
         $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
-
-        // @TODO тестировать со знаком переноса строки
-        // $clear = str_replace(PHP_EOL, "", $desc);
-        // return sprintf('<![CDATA[%s]]>', $clear);
 
         return sprintf('<![CDATA[%s]]>', $desc);
     }

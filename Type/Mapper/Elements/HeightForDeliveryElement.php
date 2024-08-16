@@ -28,7 +28,8 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
 /**
  * Высота товара (см), может использоваться для доставки.
  *
- * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
 class HeightForDeliveryElement implements AvitoBoardElementInterface
 {

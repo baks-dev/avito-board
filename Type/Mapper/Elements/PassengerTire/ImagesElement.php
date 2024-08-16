@@ -45,8 +45,10 @@ use Symfony\Component\HttpFoundation\UrlHelper;
  * При загрузке фото по ссылке проверьте, что изображение уже доступно и его можно открыть или скачать.
  * Чтобы изменить фотографию в объявлении, используйте другую ссылку.
  * Новое изображение по-прежнему url-адресу не будет загружено.
+ *
+ *  Список элементов для категории "Легковые шины"
+ *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
-// @TODO тестировать отправку формата webp пока без валидация ext JPEG, PNG
 final readonly class ImagesElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Images';
@@ -97,7 +99,7 @@ final readonly class ImagesElement implements AvitoBoardElementInterface
          */
         foreach (json_decode($data['product_images'], false, 512, JSON_THROW_ON_ERROR) as $image)
         {
-            // @TODO если картинки нет - то не рендерим пустой элемент
+            // Если изображение не загружено - не рендерим
             if (null === $image)
             {
                 return null;

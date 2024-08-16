@@ -68,7 +68,6 @@ final class SpikesElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
-        // @TODO думаю логика при обработке ненужного элемента не нужна
         return match ($data[self::ELEMENT])
         {
             'true' => 'шипованные',

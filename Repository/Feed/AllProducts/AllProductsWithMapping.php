@@ -108,7 +108,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
                         avito_token_profile.event = avito_token.event'
             );
 
-        // @TODO если ли смысл в этом объединении, так как в корне и тк активное событие, а из события никакой полезной информации не получить
         $dbal->leftJoin(
             'product',
             ProductEvent::class,
@@ -118,7 +117,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 
         $dbal
             ->addSelect('product_active.active_from AS product_date_begin')
-            // @TODO не дает задать алиас product_date_end
             ->addSelect('product_active.active_to AS product_date_over')
             ->join(
                 'product',
@@ -237,7 +235,6 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 					END AS product_article"
         );
 
-        // @TODO ProductCategory и CategoryProduct содержат одинаковые данные??
         /**
          * Категория
          */

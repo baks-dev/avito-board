@@ -38,8 +38,10 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Id может состоять из цифр, русских и английских букв, а также символов , \ / ( ) [  ] - =. Всего — не более 100 знаков.
  *
  * Элемент обязателен для всех продуктов Авито
+ *
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  */
-// @TODO валидация длины не нужна - 100 знаков
 class IdElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Id';

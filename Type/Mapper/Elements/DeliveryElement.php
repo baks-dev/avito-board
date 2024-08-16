@@ -31,7 +31,11 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Подробнее о работе с доставкой https://support.avito.ru/sections/62?articleId=2271
  *
  * Одно или несколько значений
- * @TODO без implements AvitoBoardElementInterface - не работаем через Авито доставку
+ *
+ *   Список элементов для категории "Легковые шины"
+ *   https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
+ *
+ * -- без implements AvitoBoardElementInterface - не работаем через Авито доставку --
  */
 class DeliveryElement
 {
