@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board;
 
-use BaksDev\Avito\Board\Twig\MapperDecodeExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
@@ -40,9 +39,6 @@ class BaksDevAvitoBoardBundle extends AbstractBundle
     {
         $services = $container->services();
 
-        $services->set(MapperDecodeExtension::class)
-            ->tag('twig.extension');
-
         $services
             ->defaults()
             ->autowire()
@@ -55,11 +51,5 @@ class BaksDevAvitoBoardBundle extends AbstractBundle
                 self::PATH . '**/*Message.php',
                 self::PATH . '**/*DTO.php',
             ]);
-
-        $services->load(
-            self::NAMESPACE . 'Type\Mapper\\',
-            self::PATH . 'Type/Mapper'
-        );
-
     }
 }

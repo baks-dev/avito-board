@@ -30,7 +30,6 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
- * @group avito-board
  * @group avito-board-model-tire
  */
 #[When(env: 'test')]
@@ -49,6 +48,7 @@ final class TireModelRequestTest extends KernelTestCase
             ["iLINK L-Zeal56"],
             ["Sailun Atrezzo ECO"],
             ["Taganca МШЗ М-233"],
+            ["Triangle TRY88"],
         ];
     }
 

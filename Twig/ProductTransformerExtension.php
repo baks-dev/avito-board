@@ -23,8 +23,8 @@
 
 namespace BaksDev\Avito\Board\Twig;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
+use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -36,6 +36,8 @@ final class ProductTransformerExtension extends AbstractExtension
     private ?string $mapper = null;
 
     private ?string $product = null;
+
+    private ?string $article = null;
 
     protected LoggerInterface $logger;
 
@@ -58,6 +60,7 @@ final class ProductTransformerExtension extends AbstractExtension
         $this->avitoCategory = $product['avito_board_avito_category'];
         $this->mapper = $product['avito_board_mapper'];
         $this->product = $product['product_name'];
+        $this->article = $product['product_article'];
 
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
@@ -82,9 +85,10 @@ final class ProductTransformerExtension extends AbstractExtension
                 {
                     $this->logger->critical(
                         sprintf(
-                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
+                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                             $element->element(),
-                            $this->product
+                            $this->product,
+                            $this->article
                         ),
                         [__FILE__ . ':' . __LINE__]
                     );
@@ -144,9 +148,10 @@ final class ProductTransformerExtension extends AbstractExtension
 
                 $this->logger->warning(
                     sprintf(
-                        'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s Название продукта: %s',
-                        $instance->element(),
-                        $this->product
+                        'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
+                        $element->element(),
+                        $this->product,
+                        $this->article
                     ),
                     [__FILE__ . ':' . __LINE__]
                 );
@@ -164,7 +169,7 @@ final class ProductTransformerExtension extends AbstractExtension
     /**
      * Преобразовываем маппер в массив элементов, где:
      * - ключ - название элемента;
-     * - значение - значением из свойств маппера (без форматирования элементом!).
+     * - значение - значение из свойств маппера (значение из БД, без форматирования).
      *
      * @return array<string, string>
      */

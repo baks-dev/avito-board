@@ -4,7 +4,6 @@ namespace BaksDev\Avito\Board\Api;
 
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Type\UserAgent\UserAgentGenerator;
-use DateInterval;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -33,7 +32,7 @@ final class ShirtModelRequest
         $cached = true;
         $cache = $this->cache->init('avito-board');
 
-        $brands = $cache->get('avito-board-model-' . $productName, function (ItemInterface $item) use (&$cached): array {
+        $brands = $cache->get('avito-board-model-' . md5($productName), function (ItemInterface $item) use (&$cached): array {
             $cached = false;
 
             $item->expiresAfter(3600);
