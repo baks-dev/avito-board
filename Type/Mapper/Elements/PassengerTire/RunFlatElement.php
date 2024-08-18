@@ -35,7 +35,8 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
  * — Да
  * — Нет
  */
-class RunFlatElement implements AvitoBoardElementInterface
+// @TODO есть ли у нас шины с этим свойством?
+class RunFlatElement
 {
     private const string ELEMENT = 'RunFlat';
 

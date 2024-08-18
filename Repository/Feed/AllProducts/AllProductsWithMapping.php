@@ -607,6 +607,7 @@ final class AllProductsWithMapping implements AllProductsWithMappingInterface
 
 //        dd($dbal->fetchAllAssociative());
 
+        // @TODO генератор возвращать здесь?
         return $dbal
             ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();

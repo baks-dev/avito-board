@@ -69,7 +69,7 @@ class DateEndElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        if (null !== $data['product_date_begin'])
+        if (null !== $data['product_date_over'])
         {
             $date = new \DateTimeImmutable($data['product_date_begin']);
 
