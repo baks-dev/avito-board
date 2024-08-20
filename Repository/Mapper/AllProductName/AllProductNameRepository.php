@@ -58,11 +58,11 @@ final class AllProductNameRepository implements AllProductNameInterface
         return $this;
     }
 
-    public function findAll(): ?CategoryProductSectionFieldUid
+    public function findAll(): CategoryProductSectionFieldUid|false
     {
         if(null === $this->category)
         {
-            return null;
+            return false;
         }
 
         $dbal = $this->DBALQueryBuilder
@@ -108,9 +108,6 @@ final class AllProductNameRepository implements AllProductNameInterface
                 'product_trans',
                 'product.event = product_trans.event AND product_trans.local = :local'
             );
-
-//        dd($dbal->fetchHydrate(CategoryProductSectionFieldUid::class));
-
 
         return $dbal->fetchHydrate(CategoryProductSectionFieldUid::class);
     }

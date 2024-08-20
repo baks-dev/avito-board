@@ -91,7 +91,7 @@ final class ProductTransformerExtension extends AbstractExtension
                             $element->element(),
                             $this->product
                         ),
-                        [__FILE__.':'.__LINE__]
+                        [self::class.':'.__LINE__]
                     );
 
                     return null;
@@ -154,7 +154,7 @@ final class ProductTransformerExtension extends AbstractExtension
                         $instance->element(),
                         $this->product
                     ),
-                    [__FILE__.':'.__LINE__]
+                    [self::class.':'.__LINE__]
                 );
             }
         });
