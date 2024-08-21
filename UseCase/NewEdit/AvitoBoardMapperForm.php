@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2022.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ namespace BaksDev\Avito\Board\UseCase\NewEdit;
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
+use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementForm;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\ModificationCategoryProductSectionField\ModificationCategoryProductSectionFieldInterface;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\OffersCategoryProductSectionField\OffersCategoryProductSectionFieldInterface;
 use BaksDev\Products\Category\Repository\PropertyFieldsCategoryChoice\PropertyFieldsCategoryChoiceInterface;
@@ -52,24 +53,27 @@ final class AvitoBoardMapperForm extends AbstractType
 
             $form = $event->getForm();
 
-            /** @var AvitoBoardMapperDTO $mapperDTO */
-            $mapperDTO = $event->getData();
+            /** @var AvitoBoardMapperDTO $avitoBoardMapperDTO */
+            $avitoBoardMapperDTO = $event->getData();
 
             /**
-             * Параметры продукта в системе (ТП, варианты, модификации)
+             * Свойства, ТП, варианты, модификации продукта
              */
-            $productFields = $this->getProductProperties($mapperDTO->getCategory());
+            $productFields = $this->getProductProperties($avitoBoardMapperDTO->getCategory());
 
-            $avitoProduct = $this->mapperProvider->getProduct($mapperDTO->getAvito());
+            /**
+             * Реализация продукта Авито
+             */
+            $avitoProduct = $this->mapperProvider->getProduct($avitoBoardMapperDTO->getAvito());
 
             /** Проверка для new */
-            if ($mapperDTO->getMapperSetting()->isEmpty())
+            if ($avitoBoardMapperDTO->getMapperElements()->isEmpty())
             {
                 /**
                  * Фильтрация элементов по соответствующей категории Авито
                  * @var list<AvitoBoardElementInterface>|null $elements
                  */
-                $elements = $this->mapperProvider->filterElements($mapperDTO->getAvito());
+                $elements = $this->mapperProvider->filterElements($avitoBoardMapperDTO->getAvito());
 
                 foreach ($elements as $element)
                 {
@@ -77,13 +81,13 @@ final class AvitoBoardMapperForm extends AbstractType
                     {
                         $mapperElementDTO = new AvitoBoardMapperElementDTO();
                         $mapperElementDTO->setElement($element->element());
-                        $mapperDTO->addMapperSetting($mapperElementDTO);
+                        $avitoBoardMapperDTO->addMapperElement($mapperElementDTO);
                     }
                 }
             }
 
-            $form->add('mapperSetting', CollectionType::class, [
-                'entry_type' => AvitoBoardMapperForm::class,
+            $form->add('mapperElements', CollectionType::class, [
+                'entry_type' => AvitoBoardMapperElementForm::class,
                 'entry_options' => [
                     'label' => false,
                     'product_fields' => $productFields,

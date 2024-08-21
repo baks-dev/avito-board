@@ -27,7 +27,7 @@ namespace BaksDev\Avito\Board\UseCase\NewEdit;
 
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Messenger\Mapper\AvitoBoardMessage;
+use BaksDev\Avito\Board\Messenger\AvitoBoardMessage;
 use BaksDev\Core\Entity\AbstractHandler;
 use DomainException;
 

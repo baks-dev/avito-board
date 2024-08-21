@@ -16,9 +16,9 @@
  *
  */
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\BeforeNew;
+namespace BaksDev\Avito\Board\UseCase\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
+use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Validator\Constraints as Assert;
 

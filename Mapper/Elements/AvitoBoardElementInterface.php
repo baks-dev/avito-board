@@ -25,7 +25,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements;
 
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('baks.avito.board.elements')]
+#[AutoconfigureTag('baks.avito.board.mapper.elements')]
 interface AvitoBoardElementInterface
 {
     /**

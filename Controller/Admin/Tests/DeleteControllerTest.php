@@ -20,7 +20,7 @@ namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

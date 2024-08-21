@@ -5,9 +5,9 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModify;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperHandler;
+use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
+use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperHandler;
+use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
@@ -32,7 +32,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
 
-        if($avitoBoard)
+        if ($avitoBoard)
         {
             $em->remove($avitoBoard);
         }
@@ -40,7 +40,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $avitoBoardEvent = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
 
-        foreach($avitoBoardEvent as $event)
+        foreach ($avitoBoardEvent as $event)
         {
             $em->remove($event);
         }
@@ -51,7 +51,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
 
     public function testNew(): void
     {
-        $newDTO = new MapperDTO();
+        $newDTO = new AvitoBoardMapperDTO();
 
         // добавляем категории
         $newDTO->setCategory(new CategoryProductUid(CategoryProductUid::TEST));
@@ -61,7 +61,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         self::assertSame('AvitoCategory', $newDTO->getAvito());
 
         // добавляем элементы для маппинга
-        $mapperElementDTO = new MapperElementDTO();
+        $mapperElementDTO = new AvitoBoardMapperElementDTO();
 
         $mapperElementDTO->setElement('IdNew');
         self::assertSame('IdNew', $mapperElementDTO->getElement());
@@ -72,12 +72,12 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $mapperElementDTO->setDef('DefNew');
         self::assertSame('DefNew', $mapperElementDTO->getDef());
 
-        $newDTO->addMapperSetting($mapperElementDTO);
+        $newDTO->addMapperElement($mapperElementDTO);
 
         $container = self::getContainer();
 
-        /** @var MapperHandler $handler */
-        $handler = $container->get(MapperHandler::class);
+        /** @var AvitoBoardMapperHandler $handler */
+        $handler = $container->get(AvitoBoardMapperHandler::class);
         $newAvitoBoard = $handler->handle($newDTO);
         self::assertTrue($newAvitoBoard instanceof AvitoBoard);
 

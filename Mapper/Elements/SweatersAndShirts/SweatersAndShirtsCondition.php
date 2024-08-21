@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
 
 /**
  * Состояние

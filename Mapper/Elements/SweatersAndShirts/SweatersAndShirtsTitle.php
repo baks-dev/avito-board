@@ -27,7 +27,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
 
 /**
  * Название объявления — строка до 50 символов.

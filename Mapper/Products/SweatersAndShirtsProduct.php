@@ -23,11 +23,10 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Mapper\Products\SweatersAndShirts;
+namespace BaksDev\Avito\Board\Mapper\Products;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts\SweatersAndShirtsCategory;
-use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
@@ -35,7 +34,7 @@ final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterf
     private const string PRODUCT_CATEGORY = 'Кофты и футболки';
 
     public function __construct(
-        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
+        #[AutowireIterator('baks.avito.board.mapper.elements')] private iterable $elements,
     ) {}
 
     public function getProductCategory(): string

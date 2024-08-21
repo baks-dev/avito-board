@@ -2,24 +2,24 @@
 
 <div>
 
-    {% for setting in form.mapperSetting %}
+    {% for element in form.mapperElements %}
         <div class="d-flex p-3 mb-1 gap-2 align-items-end rounded-3 border"
-             style='background-color: {{ setting.vars.data.elementInstance.isMapping ?:'#fff2f2' }}'
+             style='background-color: {{ element.vars.data.elementInstance.isMapping ?:'#fff2f2' }}'
         >
-            {% if setting.productField is defined %}
+            {% if element.productField is defined %}
 
                 <div class="w-50">
 
-                    {{ form_label(setting.productField) }}
-                    {{ form_help(setting.productField) }}
+                    {{ form_label(element.productField) }}
+                    {{ form_help(element.productField) }}
 
-                    {% if setting.vars.data.elementInstance.isMapping == false %}
+                    {% if element.vars.data.elementInstance.isMapping == false %}
                         текст предупреждения!!!
                     {% endif %}
                 </div>
 
                 <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
-                    {{ form_widget(setting.productField, {
+                    {{ form_widget(element.productField, {
                         placeholder: 'Выберите свойство продукта...',
                         attr: { 'data-select' : 'select2', class:  'mb-0'}
                     }) }}
@@ -27,26 +27,26 @@
 
             {% endif %}
 
-            {% if setting.def is defined %}
+            {% if element.def is defined %}
 
                 <div class="w-50">
-                    {{ form_label(setting.def) }}
+                    {{ form_label(element.def) }}
 
 
-                    {% if setting.def.vars.help is not null %}
+                    {% if element.def.vars.help is not null %}
                         <div>
-                            {{ include (Template(setting.def.vars.help)) }}
+                            {{ include (Template(element.def.vars.help)) }}
                         </div>
                     {% endif %}
 
-                    {% if setting.vars.data.elementInstance.isMapping == false %}
+                    {% if element.vars.data.elementInstance.isMapping == false %}
                         текст предупреждения!!!
                     {% endif %}
 
                 </div>
 
                 <div class="w-50 d-flex mb-1 gap-2 align-items-end rounded-3">
-                    {{ form_widget(setting.def, {
+                    {{ form_widget(element.def, {
                         placeholder: 'Значение по умолчанию...',
                         attr: { 'placeholder' : 'Значение по умолчанию'}
                     }) }}

@@ -23,7 +23,7 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Messenger\Mapper;
+namespace BaksDev\Avito\Board\Messenger;
 
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 

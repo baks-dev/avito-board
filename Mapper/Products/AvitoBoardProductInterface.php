@@ -26,7 +26,7 @@ namespace BaksDev\Avito\Board\Mapper\Products;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-#[AutoconfigureTag('baks.avito.board.products')]
+#[AutoconfigureTag('baks.avito.board.mapper.products')]
 interface AvitoBoardProductInterface
 {
     /** Название продукта */

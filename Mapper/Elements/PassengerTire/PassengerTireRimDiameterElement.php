@@ -29,7 +29,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
  * Диаметр, дюймы
  */
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Mapper\Products\PassengerTire\PassengerTireProduct;
+use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 
 class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
 {

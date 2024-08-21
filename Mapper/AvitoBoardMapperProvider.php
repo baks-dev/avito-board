@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 final readonly class AvitoBoardMapperProvider
 {
     public function __construct(
-        #[AutowireIterator('baks.avito.board.products')] private iterable $products,
+        #[AutowireIterator('baks.avito.board.mapper.products')] private iterable $products,
     ) {}
 
     /** @return list<AvitoBoardProductInterface> */

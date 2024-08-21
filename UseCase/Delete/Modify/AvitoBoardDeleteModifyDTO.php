@@ -16,14 +16,14 @@
  *
  */
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\Delete\Modify;
+namespace BaksDev\Avito\Board\UseCase\Delete\Modify;
 
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModifyInterface;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionDelete;
 use BaksDev\Core\Type\Modify\ModifyAction;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class ModifyDTO implements AvitoBoardModifyInterface
+final class AvitoBoardDeleteModifyDTO implements AvitoBoardModifyInterface
 {
     /**
      * Модификатор

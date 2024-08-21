@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Mapper\Products\PassengerTire\PassengerTireProduct;
+use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 
 /**
  * Разноширокий комплект шин

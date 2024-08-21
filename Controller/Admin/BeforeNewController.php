@@ -23,8 +23,8 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin;
 
-use BaksDev\Avito\Board\UseCase\Mapper\BeforeNew\AvitoBoardCategoryMapperDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\BeforeNew\AvitoBoardCategoryMapperForm;
+use BaksDev\Avito\Board\UseCase\BeforeNew\AvitoBoardCategoryMapperDTO;
+use BaksDev\Avito\Board\UseCase\BeforeNew\AvitoBoardCategoryMapperForm;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Listeners\Event\Security\RoleSecurity;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +37,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class BeforeNewController extends AbstractController
 {
     /**
-     * Маппим локальную категорию с категорией Авито для создания формы сопоставления
+     * Создание формы для маппинга локальной категории с категорией Авито для создания формы соотношения свойств
      */
     #[Route('/admin/avito-board/mapper/before_new', name: 'admin.mapper.beforenew', methods: ['POST', 'GET'])]
     public function beforeNew(Request $request): Response

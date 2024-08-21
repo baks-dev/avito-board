@@ -27,7 +27,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Mapper\Products\PassengerTire\PassengerTireProduct;
+use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 
 /**
  *  Бренд.

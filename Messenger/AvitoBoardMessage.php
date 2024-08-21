@@ -23,9 +23,9 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Messenger\Mapper;
+namespace BaksDev\Avito\Board\Messenger;
 
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 
 final readonly class AvitoBoardMessage

@@ -16,10 +16,10 @@
  *
  */
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\BeforeNew;
+namespace BaksDev\Avito\Board\UseCase\BeforeNew;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
+use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
+use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use BaksDev\Products\Category\Repository\CategoryChoice\CategoryChoiceInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Form\AbstractType;

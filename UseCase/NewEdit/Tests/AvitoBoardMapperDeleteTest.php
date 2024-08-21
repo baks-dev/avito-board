@@ -27,10 +27,10 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Avito\Board\UseCase\Mapper\Delete\DeleteMapperDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\Delete\DeleteMapperHandler;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperDTO;
+use BaksDev\Avito\Board\UseCase\Delete\AvitoBoardDeleteMapperDTO;
+use BaksDev\Avito\Board\UseCase\Delete\AvitoBoardDeleteMapperHandler;
+use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
+use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -69,12 +69,12 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
 
         if ($event)
         {
-            $editDTO = new MapperDTO();
+            $editDTO = new AvitoBoardMapperDTO();
 
             $event->getDto($editDTO);
 
-            /** @var ArrayCollection<int, MapperElementDTO> $mapperElements */
-            $mapperElements = $editDTO->getMapperSetting();
+            /** @var ArrayCollection<int, AvitoBoardMapperElementDTO> $mapperElements */
+            $mapperElements = $editDTO->getMapperElements();
             $id = $mapperElements->first();
             $address = $mapperElements->last();
 
@@ -86,12 +86,12 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
             self::assertTrue($address->getProductField()->equals(CategoryProductSectionFieldUid::TEST));
             self::assertEquals('DefEdit', $address->getDef());
 
-            $deleteMapperDTO = new DeleteMapperDTO();
+            $deleteMapperDTO = new AvitoBoardDeleteMapperDTO();
 
             $event->getDto($deleteMapperDTO);
 
-            /** @var DeleteMapperHandler $handler */
-            $handler = $container->get(DeleteMapperHandler::class);
+            /** @var AvitoBoardDeleteMapperHandler $handler */
+            $handler = $container->get(AvitoBoardDeleteMapperHandler::class);
             $deleteAvitoBoard = $handler->handle($deleteMapperDTO);
             self::assertTrue($deleteAvitoBoard instanceof AvitoBoard);
         }

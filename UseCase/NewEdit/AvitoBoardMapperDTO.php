@@ -49,16 +49,17 @@ final class AvitoBoardMapperDTO implements AvitoBoardEventInterface
     private string $avito;
 
     /**
-     * Коллекция мапперов - соотношений свойств для рендеринга в форме
-     * @var ArrayCollection<AvitoBoardMapperElementDTO> $mapperSetting
+     * Коллекция элементов маппера для рендеринга в форме
+     *
+     * @var ArrayCollection<AvitoBoardMapperElementDTO> $mapperElements
      */
     #[Assert\Valid]
-    private ArrayCollection $mapperSetting;
+    private ArrayCollection $mapperElements;
 
 
     public function __construct()
     {
-        $this->mapperSetting = new ArrayCollection();
+        $this->mapperElements = new ArrayCollection();
     }
 
     public function setId(AvitoBoardEventUid $id): void
@@ -94,18 +95,18 @@ final class AvitoBoardMapperDTO implements AvitoBoardEventInterface
     /**
      * @return ArrayCollection<AvitoBoardMapperElementDTO>
      */
-    public function getMapperSetting(): ArrayCollection
+    public function getMapperElements(): ArrayCollection
     {
-        return $this->mapperSetting;
+        return $this->mapperElements;
     }
 
-    public function addMapperSetting(AvitoBoardMapperElementDTO $element): void
+    public function addMapperElement(AvitoBoardMapperElementDTO $element): void
     {
-        $this->mapperSetting->add($element);
+        $this->mapperElements->add($element);
     }
 
-    public function removeMapperSetting(AvitoBoardMapperElementDTO $element): void
+    public function removeMapperElement(AvitoBoardMapperElementDTO $element): void
     {
-        $this->mapperSetting->removeElement($element);
+        $this->mapperElements->removeElement($element);
     }
 }

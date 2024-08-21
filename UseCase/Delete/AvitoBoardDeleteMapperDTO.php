@@ -20,8 +20,8 @@ namespace BaksDev\Avito\Board\UseCase\Delete;
 
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEventInterface;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\UseCase\Mapper\Delete\Modify\ModifyDTO;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\UseCase\Delete\Modify\AvitoBoardDeleteModifyDTO;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -49,11 +49,11 @@ final class AvitoBoardDeleteMapperDTO implements AvitoBoardEventInterface
      * Модификатор
      */
     #[Assert\Valid]
-    private ModifyDTO $modify;
+    private AvitoBoardDeleteModifyDTO $modify;
 
     public function __construct()
     {
-        $this->modify = new ModifyDTO();
+        $this->modify = new AvitoBoardDeleteModifyDTO();
     }
 
     /**
@@ -77,7 +77,7 @@ final class AvitoBoardDeleteMapperDTO implements AvitoBoardEventInterface
     /**
      * Модификатор
      */
-    public function getModify(): ModifyDTO
+    public function getModify(): AvitoBoardDeleteModifyDTO
     {
         return $this->modify;
     }

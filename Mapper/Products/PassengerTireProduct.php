@@ -23,13 +23,12 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Mapper\Products\PassengerTire;
+namespace BaksDev\Avito\Board\Mapper\Products;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Elements\PassengerTire\PassengerTireCategoryElement;
 use BaksDev\Avito\Board\Mapper\Elements\PassengerTire\PassengerTireGoodsTypeElement;
 use BaksDev\Avito\Board\Mapper\Elements\PassengerTire\PassengerTireProductTypeElement;
-use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PassengerTireProduct implements AvitoBoardProductInterface
@@ -37,14 +36,16 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
     private const string PRODUCT_CATEGORY = 'Легковые шины';
 
     public function __construct(
-        #[AutowireIterator('baks.avito.board.elements')] private iterable $elements,
+        #[AutowireIterator('baks.avito.board.mapper.elements')] private iterable $elements,
     ) {}
 
+    /** Получаем массив категорий Авито */
     public function getProductCategory(): string
     {
         return self::PRODUCT_CATEGORY;
     }
 
+    /** Получаем массив всех элементов */
     public function getElements(): array
     {
         $passengerTireElements = null;
@@ -66,6 +67,7 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
         return $passengerTireElements;
     }
 
+    /** Получаем элемент по его названию */
     public function getElement(string $elementName): ?AvitoBoardElementInterface
     {
         /** @var AvitoBoardElementInterface $element */

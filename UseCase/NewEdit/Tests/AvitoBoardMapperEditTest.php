@@ -5,10 +5,10 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModify;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperDTO;
-use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\MapperHandler;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
+use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperHandler;
+use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Core\Type\Modify\Modify\ModifyActionUpdate;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
@@ -37,14 +37,14 @@ class AvitoBoardMapperEditTest extends KernelTestCase
 
         self::assertNotNull($event);
 
-        $editDTO = new MapperDTO();
+        $editDTO = new AvitoBoardMapperDTO();
 
         $event->getDto($editDTO);
 
         self::assertTrue($editDTO->getCategory()->equals(CategoryProductUid::TEST));
 
-        /** @var MapperElementDTO $mapperElement */
-        $mapperElement = $editDTO->getMapperSetting()->current();
+        /** @var AvitoBoardMapperElementDTO $mapperElement */
+        $mapperElement = $editDTO->getMapperElements()->current();
         self::assertEquals('IdNew', $mapperElement->getElement());
         self::assertEquals('DefNew', $mapperElement->getDef());
 
@@ -52,17 +52,17 @@ class AvitoBoardMapperEditTest extends KernelTestCase
         $mapperElement->setDef('DefEdit');
 
         // добавляем новый маппер в коллекцию
-        $mapperElementDTO = new MapperElementDTO();
+        $mapperElementDTO = new AvitoBoardMapperElementDTO();
         $mapperElementDTO->setElement('AddressEdit');
         $mapperElementDTO->setDef('DefEdit');
         $mapperElementDTO->setProductField(new CategoryProductSectionFieldUid());
 
-        $editDTO->addMapperSetting($mapperElementDTO);
+        $editDTO->addMapperElement($mapperElementDTO);
 
         $container = self::getContainer();
 
-        /** @var MapperHandler $handler */
-        $handler = $container->get(MapperHandler::class);
+        /** @var AvitoBoardMapperHandler $handler */
+        $handler = $container->get(AvitoBoardMapperHandler::class);
         $editAvitoBoard = $handler->handle($editDTO);
         self::assertTrue($editAvitoBoard instanceof AvitoBoard);
 
