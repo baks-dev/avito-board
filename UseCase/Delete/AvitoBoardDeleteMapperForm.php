@@ -21,26 +21,32 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+declare(strict_types=1);
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\AvitoBoardType;
-use BaksDev\Avito\Board\Type\AvitoBoardUid;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
-use Symfony\Config\DoctrineConfig;
+namespace BaksDev\Avito\Board\UseCase\Delete;
 
-return static function (DoctrineConfig $doctrine): void {
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
+final class AvitoBoardDeleteMapperForm extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder->add('delete_mapper', SubmitType::class, [
+            'label' => 'Delete',
+            'label_html' => true,
+            'attr' => ['class' => 'btn-danger']
+        ]);
+    }
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => AvitoBoardDeleteMapperDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
+    }
+}

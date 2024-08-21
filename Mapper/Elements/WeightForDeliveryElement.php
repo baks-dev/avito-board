@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -23,33 +23,59 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board;
+namespace BaksDev\Avito\Board\Mapper\Elements;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-
-class BaksDevAvitoBoardBundle extends AbstractBundle
+/**
+ * Вес товара (кг), может использоваться для доставки.
+ */
+class WeightForDeliveryElement implements AvitoBoardElementInterface
 {
-    public const string NAMESPACE = __NAMESPACE__ . '\\';
+    private const string ELEMENT = 'WeightForDelivery';
 
-    public const string PATH = __DIR__ . DIRECTORY_SEPARATOR;
+    private const string LABEL = 'Вес товара (кг)';
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function isMapping(): false
     {
-        $services = $container->services();
+        return false;
+    }
 
-        $services
-            ->defaults()
-            ->autowire()
-            ->autoconfigure();
+    public function isRequired(): false
+    {
+        return false;
+    }
 
+    public function isChoices(): false
+    {
+        return false;
+    }
 
-        $services->load(self::NAMESPACE, self::PATH)
-            ->exclude([
-                self::PATH . '{Entity,Resources,Type}',
-                self::PATH . '**/*Message.php',
-                self::PATH . '**/*DTO.php',
-            ]);
+    public function getDefault(): null
+    {
+        return null;
+    }
+
+    public function getHelp(): null
+    {
+        return null;
+    }
+
+    public function fetchData(array $data): ?string
+    {
+        return $data['product_weight_delivery'];
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

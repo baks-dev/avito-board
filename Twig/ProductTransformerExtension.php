@@ -23,8 +23,8 @@
 
 namespace BaksDev\Avito\Board\Twig;
 
-use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
+use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use Psr\Log\LoggerInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;

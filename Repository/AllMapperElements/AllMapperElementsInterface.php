@@ -21,26 +21,12 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Avito\Board\Repository\AllMapperElements;
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\AvitoBoardType;
-use BaksDev\Avito\Board\Type\AvitoBoardUid;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
-use Symfony\Config\DoctrineConfig;
+use BaksDev\Core\Form\Search\SearchDTO;
+use BaksDev\Core\Services\Paginator\PaginatorInterface;
 
-return static function (DoctrineConfig $doctrine): void {
-
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
-
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+interface AllMapperElementsInterface
+{
+    public function findAll(): PaginatorInterface;
+}

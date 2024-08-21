@@ -4,7 +4,6 @@ namespace BaksDev\Avito\Board\Api;
 
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Type\UserAgent\UserAgentGenerator;
-use DateInterval;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;

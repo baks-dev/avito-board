@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -21,26 +21,25 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Avito\Board\Mapper\Products;
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\AvitoBoardType;
-use BaksDev\Avito\Board\Type\AvitoBoardUid;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
-use Symfony\Config\DoctrineConfig;
+use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-return static function (DoctrineConfig $doctrine): void {
+#[AutoconfigureTag('baks.avito.board.products')]
+interface AvitoBoardProductInterface
+{
+    /** Название продукта */
+    public function getProductCategory(): string;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
+    /**
+     * Получаем все элементы, относящиеся к определенной категории продукта Авито
+     *
+     * @return list<AvitoBoardElementInterface>
+     */
+    public function getElements(): array;
 
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
+    public function getElement(string $elementName): ?AvitoBoardElementInterface;
 
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+    public function isEqual(string $productCategory): bool;
+}

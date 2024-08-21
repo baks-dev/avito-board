@@ -21,26 +21,15 @@
  *  THE SOFTWARE.
  */
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+namespace BaksDev\Avito\Board\Repository\Form\__AllProductName;
 
-use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\AvitoBoardType;
-use BaksDev\Avito\Board\Type\AvitoBoardUid;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
-use Symfony\Config\DoctrineConfig;
+use BaksDev\Products\Category\Entity\CategoryProduct;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 
-return static function (DoctrineConfig $doctrine): void {
+interface AllProductNameInterface
+{
+    public function category(CategoryProduct|CategoryProductUid|string $category): self;
 
-    $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
-    $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);
-
-    $emDefault = $doctrine->orm()->entityManager('default')->autoMapping(true);
-
-    $emDefault->mapping('avito-board')
-        ->type('attribute')
-        ->dir(BaksDevAvitoBoardBundle::PATH . 'Entity')
-        ->isBundle(false)
-        ->prefix('BaksDev\Avito\Board\Entity')
-        ->alias('avito-board');
-};
+    public function findAll(): ?CategoryProductSectionFieldUid;
+}
