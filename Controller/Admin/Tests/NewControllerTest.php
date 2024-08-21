@@ -16,7 +16,7 @@
  *
  */
 
-namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
+namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;

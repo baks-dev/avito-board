@@ -16,7 +16,7 @@
  *
  */
 
-namespace BaksDev\Avito\Board\Controller\Admin\Mapper\Tests;
+namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

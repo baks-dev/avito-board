@@ -1,6 +1,6 @@
 <?php
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests;
+namespace BaksDev\Avito\Board\UseCase\NewEdit\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;

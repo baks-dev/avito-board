@@ -16,7 +16,7 @@
  *
  */
 
-namespace BaksDev\Avito\Board\Controller\Public\Feed\Tests;
+namespace BaksDev\Avito\Board\Controller\Public\Tests;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

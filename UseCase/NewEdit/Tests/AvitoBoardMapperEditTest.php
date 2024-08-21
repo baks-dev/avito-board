@@ -1,6 +1,6 @@
 <?php
 
-namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests;
+namespace BaksDev\Avito\Board\UseCase\NewEdit\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
@@ -20,8 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-usecase
  *
- * @depends BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Tests\AvitoBoardMapperNewTest::class
- *
+ * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
  */
 #[When(env: 'test')]
 class AvitoBoardMapperEditTest extends KernelTestCase

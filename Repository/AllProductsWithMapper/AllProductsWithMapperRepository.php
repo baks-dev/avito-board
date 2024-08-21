@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Repository\AllProducts;
+namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
@@ -43,7 +43,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
-final class AllProducts implements AllProductsInterface
+final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
 {
     public function __construct(
         private readonly DBALQueryBuilder $DBALQueryBuilder,

@@ -19,9 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 final class IndexController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/categories/{page<\d+>}', name: 'admin.mapper.index', methods: ['GET', 'POST'])]
-    public function index(Request $request, AllMapperElementsInterface $allMapperSettings, int $page = 0): Response
+    public function index(Request $request, AllMapperElementsInterface $allMapperElements, int $page = 0): Response
     {
-
         $search = new SearchDTO();
 
         $searchForm = $this->createForm(SearchForm::class, $search, [
@@ -32,11 +31,11 @@ final class IndexController extends AbstractController
 
         $searchForm->handleRequest($request);
 
-        $mapperSetting = $allMapperSettings->findAll();
+        $mapperElements = $allMapperElements->findAll();
 
         return $this->render(
             [
-                'query' => $mapperSetting,
+                'query' => $mapperElements,
                 'search' => $searchForm->createView(),
                 'profile' => $profile,
             ],
