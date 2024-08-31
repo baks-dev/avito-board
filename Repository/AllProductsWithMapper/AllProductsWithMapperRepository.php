@@ -10,10 +10,13 @@ use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Entity\AvitoToken;
 use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
 use BaksDev\Avito\Entity\Profile\AvitoTokenProfile;
+use BaksDev\Avito\Products\Entity\AvitoProduct;
+use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
 use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
 use BaksDev\Products\Category\Entity\CategoryProduct;
+use BaksDev\Products\Category\Entity\Info\CategoryProductInfo;
 use BaksDev\Products\Category\Entity\Offers\CategoryProductOffers;
 use BaksDev\Products\Category\Entity\Trans\CategoryProductTrans;
 use BaksDev\Products\Product\Entity\Active\ProductActive;
@@ -108,6 +111,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         avito_token_profile.event = avito_token.event'
             );
 
+
         $dbal->leftJoin(
             'product',
             ProductEvent::class,
@@ -115,6 +119,8 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'product_event.id = product.event'
         );
 
+
+        // @TODO нужен ли join только на активные продукты?
         $dbal
             ->addSelect('product_active.active_from AS product_date_begin')
             ->addSelect('product_active.active_to AS product_date_over')
@@ -122,8 +128,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'product',
                 ProductActive::class,
                 'product_active',
-                'product_active.event = product.event AND product_active.active IS TRUE'
+                '
+                    product_active.event = product.event AND 
+                    product_active.active IS TRUE'
             );
+
 
         $dbal
             ->leftJoin(
@@ -253,6 +262,19 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'category.id = product_category.category'
         );
 
+        // @TODO нужен ли join только на активные категории?
+        /** Только активные разделы */
+        //        $dbal
+        //            ->addSelect('category_info.active as category_active')
+        //            ->join(
+        //                'product_category',
+        //                CategoryProductInfo::class,
+        //                'category_info',
+        //                '
+        //                    category.event = category_info.event AND
+        //                    category_info.active IS TRUE'
+        //            );
+
         $dbal
             ->addSelect('category_trans.name AS product_category')
             ->leftJoin(
@@ -272,6 +294,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'product_price.event = product.event'
         )
             ->addGroupBy('product_price.reserve');
+
         /**
          * Цена торгового предо жения
          */
@@ -444,34 +467,34 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     WHEN product_offer_images.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
-                            'product_img_root', product_offer_images.root,
-                            'product_img', CONCAT ( '/upload/" . $dbal->table(ProductOfferImage::class) . "' , '/', product_offer_images.name),
-                            'product_img_ext', product_offer_images.ext,
-                            'product_img_cdn', product_offer_images.cdn
+                            'img_root', product_offer_images.root,
+                            'img', CONCAT ( '/upload/" . $dbal->table(ProductOfferImage::class) . "' , '/', product_offer_images.name),
+                            'img_ext', product_offer_images.ext,
+                            'img_cdn', product_offer_images.cdn
                         ) 
                     WHEN product_variation_image.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
-                            'product_img_root', product_variation_image.root,
-                            'product_img', CONCAT ( '/upload/" . $dbal->table(ProductVariationImage::class) . "' , '/', product_variation_image.name),
-                            'product_img_ext', product_variation_image.ext,
-                            'product_img_cdn', product_variation_image.cdn
+                            'img_root', product_variation_image.root,
+                            'img', CONCAT ( '/upload/" . $dbal->table(ProductVariationImage::class) . "' , '/', product_variation_image.name),
+                            'img_ext', product_variation_image.ext,
+                            'img_cdn', product_variation_image.cdn
                         )	
                     WHEN product_modification_image.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
-                            'product_img_root', product_modification_image.root,
-                            'product_img', CONCAT ( '/upload/" . $dbal->table(ProductModificationImage::class) . "' , '/', product_modification_image.name),
-                            'product_img_ext', product_modification_image.ext,
-                            'product_img_cdn', product_modification_image.cdn
+                            'img_root', product_modification_image.root,
+                            'img', CONCAT ( '/upload/" . $dbal->table(ProductModificationImage::class) . "' , '/', product_modification_image.name),
+                            'img_ext', product_modification_image.ext,
+                            'img_cdn', product_modification_image.cdn
                         )
                     WHEN product_photo.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
-                            'product_img_root', product_photo.root,
-                            'product_img', CONCAT ( '/upload/" . $dbal->table(ProductPhoto::class) . "' , '/', product_photo.name),
-                            'product_img_ext', product_photo.ext,
-                            'product_img_cdn', product_photo.cdn
+                            'img_root', product_photo.root,
+                            'img', CONCAT ( '/upload/" . $dbal->table(ProductPhoto::class) . "' , '/', product_photo.name),
+                            'img_ext', product_photo.ext,
+                            'img_cdn', product_photo.cdn
                         )
                     END) AS product_images"
         );
@@ -601,14 +624,54 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 			AS avito_board_mapper"
         );
 
+        /** Продукт Авито */
+        $dbal
+            ->addSelect('avito_product.description as avito_product_description')
+            ->leftJoin(
+            'product_modification',
+            AvitoProduct::class,
+            'avito_product',
+            '
+                avito_product.product = product.id AND 
+                (avito_product.offer IS NULL OR avito_product.offer = product_offer.const) AND 
+                (avito_product.variation IS NULL OR avito_product.variation = product_variation.const) AND 
+                (avito_product.modification IS NULL OR avito_product.modification = product_modification.const)
+            '
+        );
+
+        /** Изображения Авито */
+        $dbal->leftJoin(
+            'avito_product',
+            AvitoProductImage::class,
+            'avito_product_images',
+            '
+                avito_product_images.avito = avito_product.id'
+        );
+
+        $dbal->addSelect(
+            "JSON_AGG
+            (DISTINCT
+                CASE
+                    WHEN avito_product_images.name IS NOT NULL THEN JSONB_BUILD_OBJECT
+                    (
+                        'img_root', avito_product_images.root,
+                        'img', CONCAT ( '/upload/" . $dbal->table(AvitoProductImage::class) . "' , '/', avito_product_images.name),
+                        'img_ext', avito_product_images.ext,
+                        'img_cdn', avito_product_images.cdn
+                    )
+                    ELSE NULL
+                END
+            ) as avito_product_images
+            "
+        );
+
         $dbal->allGroupByExclude();
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-//        dd($dbal->fetchAllAssociative());
-
         // @TODO генератор возвращать здесь?
         return $dbal
+            ->where("product_trans.name = 'Triangle TRY88'")
             ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
     }

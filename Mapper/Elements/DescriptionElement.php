@@ -69,12 +69,41 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        if(null === $data['product_description'])
+        $desc = null;
+
+        // Если есть шаблон для описания - форматируем
+        if (null !== $data['avito_product_description'])
+        {
+            $search = [
+                '%PRODUCT_NAME%',
+                '%PRODUCT_OFFER%',
+                '%PRODUCT_VARIATION%',
+                '%PRODUCT_MODIFICATION%',
+                '%PRODUCT_ADDRESS%'
+            ];
+
+            $replace = [
+                $data['product_name'],
+                $data['product_offer_value'],
+                $data['product_variation_value'],
+                $data['product_modification_value'],
+                $data['avito_profile_address'],
+            ];
+
+            $desc = str_replace($search, $replace, $data['avito_product_description']);
+        }
+
+        // Если есть описания продукта - форматируем
+        if (null !== $data['product_description'])
+        {
+            $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
+        }
+
+        // Если описание нет - не рендерим
+        if (null === $desc)
         {
             return null;
         }
-
-        $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
 
         return sprintf('<![CDATA[%s]]>', $desc);
     }

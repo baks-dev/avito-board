@@ -88,32 +88,16 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
 
     public function fetchData(array $data): ?string
     {
-        $images = null;
+        $avitoIMG = $this->transform($data['avito_product_images']);
 
-        /**
-         * @var object{
-         *     product_img: string,
-         *     product_img_cdn: bool,
-         *     product_img_ext: string,
-         *     product_img_root: bool} $image
-         */
-        foreach (json_decode($data['product_images'], false, 512, JSON_THROW_ON_ERROR) as $image)
+        if (null !== $avitoIMG)
         {
-            // Если изображение не загружено - не рендерим
-            if (null === $image)
-            {
-                return null;
-            }
-
-            $imgHost = $image->product_img_cdn ? $this->cdnHost : '';
-            $imgDir = $image->product_img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->product_img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
-            $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
-            $images .= $element;
+            return $avitoIMG;
         }
-
-        return $images;
+        else
+        {
+            return $this->transform($data['product_images']);
+        }
     }
 
     public function element(): string
@@ -129,5 +113,43 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
     public function getProduct(): string
     {
         return PassengerTireProduct::class;
+    }
+
+    /** Формируем массив элементов с изображениями */
+    private function transform(string $images): ?string
+    {
+        $render = null;
+
+        $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
+
+        // В массиве элементов с изображениями первое root = true
+        usort($array, function ($f) {
+            return $f->img_root === true ? -1 : 1;
+        });
+
+        /**
+         * @var object{
+         *     img: string,
+         *     img_cdn: bool,
+         *     img_ext: string,
+         *     img_root: bool}|null $image
+         */
+        foreach ($array as $image)
+        {
+            // Если изображение не загружено - не рендерим
+            if (null === $image)
+            {
+                return null;
+            }
+
+            $imgHost = $image->img_cdn ? $this->cdnHost : '';
+            $imgDir = $image->img;
+            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->img_ext;
+            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
+            $render .= $element;
+        }
+
+        return $render;
     }
 }

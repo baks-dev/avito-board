@@ -61,7 +61,14 @@ class WidthForDeliveryElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        return $data['product_width_delivery'];
+        $width = $data['product_width_delivery'];
+
+        if(null !== $width)
+        {
+            return (string)$width;
+        }
+
+        return null;
     }
 
     public function element(): string

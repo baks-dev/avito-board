@@ -20,6 +20,7 @@ final class FeedController extends AbstractController
     ): Response {
 
         $products = $allProductsWithMapping->findAll($profile);
+        dd($products);
 
         $response = $this->render(
             [

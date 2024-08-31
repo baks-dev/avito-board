@@ -49,6 +49,7 @@ final class TireModelRequestTest extends KernelTestCase
             ["iLINK L-Zeal56"],
             ["Sailun Atrezzo ECO"],
             ["Taganca МШЗ М-233"],
+            ["Triangle TRY88"],
         ];
     }
 

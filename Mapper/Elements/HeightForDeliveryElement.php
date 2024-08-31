@@ -64,7 +64,14 @@ class HeightForDeliveryElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        return $data['product_height_delivery'];
+        $height = $data['product_height_delivery'];
+
+        if (null !== $height)
+        {
+            return (string)$height;
+        }
+
+        return null;
     }
 
     public function element(): string

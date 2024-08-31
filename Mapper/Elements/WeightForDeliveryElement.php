@@ -61,7 +61,14 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        return $data['product_weight_delivery'];
+        $weight = $data['product_weight_delivery'];
+
+        if(null !== $weight)
+        {
+            return (string)$weight;
+        }
+
+        return null;
     }
 
     public function element(): string
