@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Entity\Event;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapper;
+use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModify;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 use BaksDev\Core\Entity\EntityEvent;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Doctrine\Common\Collections\Collection;
@@ -54,8 +54,8 @@ class AvitoBoardEvent extends EntityEvent
      * Связь с характеристиками продукта Авито
      */
     #[Assert\Valid]
-    #[ORM\OneToMany(targetEntity: AvitoBoardMapper::class, mappedBy: 'event', cascade: ['all'])]
-    private Collection $mapperSetting;
+    #[ORM\OneToMany(targetEntity: AvitoBoardMapperElement::class, mappedBy: 'event', cascade: ['all'])]
+    private Collection $mapperElements;
 
     public function __construct()
     {
@@ -89,9 +89,6 @@ class AvitoBoardEvent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    /**
-     * @TODO добавить описание поведения
-     */
     public function setEntity($dto): mixed
     {
         if($dto instanceof AvitoBoardEventInterface)

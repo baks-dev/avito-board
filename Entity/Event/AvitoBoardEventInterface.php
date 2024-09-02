@@ -2,11 +2,12 @@
 
 namespace BaksDev\Avito\Board\Entity\Event;
 
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
+
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 
 /**
  * Интерфейс, который должны реализовывать все DTO, через которые изменяется сущность
- * @see MapperDTO
+ * @see AvitoBoardMapperDTO
  */
 interface AvitoBoardEventInterface
 {

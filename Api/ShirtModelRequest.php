@@ -4,7 +4,6 @@ namespace BaksDev\Avito\Board\Api;
 
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Type\UserAgent\UserAgentGenerator;
-use DateInterval;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -21,15 +20,20 @@ final class ShirtModelRequest
     }
 
     /**
-     * @return array{'band': string }
-     *     |array{'model': array{string, int}, 'band': string, 'model': string }
-     *     |null
+     * @return array{'band': string, 'model': null, 'cached': bool }
+     *
+     * @return array{'band': string, 'model': string, 'cached': bool, 'model_matches': array{string, int} }
+     *
+     * @return null
      */
-    public function getModel(string $nameInfo): ?array
+    public function getModel(string $productName): ?array
     {
+        // флаг для отслеживания кеширования
+        $cached = true;
         $cache = $this->cache->init('avito-board');
 
-        $brands = $cache->get('avito-board-model-'.$nameInfo, function (ItemInterface $item): array {
+        $brands = $cache->get('avito-board-model-' . $productName, function (ItemInterface $item) use (&$cached): array {
+            $cached = false;
 
             $item->expiresAfter(3600);
 
@@ -43,118 +47,176 @@ final class ShirtModelRequest
 
             $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
 
-            $json = json_encode($xml, JSON_THROW_ON_ERROR);
+            $json = json_encode($xml);
 
-            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            return json_decode($json, true);
         });
 
-        $string = mb_strtolower($nameInfo);
+        $productNameLower = mb_strtolower($productName);
 
-        $searchArray = explode(" ", $string);
+        $productNameParts = explode(" ", $productNameLower);
 
-        $result = null;
+        $search = null;
 
-        foreach($brands['brand'] as $brand)
+        $brandSearch = null;
+
+        foreach ($brands['brand'] as $brand)
         {
-            // Получаем название бренда в Авито
-            $brandName = trim(strtok($brand['@attributes']['name'], " "));
+            // Получаем название бренда в Авито и разбиваем на токены
+            $avitoBrandToken = trim(strtok($brand['@attributes']['name'], " "));
 
-            if(in_array(mb_strtolower($brandName), $searchArray, false))
+            // Ищем токены в строке с названием продукта
+            if (in_array(mb_strtolower($avitoBrandToken), $productNameParts, false))
             {
-                // Присваиваем в результирующий массив бренд, т.к. футболка может быть без модели
-                $result['brand'] = $brand['@attributes']['name'];
 
-                foreach($brand['model_dlya_tipa_tovara'] as $models)
+                // В найденном бренде Авито проверяем наличие массива с моделями
+                if (array_key_exists('model_dlya_tipa_tovara', $brand) === false)
                 {
-                    $count = 0;
+                    // Присваиваем в результирующий массив бренд. Так как бренд без модели, model = NULL (футболка может быть без модели)
+                    $search['brand'] = $brand['@attributes']['name'];
+                    $search['model'] = null;
+                    break;
+                }
 
-                    foreach($searchArray as $in)
+                // Если у бренда есть модели
+                if (array_key_exists('model_dlya_tipa_tovara', $brand))
+                {
+                    // Присваиваем в результирующий массив бренд, т.к. футболка может быть без модели
+                    $search['brand'] = $brand['@attributes']['name'];
+
+                    // Ранжирование всех одинаковых брендов с моделями
+                    $avitoBrandLow = mb_strtolower($brand['@attributes']['name']);
+                    $avitoBrandParts = explode(' ', $avitoBrandLow);
+
+                    $brandCount = 0;
+                    foreach ($avitoBrandParts as $avitoBrandToken)
                     {
-                        $modelName = $models['@attributes']['name'] ?? $models['name'];
-                        $modelNameLower = mb_strtolower($modelName);
+                        $match = mb_substr_count($avitoBrandLow, $avitoBrandToken);
 
-                        $isset = mb_substr_count($modelNameLower, $in);
-
-                        // Определяем все элементы моделей, которые могут соответствовать поиску
-                        if($isset !== 0)
+                        if ($match !== 0)
                         {
-                            $count++; // увеличиваем вес
+                            $brandCount++;
+                            $brandSearch['brand_matches'][$brand['@attributes']['name']] = $brandCount;
+                            $search['brand_matches'][$brand['@attributes']['name']] = $brandCount;
+                        }
+                    }
 
-                            $searchModel = explode(' ', $modelNameLower);
+                    // Цикл для поиска совпадения модели
+                    foreach ($brand['model_dlya_tipa_tovara'] as $model)
+                    {
+                        $count = 0;
 
-                            // проверяем соответствие модели строке поиска
-                            foreach($searchModel as $confirm)
+                        foreach ($productNameParts as $namePart)
+                        {
+                            $avitoModel = mb_strtolower($model['@attributes']['name']);
+
+                            $isset = mb_substr_count($avitoModel, $namePart);
+
+                            // Если вхождение найдено - определяем все элементы моделей, которые могут соответствовать поиску
+                            if ($isset !== 0)
                             {
-                                if(stripos($string, $confirm) === false)
+                                $count++; // увеличиваем вес
+
+                                $avitoModelParts = explode(' ', $avitoModel);
+
+                                // проверяем соответствие модели строке поиска
+                                foreach ($avitoModelParts as $avitoModelPart)
                                 {
-                                    $count--; // снимаем вес если не соответствует
+                                    if (stripos($productNameLower, $avitoModelPart) === false)
+                                    {
+                                        $count--; // снимаем вес если не соответствует
+                                    }
+                                }
+                            }
+
+                            // пробуем удалить в строке символы «-»
+                            if ($isset === 0)
+                            {
+                                $ins = str_replace('-', '', $namePart);
+
+                                $isset = mb_substr_count($avitoModel, $ins);
+
+                                if ($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
+                                }
+                            }
+
+                            // пробуем заменить в строке символы «-» на пробел
+                            if ($isset === 0)
+                            {
+                                $ins = str_replace('-', ' ', $namePart);
+
+                                $isset = mb_substr_count($avitoModel, $ins);
+
+                                if ($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
+                                }
+                            }
+
+                            if ($isset === 0)
+                            {
+                                $ins = str_replace('-', '/', $namePart);
+
+                                $isset = mb_substr_count($avitoModel, $ins);
+
+                                if ($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
                                 }
                             }
                         }
 
-                        // пробуем удалить в строке символы «-»
-                        if($isset === 0)
+                        if ($count > 0)
                         {
-                            $ins = str_replace('-', '', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
-                            {
-                                $count++; // увеличиваем вес
-                            }
+                            $search['model_matches'][$model['@attributes']['name']] = $count;
                         }
-
-                        // пробуем заменить в строке символы «-» на пробел
-                        if($isset === 0)
+                        else
                         {
-                            $ins = str_replace('-', ' ', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
-                            {
-                                $count++; // увеличиваем вес
-                            }
-                        }
-
-                        if($isset === 0)
-                        {
-                            $ins = str_replace('-', '/', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
-                            {
-                                $count++; // увеличиваем вес
-                            }
+                            $search['model'] = 'Другая';
                         }
                     }
 
-                    if($count > 0)
+                    if (isset($search['model_matches']))
                     {
-                        $result['model'][$models['@attributes']['name']] = $count;
+                        // Если модель найдена - перезаписываем брендом, к которому принадлежит модель
+                        $search['brand'] = $brand['@attributes']['name'];
+                        break;
                     }
                 }
             }
         }
 
-        if(isset($result['model']))
-        {
-            $maxValue = max($result['model']);
-            $result['model'] = array_search($maxValue, $result['model'], true);
-        }
-
-        if(null === $result)
+        // Если результатов поиска нет - нет обязательного
+        if (null === $search)
         {
             $this->logger->critical(
-                'Не найдено совпадений бренда или модели для продукта '.$nameInfo,
-                [self::class.':'.__LINE__]
+                'Не найдено совпадений бренда или модели для продукта ' . $productName,
+                [__FILE__ . ':' . __LINE__]
             );
 
             return null;
         }
 
-        return $result;
+        // если было несколько одинаковых брендов
+        if ($brandSearch !== null)
+        {
+            $min = min($brandSearch['brand_matches']);
+
+            $search['brand'] = array_search($min, $brandSearch['brand_matches'], true);
+            $search['model'] = 'Другая';
+        }
+
+        if (isset($search['model_matches']))
+        {
+            $maxValue = max($search['model_matches']);
+
+            $search['model'] = array_search($maxValue, $search['model_matches'], true);
+        }
+
+        $search['cached'] = $cached;
+
+        return $search;
     }
 }

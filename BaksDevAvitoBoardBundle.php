@@ -31,9 +31,9 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class BaksDevAvitoBoardBundle extends AbstractBundle
 {
-    public const string NAMESPACE = __NAMESPACE__.'\\';
+    public const string NAMESPACE = __NAMESPACE__ . '\\';
 
-    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
+    public const string PATH = __DIR__ . DIRECTORY_SEPARATOR;
 
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
@@ -47,14 +47,9 @@ class BaksDevAvitoBoardBundle extends AbstractBundle
 
         $services->load(self::NAMESPACE, self::PATH)
             ->exclude([
-                self::PATH.'{Entity,Resources,Type}',
-                self::PATH.'**/*Message.php',
-                self::PATH.'**/*DTO.php',
+                self::PATH . '{Entity,Resources,Type}',
+                self::PATH . '**/*Message.php',
+                self::PATH . '**/*DTO.php',
             ]);
-
-        $services->load(
-            self::NAMESPACE.'Type\Mapper\\',
-            self::PATH.'Type/Mapper'
-        );
     }
 }

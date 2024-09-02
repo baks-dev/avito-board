@@ -24,10 +24,10 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventType;
-use BaksDev\Avito\Board\Type\Doctrine\Event\AvitoBoardEventUid;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardType;
-use BaksDev\Avito\Board\Type\Doctrine\AvitoBoardUid;
+use BaksDev\Avito\Board\Type\AvitoBoardType;
+use BaksDev\Avito\Board\Type\AvitoBoardUid;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
+use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 use Symfony\Config\DoctrineConfig;
 
 return static function (DoctrineConfig $doctrine): void {
