@@ -71,7 +71,16 @@ class PassengerTireSpeedIndexElement implements AvitoBoardElementInterface
             return null;
         }
 
-        return preg_replace('/[^a-zA-ZА-Яа-яЁё]/u', '', $data['product_modification_postfix']);
+        $value = preg_replace('/[^a-zA-ZА-Яа-яЁё]/u', '', $data['product_modification_postfix']);
+
+        /** Преобразуем русские символы в латиницу */
+        $value = str_replace(
+            ['Н', 'К', 'М', 'Р', 'Т'], // русские символы
+            ['H', 'K', 'M', 'P', 'T'], // латиница
+            $value
+        );
+
+        return $value;
     }
 
     public function element(): string
