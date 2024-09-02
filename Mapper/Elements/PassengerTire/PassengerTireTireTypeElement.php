@@ -76,7 +76,7 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         $spikes = match ($data[PassengerTireSpikesElement::ELEMENT])
         {
             'true' => 'шипованные',
-            'false' => 'не шипованные',
+            'false' => 'нешипованные',
         };
 
         $tireType = match ($data[self::ELEMENT])

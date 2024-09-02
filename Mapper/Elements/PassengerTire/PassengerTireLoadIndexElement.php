@@ -71,7 +71,10 @@ class PassengerTireLoadIndexElement implements AvitoBoardElementInterface
             return null;
         }
 
-        return preg_replace('/\D/', '', $data['product_modification_postfix']);
+        $index = explode('/', $data['product_modification_postfix']); // 102/104Q
+        $cleanedIndex = filter_var(current($index), FILTER_SANITIZE_NUMBER_INT);
+
+        return $cleanedIndex;
     }
 
     public function element(): string
