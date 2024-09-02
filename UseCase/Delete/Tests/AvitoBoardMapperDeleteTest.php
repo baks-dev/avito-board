@@ -38,11 +38,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
+use BaksDev\Avito\Board\Controller\Admin\Tests\DeleteControllerTest;
+
 /**
  * @group avito-board
  * @group avito-board-usecase
  *
  * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\DeleteControllerTest::class
  */
 #[When(env: 'test')]
 final class AvitoBoardMapperDeleteTest extends KernelTestCase
@@ -67,7 +70,7 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
 
         $em->clear();
 
-        if ($event)
+        if($event)
         {
             $editDTO = new AvitoBoardMapperDTO();
 
@@ -109,7 +112,7 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
         $events = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
 
-        foreach ($events as $event)
+        foreach($events as $event)
         {
             $em->remove($event);
         }

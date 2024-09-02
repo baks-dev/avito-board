@@ -45,7 +45,11 @@ final class NewControllerTest extends WebTestCase
         $em = $container->get(EntityManagerInterface::class);
 
         $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
-        $event = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent());
+
+        if($avitoBoard)
+        {
+            $event = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent());
+        }
 
         self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', $event->getCategory(), $event->getAvito());
 

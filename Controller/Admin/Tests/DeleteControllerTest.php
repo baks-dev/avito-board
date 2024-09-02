@@ -48,7 +48,12 @@ final class DeleteControllerTest extends WebTestCase
         $em = $container->get(EntityManagerInterface::class);
 
         $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
-        self::$eventId = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent())->getId();
+
+        if($avitoBoard)
+        {
+            self::$eventId = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent())?->getId();
+        }
+
 
         $em->clear();
     }
@@ -59,12 +64,12 @@ final class DeleteControllerTest extends WebTestCase
         // Получаем одно из событий
         $eventId = self::$eventId;
 
-        if ($eventId)
+        if($eventId)
         {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
-            foreach (TestUserAccount::getDevice() as $device)
+            foreach(TestUserAccount::getDevice() as $device)
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
@@ -86,12 +91,12 @@ final class DeleteControllerTest extends WebTestCase
         // Получаем одно из событий
         $eventId = self::$eventId;
 
-        if ($eventId)
+        if($eventId)
         {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
-            foreach (TestUserAccount::getDevice() as $device)
+            foreach(TestUserAccount::getDevice() as $device)
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
@@ -113,12 +118,12 @@ final class DeleteControllerTest extends WebTestCase
         // Получаем одно из событий
         $eventId = self::$eventId;
 
-        if ($eventId)
+        if($eventId)
         {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
-            foreach (TestUserAccount::getDevice() as $device)
+            foreach(TestUserAccount::getDevice() as $device)
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
@@ -139,12 +144,12 @@ final class DeleteControllerTest extends WebTestCase
         // Получаем одно из событий
         $eventId = self::$eventId;
 
-        if ($eventId)
+        if($eventId)
         {
             self::ensureKernelShutdown();
             $client = static::createClient();
 
-            foreach (TestUserAccount::getDevice() as $device)
+            foreach(TestUserAccount::getDevice() as $device)
             {
                 $client->setServerParameter('HTTP_USER_AGENT', $device);
 
