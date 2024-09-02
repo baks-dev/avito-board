@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
- * @group avito-board-controllers-feed
+ * @group avito-board-controller-feed
  */
 #[When(env: 'test')]
 final class FeedControllerTest extends WebTestCase

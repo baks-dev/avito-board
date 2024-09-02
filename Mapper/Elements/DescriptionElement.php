@@ -78,7 +78,7 @@ class DescriptionElement implements AvitoBoardElementInterface
                 '%PRODUCT_NAME%',
                 '%PRODUCT_OFFER%',
                 '%PRODUCT_VARIATION%',
-                '%PRODUCT_MODIFICATION%',
+                '%PRODUCT_MOD%',
                 '%PRODUCT_ADDRESS%'
             ];
 

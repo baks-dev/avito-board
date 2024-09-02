@@ -122,7 +122,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
 
         $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
 
-        // В массиве элементов с изображениями первое root = true
+        // Сортировка массива элементов с изображениями по root = true
         usort($array, function ($f) {
             return $f->img_root === true ? -1 : 1;
         });

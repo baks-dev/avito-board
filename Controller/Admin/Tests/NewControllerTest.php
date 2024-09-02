@@ -27,8 +27,8 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
- * @group avito-board-controllers
- * @group avito-board-controllers-new
+ * @group avito-board-controller
+ * @group avito-board-controller-new
  */
 #[When(env: 'test')]
 final class NewControllerTest extends WebTestCase

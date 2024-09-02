@@ -55,7 +55,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
     /**
      * Метод получает массив свойств продукта с маппингом и данными токена
      */
-    public function findAll(UserProfileUid $profile): array|bool
+    public function findAll(UserProfileUid $profile): iterable|bool
     {
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -120,7 +120,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
 
-        // @TODO нужен ли join только на активные продукты?
+        /** Получаем только на активные продукты */
         $dbal
             ->addSelect('product_active.active_from AS product_date_begin')
             ->addSelect('product_active.active_to AS product_date_over')
@@ -262,18 +262,17 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'category.id = product_category.category'
         );
 
-        // @TODO нужен ли join только на активные категории?
-        /** Только активные разделы */
-        //        $dbal
-        //            ->addSelect('category_info.active as category_active')
-        //            ->join(
-        //                'product_category',
-        //                CategoryProductInfo::class,
-        //                'category_info',
-        //                '
-        //                    category.event = category_info.event AND
-        //                    category_info.active IS TRUE'
-        //            );
+        /** Получаем только на активные категории */
+        $dbal
+            ->addSelect('category_info.active as category_active')
+            ->join(
+                'product_category',
+                CategoryProductInfo::class,
+                'category_info',
+                '
+                    category.event = category_info.event AND
+                    category_info.active IS TRUE'
+            );
 
         $dbal
             ->addSelect('category_trans.name AS product_category')
@@ -628,16 +627,16 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal
             ->addSelect('avito_product.description as avito_product_description')
             ->leftJoin(
-            'product_modification',
-            AvitoProduct::class,
-            'avito_product',
-            '
+                'product_modification',
+                AvitoProduct::class,
+                'avito_product',
+                '
                 avito_product.product = product.id AND 
                 (avito_product.offer IS NULL OR avito_product.offer = product_offer.const) AND 
                 (avito_product.variation IS NULL OR avito_product.variation = product_variation.const) AND 
                 (avito_product.modification IS NULL OR avito_product.modification = product_modification.const)
             '
-        );
+            );
 
         /** Изображения Авито */
         $dbal->leftJoin(
@@ -669,9 +668,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        // @TODO генератор возвращать здесь?
         return $dbal
-            ->where("product_trans.name = 'Triangle TRY88'")
             ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
     }

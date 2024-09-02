@@ -138,6 +138,7 @@ final class AvitoBoardMapperForm extends AbstractType
             ->category($productCategory)
             ->findAllCategoryProductSectionField();
 
+
         if ($productOffer)
         {
             $productFields->add($productOffer);

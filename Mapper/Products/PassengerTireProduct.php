@@ -33,8 +33,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PassengerTireProduct implements AvitoBoardProductInterface
 {
-    public const string PRODUCT_DIR = 'tire';
-
     private const string PRODUCT_CATEGORY = 'Легковые шины';
 
     public function __construct(
