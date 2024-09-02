@@ -31,12 +31,15 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
 {
+    public const string PRODUCT_DIR = 't-shirt';
+
     private const string PRODUCT_CATEGORY = 'Кофты и футболки';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.mapper.elements')] private iterable $elements,
     ) {}
 
+    /** Получаем название категории Авито */
     public function getProductCategory(): string
     {
         return self::PRODUCT_CATEGORY;

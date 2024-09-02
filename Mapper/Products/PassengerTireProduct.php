@@ -33,13 +33,15 @@ use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class PassengerTireProduct implements AvitoBoardProductInterface
 {
+    public const string PRODUCT_DIR = 'tire';
+
     private const string PRODUCT_CATEGORY = 'Легковые шины';
 
     public function __construct(
         #[AutowireIterator('baks.avito.board.mapper.elements')] private iterable $elements,
     ) {}
 
-    /** Получаем массив категорий Авито */
+    /** Получаем название категории Авито */
     public function getProductCategory(): string
     {
         return self::PRODUCT_CATEGORY;
@@ -87,7 +89,7 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
 
     public function isEqual(string $productCategory): bool
     {
-        return $productCategory === self::PRODUCT_CATEGORY;
+        return $productCategory === 'Легковые шины';
     }
 
     public function __toString(): string
