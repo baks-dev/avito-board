@@ -138,6 +138,13 @@ final class AvitoBoardMapperForm extends AbstractType
             ->category($productCategory)
             ->findAllCategoryProductSectionField();
 
+        /** Если нет свойств и ТП - отображаем пустой выпадающий список */
+        if($productOffer === false && $productProperties === false)
+        {
+            $productFields->clear();
+
+            return $productFields;
+        }
 
         if ($productOffer)
         {
