@@ -32,7 +32,7 @@ final readonly class AvitoBoardMapperProvider
             }
         }
 
-        throw new \Exception('Не найдены категория продукта с названием ' . $productCategory);
+        throw new \Exception('Не найдена категория продукта с названием ' . $productCategory);
     }
 
     /**

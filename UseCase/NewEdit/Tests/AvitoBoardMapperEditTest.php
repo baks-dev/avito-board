@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-usecase
  *
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\NewControllerTest::class
  */
 #[When(env: 'test')]
 class AvitoBoardMapperEditTest extends KernelTestCase
@@ -44,21 +44,19 @@ class AvitoBoardMapperEditTest extends KernelTestCase
 
         /** @var AvitoBoardMapperElementDTO $mapperElement */
         $mapperElement = $editDTO->getMapperElements()->current();
-        self::assertEquals('IdNew', $mapperElement->getElement());
+        self::assertEquals('Id', $mapperElement->getElement());
         self::assertEquals('DefNew', $mapperElement->getDef());
 
-        $mapperElement->setElement('IdEdit');
         $mapperElement->setDef('DefEdit');
 
         // добавляем новый маппер в коллекцию
         $mapperElementDTO = new AvitoBoardMapperElementDTO();
-        $mapperElementDTO->setElement('AddressEdit');
+        $mapperElementDTO->setElement('Address');
         $mapperElementDTO->setDef('DefEdit');
         $mapperElementDTO->setProductField(new CategoryProductSectionFieldUid());
 
         $editDTO->addMapperElement($mapperElementDTO);
 
-        $container = self::getContainer();
 
         /** @var AvitoBoardMapperHandler $handler */
         $handler = $container->get(AvitoBoardMapperHandler::class);

@@ -18,8 +18,7 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
-use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -29,6 +28,8 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-controller
  * @group avito-board-controller-new
+ *
+ * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
  */
 #[When(env: 'test')]
 final class NewControllerTest extends WebTestCase
@@ -44,15 +45,16 @@ final class NewControllerTest extends WebTestCase
         /** @var EntityManagerInterface $em */
         $em = $container->get(EntityManagerInterface::class);
 
-        $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
-        $event = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent());
+        $category = $em->getRepository(CategoryProduct::class)->findOneBy([]);
 
-        self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', $event->getCategory(), $event->getAvito());
+        self::assertNotNull($category, 'Категория продукта не найдена.');
+
+        self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', $category->getId(), 'Легковые шины');
 
         $em->clear();
     }
 
-    /** Доступ по роли  */
+    /** Доступ по роли */
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();

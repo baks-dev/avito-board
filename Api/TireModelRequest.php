@@ -30,7 +30,7 @@ final class TireModelRequest
 
         $cache = $this->cache->init('avito-board');
 
-        $array = $cache->get('avito-board-model-' . $this->nameInfo, function (ItemInterface $item): array {
+        $array = $cache->get('avito-board-model-' . md5($this->nameInfo), function (ItemInterface $item): array {
 
             $item->expiresAfter(3600);
 
