@@ -19,6 +19,7 @@
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
@@ -56,7 +57,12 @@ final class EditControllerTest extends WebTestCase
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
 
-        self::$url = sprintf('/admin/avito-board/mapper/edit/%s', $avitoBoard->getEvent());
+        /** Находим активное событие **/
+        $activeEvent = $em
+            ->getRepository(AvitoBoardEvent::class)
+            ->find($avitoBoard->getEvent());
+
+        self::$url = sprintf('/admin/avito-board/mapper/edit/%s', $activeEvent);
 
         $em->clear();
     }

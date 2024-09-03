@@ -60,7 +60,7 @@ final class DeleteControllerTest extends WebTestCase
         $activeEvent = $em->getRepository(AvitoBoardEvent::class)
             ->find($avitoBoard->getEvent());
 
-        self::$url = sprintf('/admin/avito-board/mapper/delete/%s', $activeEvent->getId());
+        self::$url = sprintf('/admin/avito-board/mapper/delete/%s', $activeEvent);
 
         $em->clear();
     }
