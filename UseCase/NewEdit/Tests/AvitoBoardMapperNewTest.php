@@ -26,10 +26,8 @@ class AvitoBoardMapperNewTest extends KernelTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);

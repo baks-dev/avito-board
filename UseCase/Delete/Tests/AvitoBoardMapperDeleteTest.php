@@ -33,6 +33,7 @@ use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
 use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
+use BaksDev\Products\Category\UseCase\Admin\Delete\Tests\CategoryProductDeleteTest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -100,10 +101,8 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
 
     public static function tearDownAfterClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $events = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
@@ -115,5 +114,8 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
 
         $em->flush();
         $em->clear();
+
+        /** Удаляем тестовую категорию */
+        CategoryProductDeleteTest::tearDownAfterClass();
     }
 }

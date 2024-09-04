@@ -20,7 +20,6 @@ namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,29 +39,27 @@ final class EditControllerTest extends WebTestCase
 {
     private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_EDIT';
 
-    private static ?string $url = null;
+    private static string $url = '/admin/avito-board/mapper/edit/%s';
 
     public static function setUpBeforeClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
-
-        $category = $em->getRepository(CategoryProduct::class)->findOneBy([]);
-
-        self::assertNotNull($category, 'Категория продукта не найдена.');
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         /** Находим корень */
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
 
-        /** Находим активное событие **/
+        self::assertNotNull($avitoBoard);
+
+        /** Находим активное событие */
         $activeEvent = $em
             ->getRepository(AvitoBoardEvent::class)
             ->find($avitoBoard->getEvent());
 
-        self::$url = sprintf('/admin/avito-board/mapper/edit/%s', $activeEvent);
+        self::assertNotNull($activeEvent);
+
+        self::$url = sprintf(self::$url, $activeEvent);
 
         $em->clear();
     }
