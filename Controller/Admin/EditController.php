@@ -36,7 +36,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_EDIT')]
+#[RoleSecurity('ROLE_AVITO_BOARD_EDIT')]
 final class EditController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/edit/{id}', name: 'admin.mapper.edit', methods: ['GET', 'POST'])]

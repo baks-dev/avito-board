@@ -37,7 +37,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class DeleteControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_DELETE';
+    private const string ROLE = 'ROLE_AVITO_BOARD_DELETE';
 
     private static string $url = '/admin/avito-board/mapper/delete/%s';
 

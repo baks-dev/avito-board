@@ -14,13 +14,13 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('baks.menu.admin')]
 final class Role implements RoleInterface, MenuAdminInterface
 {
-    /** Транспорт доставки заказов */
-    public const string ROLE = 'ROLE_AVITO_BOARD_MAPPER';
+    public const string ROLE = 'ROLE_AVITO_BOARD';
 
     public function getRole(): string
     {
         return self::ROLE;
     }
+
     /**
      * Добавляем раздел в меню администрирования.
      */

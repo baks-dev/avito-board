@@ -142,7 +142,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
                 return null;
             }
 
-            $imgHost = $image->img_cdn ? $this->cdnHost : '';
+            $imgHost = $image->img_cdn ? 'https://'.$this->cdnHost : '';
             $imgDir = $image->img;
             $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->img_ext;
             $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
