@@ -28,7 +28,7 @@ final class FeedController extends AbstractController
 
         $feed = $cache->get('feed-' . $profile, function (ItemInterface $item) use ($products): string {
 
-            $item->expiresAfter(300);
+            $item->expiresAfter(3600);
 
             return $this->render(
                 [
