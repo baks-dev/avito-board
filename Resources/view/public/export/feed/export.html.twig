@@ -4,22 +4,26 @@
 
     {% if products is not empty %}
 
-        {% for product in products|filter(v => v.product_price > 0) %}
+{#        {% cache profile ttl(600) %}#}
 
-            {% set tags = product_transform(product) %}
+            {% for product in products|filter(v => v.product_price > 0) %}
 
-            {% if tags is not null %}
-                <Ad>
-                {% for tag, data in tags %}
-                    <{{ tag }}>
-                    {{ data|raw }}
-                    </{{ tag }}>
-                {% endfor %}
-                </Ad>
+                {% set tags = product_transform(product) %}
 
-            {% endif %}
+                {% if tags is not null %}
+                    <Ad>
+                    {% for tag, data in tags %}
+                        <{{ tag }}>
+                        {{ data|raw }}
+                        </{{ tag }}>
+                    {% endfor %}
+                    </Ad>
 
-        {% endfor %}
+                {% endif %}
+
+            {% endfor %}
+
+{#        {% endcache %}#}
 
     {% endif %}
 

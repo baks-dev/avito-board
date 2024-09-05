@@ -24,6 +24,7 @@ final class FeedController extends AbstractController
         $response = $this->render(
             [
                 'products' => $products,
+                'profile' => (string)$profile,
             ],
             file: 'export.html.twig'
         );
