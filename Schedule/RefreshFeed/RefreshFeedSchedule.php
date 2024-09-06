@@ -30,7 +30,7 @@ use DateInterval;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * Проверяем новые заказы Yandex Market каждые 5 минут
+ * Рендерим фид для Авито и кешируем его
  */
 #[AutoconfigureTag('baks.schedule')]
 final class RefreshFeedSchedule implements ScheduleInterface
@@ -47,6 +47,6 @@ final class RefreshFeedSchedule implements ScheduleInterface
      */
     public function getInterval(): DateInterval
     {
-        return DateInterval::createFromDateString('1 minutes');
+        return DateInterval::createFromDateString('10 minutes');
     }
 }

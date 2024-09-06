@@ -53,7 +53,7 @@ final readonly class RefreshFeedHandler
 
         $products = $this->allProductsWithMapping->findAll($profile);
 
-        if(empty($products))
+        if (empty($products))
         {
             $this->logger->critical('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
             return;
@@ -62,22 +62,15 @@ final readonly class RefreshFeedHandler
         $cache = $this->cache->init('avito-board');
 
         $cachePool = $cache->getItem('feed-' . $profile);
-        $cache->delete('feed-' . $profile);
 
-        try
-        {
-            $template = $this->templateExtension->extends('@avito-board:public/export/feed/export.html.twig');
+        $template = $this->templateExtension->extends('@avito-board:public/export/feed/export.html.twig');
 
-            $feed = $this->environment->render($template, ['products' => $products]);
-        }
-        catch (\Exception $e)
-        {
-            throw new \Exception($e->getMessage(), previous: $e->getPrevious());
-        }
+        $feed = $this->environment->render($template, ['products' => $products]);
 
         $cachePool->expiresAfter(\DateInterval::createFromDateString('1 day'));
 
         $cachePool->set($feed);
+        $cache->delete('feed-' . $profile);
         $cache->save($cachePool);
     }
 }
