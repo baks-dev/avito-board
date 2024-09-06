@@ -28,7 +28,7 @@ final class FeedController extends AbstractController
 
         $feed = $cache->get('feed-' . $profile, function (ItemInterface $item) use ($products): string {
 
-            $item->expiresAfter(3600);
+            $item->expiresAfter(86400);
 
             return $this->render(
                 [
@@ -38,9 +38,7 @@ final class FeedController extends AbstractController
             )->getContent();
         });
 
-        $response = new Response();
-
-        $response->setContent($feed);
+        $response = new Response($feed);
         $response->headers->set('Content-Type', 'application/xml');
 
         return $response;
