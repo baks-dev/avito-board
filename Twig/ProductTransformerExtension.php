@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -63,11 +63,11 @@ final class ProductTransformerExtension extends AbstractExtension
         $this->article = $product['product_article'];
 
         /* Список всех элементов категории */
-        $AvitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
+        $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
 
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
-            $AvitoBoardElements,
+            $avitoBoardElements,
             static function (AvitoBoardElementInterface $element) {
                 return $element->isMapping() === false;
             }

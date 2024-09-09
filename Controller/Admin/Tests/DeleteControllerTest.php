@@ -37,30 +37,28 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class DeleteControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_DELETE';
+    private const string ROLE = 'ROLE_AVITO_BOARD_DELETE';
 
-    private static ?string $url = null;
+    private static string $url = '/admin/avito-board/mapper/delete/%s';
 
     public static function setUpBeforeClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
-
-        $category = $em->getRepository(CategoryProduct::class)->findOneBy([]);
-
-        self::assertNotNull($category, 'Категория продукта не найдена.');
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         /** Находим корень */
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
 
+        self::assertNotNull($avitoBoard);
+
         /** Находим активное событие */
         $activeEvent = $em->getRepository(AvitoBoardEvent::class)
             ->find($avitoBoard->getEvent());
 
-        self::$url = sprintf('/admin/avito-board/mapper/delete/%s', $activeEvent);
+        self::assertNotNull($activeEvent);
+
+        self::$url = sprintf(self::$url, $activeEvent);
 
         $em->clear();
     }

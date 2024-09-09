@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag('baks.menu.admin')]
 final class Role implements RoleInterface, MenuAdminInterface
 {
-    public const string ROLE = 'ROLE_AVITO_BOARD_MAPPER';
+    public const string ROLE = 'ROLE_AVITO_BOARD';
 
     public function getRole(): string
     {

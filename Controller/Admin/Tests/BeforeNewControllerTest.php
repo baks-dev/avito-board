@@ -34,7 +34,7 @@ final class BeforeNewControllerTest extends WebTestCase
 {
     private const string URL = '/admin/avito-board/mapper/before_new';
 
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_NEW';
+    private const string ROLE = 'ROLE_AVITO_BOARD_BEFORE_NEW';
 
     /** Доступ по роли  */
     public function testRoleSuccessful(): void
