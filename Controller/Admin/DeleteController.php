@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_DELETE')]
+#[RoleSecurity('ROLE_AVITO_BOARD_DELETE')]
 final class DeleteController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/delete/{id}', name: 'admin.mapper.delete', methods: ['POST', 'GET'])]

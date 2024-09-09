@@ -37,7 +37,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class EditControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_EDIT';
+    private const string ROLE = 'ROLE_AVITO_BOARD_EDIT';
 
     private static string $url = '/admin/avito-board/mapper/edit/%s';
 

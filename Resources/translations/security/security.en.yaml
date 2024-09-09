@@ -1,22 +1,22 @@
 # Role
-ROLE_AVITO_BOARD_MAPPER:
+ROLE_AVITO_BOARD:
   header: 'Avito'
   name: 'Property ratio for Avito'
   desc: 'Property ratio for Avito'
 
 # Rules
-ROLE_AVITO_BOARD_MAPPER_INDEX:
+ROLE_AVITO_BOARD_INDEX:
   name: 'View'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_NEW:
+ROLE_AVITO_BOARD_NEW:
   name: 'Add'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_EDIT:
+ROLE_AVITO_BOARD_EDIT:
   name: 'Edit'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_DELETE:
+ROLE_AVITO_BOARD_DELETE:
   name: 'Delete'
   desc: ''

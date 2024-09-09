@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_NEW')]
+#[RoleSecurity('ROLE_AVITO_BOARD_NEW')]
 final class NewController extends AbstractController
 {
     /**

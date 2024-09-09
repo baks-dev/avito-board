@@ -34,7 +34,7 @@ final class IndexControllerTest extends WebTestCase
 {
     private const string URL = '/admin/avito-board/mapper/categories';
 
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_INDEX';
+    private const string ROLE = 'ROLE_AVITO_BOARD_INDEX';
 
     /** Доступ по роли ROLE_PRODUCT */
     public function testRoleSuccessful(): void

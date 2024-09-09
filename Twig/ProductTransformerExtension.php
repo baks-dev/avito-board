@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -62,10 +62,13 @@ final class ProductTransformerExtension extends AbstractExtension
         $this->product = $product['product_name'];
         $this->article = $product['product_article'];
 
+        /* Список всех элементов категории */
+        $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
+
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
-            $this->mapperProvider->filterElements($this->avitoCategory),
-            function (AvitoBoardElementInterface $element) {
+            $avitoBoardElements,
+            static function (AvitoBoardElementInterface $element) {
                 return $element->isMapping() === false;
             }
         );
@@ -73,15 +76,17 @@ final class ProductTransformerExtension extends AbstractExtension
         /**
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
+
         $elements = null;
-        foreach ($unmappedElements as $element)
+
+        foreach($unmappedElements as $element)
         {
-            if ($element->getDefault() === null)
+            if($element->getDefault() === null)
             {
                 $data = $element->fetchData($product);
 
                 /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-                if ($data === null && $element->isRequired())
+                if($data === null && $element->isRequired())
                 {
                     $this->logger->critical(
                         sprintf(
@@ -90,14 +95,14 @@ final class ProductTransformerExtension extends AbstractExtension
                             $this->product,
                             $this->article
                         ),
-                        [__FILE__ . ':' . __LINE__]
+                        [self::class.':'.__LINE__]
                     );
 
                     return null;
                 }
 
                 /** Если значение свойства продукта null - пропускать элемент, не добавлять в фид */
-                if ($data === null)
+                if($data === null)
                 {
                     continue;
                 }
@@ -113,7 +118,7 @@ final class ProductTransformerExtension extends AbstractExtension
         /** Преобразуем строку маппера в массив элементов */
         $mappedElements = $this->getElements();
 
-        if (null === $mappedElements)
+        if(null === $mappedElements)
         {
             return null;
         }
@@ -137,12 +142,13 @@ final class ProductTransformerExtension extends AbstractExtension
          * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
          */
         array_walk($mapper, function (&$value, $element) use ($mapper, &$require) {
+
             $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 
             $value = $instance->fetchData($mapper);
 
             /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-            if (null === $value && $instance->isRequired())
+            if(null === $value && $instance->isRequired())
             {
                 $require = true;
 
@@ -153,12 +159,12 @@ final class ProductTransformerExtension extends AbstractExtension
                         $this->product,
                         $this->article
                     ),
-                    [__FILE__ . ':' . __LINE__]
+                    [self::class.':'.__LINE__]
                 );
             }
         });
 
-        if ($require === true)
+        if($require === true)
         {
             return null;
         }
@@ -176,7 +182,8 @@ final class ProductTransformerExtension extends AbstractExtension
     private function mapperTransform(): array
     {
         $transform = null;
-        foreach (json_decode($this->mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
+
+        foreach(json_decode($this->mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
         {
             $transform[$element->element] = $element->value;
         }

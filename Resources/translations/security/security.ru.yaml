@@ -1,22 +1,22 @@
 # Роль
-ROLE_AVITO_BOARD_MAPPER:
+ROLE_AVITO_BOARD:
   header: 'Avito'
   name: 'Соотношение свойств для Avito'
   desc: 'Соотношение свойств для Avito'
 
 # Правила
-ROLE_AVITO_BOARD_MAPPER_INDEX:
+ROLE_AVITO_BOARD_INDEX:
   name: 'Просмотр'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_NEW:
+ROLE_AVITO_BOARD_NEW:
   name: 'Добавить'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_EDIT:
+ROLE_AVITO_BOARD_EDIT:
   name: 'Редактировать'
   desc: ''
 
-ROLE_AVITO_BOARD_MAPPER_DELETE:
+ROLE_AVITO_BOARD_DELETE:
   name: 'Удалить'
   desc: ''

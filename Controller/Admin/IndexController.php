@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[AsController]
-#[RoleSecurity('ROLE_AVITO_BOARD_MAPPER_INDEX')]
+#[RoleSecurity('ROLE_AVITO_BOARD_INDEX')]
 final class IndexController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/categories/{page<\d+>}', name: 'admin.mapper.index', methods: ['GET', 'POST'])]
