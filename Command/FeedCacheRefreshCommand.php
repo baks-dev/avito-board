@@ -11,7 +11,7 @@
 
 namespace BaksDev\Avito\Board\Command;
 
-use BaksDev\Avito\Board\Messenger\Schedules\RefreshFeedMessage;
+use BaksDev\Avito\Board\Messenger\Schedules\FeedCacheRefreshMessage;
 use BaksDev\Avito\Repository\AllUserProfilesByActiveToken\AllUserProfilesByTokenRepository;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Messenger\MessageDispatchInterface;
@@ -22,13 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * Прогревает кеш для фида
+ * Обновляет кеш для фида
  */
 #[AsCommand(
-    name: 'baks:avito-board:feed:cache:warm',
-    description: 'Прогревает кеш для фида'
+    name: 'baks:avito-board:feed:cache:refresh',
+    description: 'Обновляет кеш для фида'
 )]
-class FeedCacheWarmCommand extends Command
+class FeedCacheRefreshCommand extends Command
 {
     private SymfonyStyle $io;
 
@@ -54,29 +54,31 @@ class FeedCacheWarmCommand extends Command
             foreach ($profiles as $profile)
             {
                 $key = 'feed-' . $profile;
-                $this->messageDispatch->dispatch(new RefreshFeedMessage($profile));
+                $this->messageDispatch->dispatch(new FeedCacheRefreshMessage($profile));
                 $cacheItem = $cache->getItem($key);
 
                 if (true === $cacheItem->isHit())
                 {
-                    $cached[] = $key;
+                    $cached[] = (string)$profile;
                 }
             }
         }
 
         if (null !== $cached)
         {
-            $result = 'Кеширование выполнено для по следующим ключам:';
+            $result = 'Кеширование фида выполнено успешно для следующих профилей:';
 
-            foreach ($cached as $cache)
+            foreach ($cached as $profile)
             {
-                $result .= ' | ' . $cache;
+                $result .= ' | ID: ' . $profile;
             }
 
             $output->writeln([$result]);
+
+            return Command::SUCCESS;
         }
 
-        $output->writeln('Кеширование не выполнено ни для одного профиля');
+        $output->writeln('Профилей с активным токеном для Авито не найдено. Кеширование фида не выполнено');
 
         return Command::SUCCESS;
     }

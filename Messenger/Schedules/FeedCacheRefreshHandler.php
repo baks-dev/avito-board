@@ -33,7 +33,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Twig\Environment;
 
 #[AsMessageHandler]
-final readonly class RefreshFeedHandler
+final readonly class FeedCacheRefreshHandler
 {
     protected LoggerInterface $logger;
 
@@ -47,12 +47,13 @@ final readonly class RefreshFeedHandler
         $this->logger = $avitoBoardLogger;
     }
 
-    public function __invoke(RefreshFeedMessage $message): void
+    public function __invoke(FeedCacheRefreshMessage $message): void
     {
         $profile = $message->getProfile();
 
         $products = $this->allProductsWithMapping->findAll($profile);
 
+        /** Если профилей с активным токеном не найдено - прерываем хендлер, пишем в лог */
         if (empty($products))
         {
             $this->logger->critical('Продукты не найдены', [__FILE__ . ':' . __LINE__]);

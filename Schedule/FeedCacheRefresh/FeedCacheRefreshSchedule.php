@@ -23,25 +23,30 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Messenger\Schedules;
+namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 
-use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Core\Schedule\ScheduleInterface;
+use DateInterval;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
-final class RefreshFeedMessage
+/**
+ * Рендерим фид для Авито и кешируем его
+ */
+#[AutoconfigureTag('baks.schedule')]
+final class FeedCacheRefreshSchedule implements ScheduleInterface
 {
+    /** Возвращает класс сообщение */
+    public function getMessage(): object
+    {
+        return new FeedCacheRefreshScheduleMessage();
+    }
+
     /**
-     * Идентификатор
+     * Интервал повтора
+     * @see https://www.php.net/manual/en/dateinterval.createfromdatestring.php
      */
-    private UserProfileUid $profile;
-
-    public function __construct(UserProfileUid $profile)
+    public function getInterval(): DateInterval
     {
-        $this->profile = $profile;
+        return DateInterval::createFromDateString('10 minutes');
     }
-
-    public function getProfile(): UserProfileUid
-    {
-        return $this->profile;
-    }
-
 }

@@ -23,35 +23,6 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Schedule\RefreshFeed;
+namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 
-use BaksDev\Avito\Board\Messenger\Schedules\RefreshFeedMessage;
-use BaksDev\Avito\Repository\AllUserProfilesByActiveToken\AllUserProfilesByTokenRepository;
-use BaksDev\Core\Messenger\MessageDispatchInterface;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-
-#[AsMessageHandler]
-final readonly class RefreshFeedScheduleHandler
-{
-    public function __construct(
-        private MessageDispatchInterface $messageDispatch,
-        private AllUserProfilesByTokenRepository $allProfilesByToken,
-    ) {}
-
-    public function __invoke(RefreshFeedScheduleMessage $message): void
-    {
-        /** Получаем все активные профили, у которых активный токен */
-        $profiles = $this->allProfilesByToken->findProfilesByActiveToken();
-
-        if ($profiles->valid())
-        {
-            foreach ($profiles as $profile)
-            {
-                $this->messageDispatch->dispatch(
-                    message: new RefreshFeedMessage($profile),
-                    transport: (string)$profile,
-                );
-            }
-        }
-    }
-}
+final class FeedCacheRefreshScheduleMessage {}

@@ -23,6 +23,25 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Schedule\RefreshFeed;
+namespace BaksDev\Avito\Board\Messenger\Schedules;
 
-final class RefreshFeedScheduleMessage {}
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+
+final class FeedCacheRefreshMessage
+{
+    /**
+     * Идентификатор
+     */
+    private UserProfileUid $profile;
+
+    public function __construct(UserProfileUid $profile)
+    {
+        $this->profile = $profile;
+    }
+
+    public function getProfile(): UserProfileUid
+    {
+        return $this->profile;
+    }
+
+}

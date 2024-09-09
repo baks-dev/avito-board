@@ -23,30 +23,35 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Schedule\RefreshFeed;
+namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 
-use BaksDev\Core\Schedule\ScheduleInterface;
-use DateInterval;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use BaksDev\Avito\Board\Messenger\Schedules\FeedCacheRefreshMessage;
+use BaksDev\Avito\Repository\AllUserProfilesByActiveToken\AllUserProfilesByTokenRepository;
+use BaksDev\Core\Messenger\MessageDispatchInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-/**
- * Рендерим фид для Авито и кешируем его
- */
-#[AutoconfigureTag('baks.schedule')]
-final class RefreshFeedSchedule implements ScheduleInterface
+#[AsMessageHandler]
+final readonly class FeedCacheRefreshScheduleHandler
 {
-    /** Возвращает класс сообщение */
-    public function getMessage(): object
-    {
-        return new RefreshFeedScheduleMessage();
-    }
+    public function __construct(
+        private MessageDispatchInterface $messageDispatch,
+        private AllUserProfilesByTokenRepository $allProfilesByToken,
+    ) {}
 
-    /**
-     * Интервал повтора
-     * @see https://www.php.net/manual/en/dateinterval.createfromdatestring.php
-     */
-    public function getInterval(): DateInterval
+    public function __invoke(FeedCacheRefreshScheduleMessage $message): void
     {
-        return DateInterval::createFromDateString('10 minutes');
+        /** Получаем все активные профили, у которых активный токен */
+        $profiles = $this->allProfilesByToken->findProfilesByActiveToken();
+
+        if ($profiles->valid())
+        {
+            foreach ($profiles as $profile)
+            {
+                $this->messageDispatch->dispatch(
+                    message: new FeedCacheRefreshMessage($profile),
+                    transport: (string)$profile,
+                );
+            }
+        }
     }
 }
