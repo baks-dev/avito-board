@@ -28,7 +28,6 @@ namespace BaksDev\Avito\Board\Messenger\Schedules;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Twig\TemplateExtension;
-use DateInterval;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Twig\Environment;
@@ -69,7 +68,7 @@ final readonly class FeedCacheRefreshHandler
 
         $feed = $this->environment->render($template, ['products' => $products]);
 
-        $cachePool->expiresAfter(DateInterval::createFromDateString('1 day'));
+        $cachePool->expiresAfter(\DateInterval::createFromDateString('1 day'));
 
         $cachePool->set($feed);
         $cache->delete('feed-' . $profile);
