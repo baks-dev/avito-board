@@ -20,6 +20,7 @@ namespace BaksDev\Avito\Board\UseCase\BeforeNew;
 
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
+use BaksDev\Avito\Board\Repository\AllCategoryWithMapper\AllCategoryWithMapperRepository;
 use BaksDev\Products\Category\Repository\CategoryChoice\CategoryChoiceInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Form\AbstractType;
@@ -32,15 +33,18 @@ final class AvitoBoardCategoryMapperForm extends AbstractType
 {
     public function __construct(
         private readonly AvitoBoardMapperProvider $mapperProvider,
-        private readonly CategoryChoiceInterface  $categoryChoice,
+        private readonly AllCategoryWithMapperRepository $allCategoryWithMapperRepository,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        /** Получаем список локальных категории */
+        $localCategory = $this->allCategoryWithMapperRepository->findAll();
+
         /** Получаем список наших категорий товаров */
         $builder
             ->add('localCategory', ChoiceType::class, [
-                'choices' => $this->categoryChoice->findAll(),
+                'choices' => $localCategory,
                 'choice_value' => function (?CategoryProductUid $type) {
                     return $type?->getValue();
                 },
@@ -53,14 +57,12 @@ final class AvitoBoardCategoryMapperForm extends AbstractType
                 'required' => true,
             ]);
 
-        /**
-         * Получаем список категории продуктов Avito
-         */
-        $avitoProducts = $this->mapperProvider->getProducts();
+        /** Получаем список категории продуктов Avito */
+        $avitoCategory = $this->mapperProvider->getProducts();
 
         $builder
             ->add('avitoCategory', ChoiceType::class, [
-                'choices' => $avitoProducts,
+                'choices' => $avitoCategory,
                 'choice_value' => static function (?AvitoBoardProductInterface $avitoCategories) {
                     return $avitoCategories?->getProductCategory();
                 },

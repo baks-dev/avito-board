@@ -33,19 +33,17 @@ use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
 use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
+use BaksDev\Products\Category\UseCase\Admin\Delete\Tests\CategoryProductDeleteTest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
-
-use BaksDev\Avito\Board\Controller\Admin\Tests\DeleteControllerTest;
 
 /**
  * @group avito-board
  * @group avito-board-usecase
  *
  * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\DeleteControllerTest::class
  */
 #[When(env: 'test')]
 final class AvitoBoardMapperDeleteTest extends KernelTestCase
@@ -57,67 +55,67 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
         /** @var EntityManagerInterface $em */
         $em = $container->get(EntityManagerInterface::class);
 
-        // активное событие
-        /** @var AvitoBoardEvent $event */
-        $event = $em->createQueryBuilder()
-            ->select('avito_board_event')
-            ->from(AvitoBoardEvent::class, 'avito_board_event')
-            ->join(AvitoBoard::class, 'avito_board', 'WITH', 'avito_board_event.id = avito_board.event')
-            ->where('avito_board_event.category = :category')
-            ->setParameter('category', CategoryProductUid::TEST, CategoryProductUid::TYPE)
-            ->getQuery()
-            ->getOneOrNullResult();
+        /** Тестовый корень */
+        $avitoBoard = $em
+            ->getRepository(AvitoBoard::class)
+            ->find(CategoryProductUid::TEST);
 
-        $em->clear();
+        self::assertNotNull($avitoBoard);
 
-        if($event)
-        {
-            $editDTO = new AvitoBoardMapperDTO();
+        /** Тестовое активное событие */
+        $activeEvent = $em
+            ->getRepository(AvitoBoardEvent::class)
+            ->find($avitoBoard->getEvent());
 
-            $event->getDto($editDTO);
+        self::assertNotNull($activeEvent);
 
-            /** @var ArrayCollection<int, AvitoBoardMapperElementDTO> $mapperElements */
-            $mapperElements = $editDTO->getMapperElements();
-            $id = $mapperElements->first();
-            $address = $mapperElements->last();
+        // проверка редактирования
+        $editDTO = new AvitoBoardMapperDTO();
 
-            self::assertEquals('IdEdit', $id->getElement());
-            self::assertTrue($id->getProductField()->equals(CategoryProductSectionFieldUid::TEST));
-            self::assertEquals('DefEdit', $id->getDef());
+        $activeEvent->getDto($editDTO);
 
-            self::assertEquals('AddressEdit', $address->getElement());
-            self::assertTrue($address->getProductField()->equals(CategoryProductSectionFieldUid::TEST));
-            self::assertEquals('DefEdit', $address->getDef());
+        /** @var ArrayCollection<int, AvitoBoardMapperElementDTO> $mapperElements */
+        $mapperElements = $editDTO->getMapperElements();
 
-            $deleteMapperDTO = new AvitoBoardDeleteMapperDTO();
+        $id = $mapperElements->first();
+        $address = $mapperElements->last();
 
-            $event->getDto($deleteMapperDTO);
+        self::assertEquals('Id', $id->getElement());
+        self::assertTrue($id->getProductField()->equals(CategoryProductSectionFieldUid::TEST));
+        self::assertEquals('DefEdit', $id->getDef());
 
-            /** @var AvitoBoardDeleteMapperHandler $handler */
-            $handler = $container->get(AvitoBoardDeleteMapperHandler::class);
-            $deleteAvitoBoard = $handler->handle($deleteMapperDTO);
-            self::assertTrue($deleteAvitoBoard instanceof AvitoBoard);
-        }
+        self::assertEquals('Address', $address->getElement());
+        self::assertTrue($address->getProductField()->equals(CategoryProductSectionFieldUid::TEST));
+        self::assertEquals('DefEdit', $address->getDef());
 
-        self::assertTrue(true);
+        // удаление
+        $deleteMapperDTO = new AvitoBoardDeleteMapperDTO();
+
+        $activeEvent->getDto($deleteMapperDTO);
+
+        /** @var AvitoBoardDeleteMapperHandler $handler */
+        $handler = $container->get(AvitoBoardDeleteMapperHandler::class);
+        $deleteAvitoBoard = $handler->handle($deleteMapperDTO);
+        self::assertTrue($deleteAvitoBoard instanceof AvitoBoard);
     }
 
     public static function tearDownAfterClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $events = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
 
-        foreach($events as $event)
+        foreach ($events as $event)
         {
             $em->remove($event);
         }
 
         $em->flush();
         $em->clear();
+
+        /** Удаляем тестовую категорию */
+        CategoryProductDeleteTest::tearDownAfterClass();
     }
 }

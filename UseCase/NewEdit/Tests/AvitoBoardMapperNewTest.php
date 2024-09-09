@@ -18,16 +18,16 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 /**
  * @group avito-board
  * @group avito-board-usecase
+ *
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\BeforeNewControllerTest::class
  */
 #[When(env: 'test')]
 class AvitoBoardMapperNewTest extends KernelTestCase
 {
     public static function setUpBeforeClass(): void
     {
-        $container = self::getContainer();
-
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
@@ -57,14 +57,14 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $newDTO->setCategory(new CategoryProductUid(CategoryProductUid::TEST));
         self::assertTrue($newDTO->getCategory()->equals(CategoryProductUid::TEST));
 
-        $newDTO->setAvito('AvitoCategory');
-        self::assertSame('AvitoCategory', $newDTO->getAvito());
+        $newDTO->setAvito('Легковые шины');
+        self::assertSame('Легковые шины', $newDTO->getAvito());
 
         // добавляем элементы для маппинга
         $mapperElementDTO = new AvitoBoardMapperElementDTO();
 
-        $mapperElementDTO->setElement('IdNew');
-        self::assertSame('IdNew', $mapperElementDTO->getElement());
+        $mapperElementDTO->setElement('Id');
+        self::assertSame('Id', $mapperElementDTO->getElement());
 
         $mapperElementDTO->setProductField(new CategoryProductSectionFieldUid());
         self::assertTrue($mapperElementDTO->getProductField()->equals(CategoryProductSectionFieldUid::TEST));

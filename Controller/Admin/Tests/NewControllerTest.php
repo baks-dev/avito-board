@@ -18,8 +18,9 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
-use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Products\Category\Entity\CategoryProduct;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\UseCase\Admin\NewEdit\Tests\CategoryProductNewTest;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -29,34 +30,35 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-controller
  * @group avito-board-controller-new
+ *
+ * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
  */
 #[When(env: 'test')]
 final class NewControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_MAPPER_NEW';
+    private const string ROLE = 'ROLE_AVITO_BOARD_NEW';
 
-    private static ?string $url = null;
+    private static string $url = '/admin/avito-board/mapper/new/%s/%s';
 
     public static function setUpBeforeClass(): void
     {
-        $container = self::getContainer();
+        $testCategory = new CategoryProductNewTest();
+        $testCategory::setUpBeforeClass();
+        $testCategory->testUseCase();
 
         /** @var EntityManagerInterface $em */
-        $em = $container->get(EntityManagerInterface::class);
+        $em = self::getContainer()->get(EntityManagerInterface::class);
 
-        $avitoBoard = $em->getRepository(AvitoBoard::class)->findOneBy([]);
+        $category = $em->getRepository(CategoryProduct::class)->find(CategoryProductUid::TEST);
 
-        if($avitoBoard)
-        {
-            $event = $em->getRepository(AvitoBoardEvent::class)->find($avitoBoard->getEvent());
-        }
+        self::assertNotNull($category);
 
-        self::$url = sprintf('/admin/avito-board/mapper/new/%s/%s', $event->getCategory(), $event->getAvito());
+        self::$url = sprintf(self::$url, $category->getId(), 'Легковые шины');
 
         $em->clear();
     }
 
-    /** Доступ по роли  */
+    /** Доступ по роли */
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
