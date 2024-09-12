@@ -22,7 +22,9 @@ final class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $products = $allProductsWithMapping->findAll($profile);
+        $products = $allProductsWithMapping
+            ->profile($profile)
+            ->execute();
 
         $cache = $cache->init('avito-board');
 

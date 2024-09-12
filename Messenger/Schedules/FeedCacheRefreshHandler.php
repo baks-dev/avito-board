@@ -51,12 +51,15 @@ final readonly class FeedCacheRefreshHandler
     {
         $profile = $message->getProfile();
 
-        $products = $this->allProductsWithMapping->findAll($profile);
+        $products = $this->allProductsWithMapping
+            ->profile($profile)
+            ->execute();
 
-        /** Если профилей с активным токеном не найдено - прерываем хендлер, пишем в лог */
+        /** Если продукты не найдены - прерываем хендлер, пишем в лог */
         if (empty($products))
         {
-            $this->logger->critical('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
+            $this->logger->warning('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
+
             return;
         }
 

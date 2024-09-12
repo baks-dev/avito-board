@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -28,30 +28,43 @@ namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 use BaksDev\Avito\Board\Messenger\Schedules\FeedCacheRefreshMessage;
 use BaksDev\Avito\Repository\AllUserProfilesByActiveToken\AllUserProfilesByTokenRepository;
 use BaksDev\Core\Messenger\MessageDispatchInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 final readonly class FeedCacheRefreshScheduleHandler
 {
+    private LoggerInterface $logger;
+
     public function __construct(
+        LoggerInterface $avitoBoardLogger,
         private MessageDispatchInterface $messageDispatch,
         private AllUserProfilesByTokenRepository $allProfilesByToken,
-    ) {}
+    ) {
+        $this->logger = $avitoBoardLogger;
+    }
 
     public function __invoke(FeedCacheRefreshScheduleMessage $message): void
     {
         /** Получаем все активные профили, у которых активный токен */
         $profiles = $this->allProfilesByToken->findProfilesByActiveToken();
 
-        if ($profiles->valid())
+        if (false === $profiles->valid())
         {
-            foreach ($profiles as $profile)
-            {
-                $this->messageDispatch->dispatch(
-                    message: new FeedCacheRefreshMessage($profile),
-                    transport: (string)$profile,
-                );
-            }
+            $this->logger->warning(
+                'Профилей с активным токеном не найдено',
+                [__FILE__ . ':' . __LINE__]
+            );
+
+            return;
+        }
+
+        foreach ($profiles as $profile)
+        {
+            $this->messageDispatch->dispatch(
+                message: new FeedCacheRefreshMessage($profile),
+                transport: (string)$profile,
+            );
         }
     }
 }
