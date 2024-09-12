@@ -43,12 +43,15 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
  * Одно из значений:
  * — Да
  * — Нет
+ *
+ * @see CallsDevicesElement
  */
-class InternetCallsElement implements AvitoBoardElementInterface
+// @TODO убрал из реализации AvitoBoardElementInterface
+class InternetCallsElement
 {
-    private const string INTERNET_CALLS_ELEMENT = 'InternetCalls';
+    private const string ELEMENT = 'InternetCalls';
 
-    private const string INTERNET_CALLS_LABEL = 'Интернет-звонки через Авито';
+    private const string LABEL = 'Интернет-звонки через Авито';
 
     public function isMapping(): false
     {
@@ -67,8 +70,7 @@ class InternetCallsElement implements AvitoBoardElementInterface
 
     public function getDefault(): string
     {
-        // @TODO хардкодим временное значение пока, так как нет таблицы откуда забирать данные
-        return 'Нет';
+        return 'Да';
     }
 
     public function getHelp(): null
@@ -76,23 +78,23 @@ class InternetCallsElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): null
     {
         return null;
     }
 
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
-    }
-
     public function element(): string
     {
-        return self::INTERNET_CALLS_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::INTERNET_CALLS_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

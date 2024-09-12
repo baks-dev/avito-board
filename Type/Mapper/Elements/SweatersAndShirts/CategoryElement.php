@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  * Категория объявления.
@@ -35,9 +35,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  */
 class CategoryElement implements AvitoBoardElementInterface
 {
-    private const string CATEGORY_ELEMENT = 'Category';
+    private const string ELEMENT = 'Category';
 
-    private const string CATEGORY_LABEL = 'Категория объявления';
+    private const string LABEL = 'Категория объявления';
 
     public function isMapping(): false
     {
@@ -64,23 +64,23 @@ class CategoryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return SweatersAndShirtsBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
     {
-        return self::CATEGORY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::CATEGORY_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

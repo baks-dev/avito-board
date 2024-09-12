@@ -25,21 +25,25 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  *  Бренд.
  *  Одно из значений
  *
  * Элемент общий для всех продуктов Авито
- * @TODO ожидает добавление в характеристики продукта поэтому
  */
-class BrandElement implements AvitoBoardElementInterface
+final readonly class BrandElement implements AvitoBoardElementInterface
 {
-    private const string BRAND_ELEMENT = 'Brand';
+    private const string ELEMENT = 'Brand';
 
-    private const string BRAND_LABEL = 'Бренд одежды';
+    private const string LABEL = 'Бренд одежды';
+
+    public function __construct(
+        private ShirtModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
@@ -61,29 +65,35 @@ class BrandElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'Общее значение для всех продуктов в данной категории';
+        return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return SweatersAndShirtsBoardProduct::class;
-    }
+        $search =  $this->request->getModel($data['product_name']);
 
-    public function fetchData(string|array $data = null): string
-    {
-        // @TODO присваивать из свойств продукта, когда бренд будет добавлен - пока из product_name
-        return $data['product_name'];
+        if (null == $search)
+        {
+            return null;
+        }
+
+        return $search['brand'];
     }
 
     public function element(): string
     {
-        return self::BRAND_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::BRAND_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

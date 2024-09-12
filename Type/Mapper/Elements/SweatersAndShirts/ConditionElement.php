@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProductInterface;
 
 /**
@@ -66,14 +66,9 @@ class ConditionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return SweatersAndShirtsBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
@@ -84,5 +79,10 @@ class ConditionElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

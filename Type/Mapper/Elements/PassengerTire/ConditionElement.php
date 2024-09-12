@@ -26,19 +26,16 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Состояние
- *
- * Элемент обязателен для всех продуктов Авито:
- * - Легковые шины
  */
 class ConditionElement implements AvitoBoardElementInterface
 {
-    public const string CONDITION_ELEMENT = 'Condition';
+    public const string ELEMENT = 'Condition';
 
-    private const string CONDITION_LABEL = 'Состояние покрышки';
+    private const string LABEL = 'Состояние покрышки';
 
     public function isMapping(): false
     {
@@ -65,23 +62,23 @@ class ConditionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
     {
-        return self::CONDITION_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::CONDITION_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

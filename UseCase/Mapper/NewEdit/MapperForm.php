@@ -18,7 +18,6 @@
 
 namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit;
 
-use BaksDev\Avito\Board\Repository\Mapper\AllProductName\AllProductNameRepository;
 use BaksDev\Avito\Board\Type\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements\MapperElementDTO;
@@ -46,7 +45,6 @@ final class MapperForm extends AbstractType
         private readonly ModificationCategoryProductSectionFieldInterface $modificationCategoryProductSectionField,
         private readonly PropertyFieldsCategoryChoiceInterface $propertyFields,
         private readonly VariationCategoryProductSectionFieldInterface $variationCategoryProductSectionField,
-        private readonly AllProductNameRepository $productNameRepository,
     ) {}
 
     public function buildForm(FormBuilderInterface $builder, array $options): void

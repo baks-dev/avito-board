@@ -28,6 +28,8 @@ final class IndexController extends AbstractController
             'action' => $this->generateUrl('avito-board:admin.mapper.index')
         ]);
 
+        $profile = $this->getProfileUid();
+
         $searchForm->handleRequest($request);
 
         $mapperSetting = $allMapperSettings->findAll();
@@ -36,6 +38,7 @@ final class IndexController extends AbstractController
             [
                 'query' => $mapperSetting,
                 'search' => $searchForm->createView(),
+                'profile' => $profile,
             ],
         );
     }

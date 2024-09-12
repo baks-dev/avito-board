@@ -25,19 +25,22 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Одно из значений
- *
- * Элемент общий для всех продуктов Авито
  */
-class ModelElement implements AvitoBoardElementInterface
+final readonly class ModelElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Model';
 
     private const string LABEL = 'Модель';
+
+    public function __construct(
+        private TireModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
@@ -59,24 +62,21 @@ class ModelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://autoload.avito.ru/format/tyres_make.xml';
+        return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return PassengerTireBoardProduct::class;
-    }
+        $search = $this->request->getModel($data['product_name']);
 
-    public function setData(string|array $product): void {}
+        if (null == $search)
+        {
+            return null;
+        }
 
-    public function fetchData(string|array $data = null): ?string
-    {
-        // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
-        return 'EffeXSport TH202';
-
-        //        $this->data = $product['product_name'];
+        return $search['model'];
     }
 
     public function element(): string
@@ -87,5 +87,10 @@ class ModelElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

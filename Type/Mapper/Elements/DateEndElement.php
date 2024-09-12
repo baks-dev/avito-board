@@ -35,25 +35,21 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Если хотите явно указать часовой пояс, используйте формат ISO 8601: YYYY-MM-DDTHH:mm:ss+hh:mm.
  *
  * Если вы укажете уже прошедшую дату, автозагрузка не обработает объявление.
- *
- * @TODO убрал из реализации AvitoBoardElementInterface, так как будем управлять размещением с помощью DateBeginElement
  */
 class DateEndElement implements AvitoBoardElementInterface
 {
-    public const string DATE_END = 'DateEnd';
+    public const string ELEMENT = 'DateEnd';
 
-    public const string DATE_END_ALIAS = 'product_date_over';
-
-    private const string DATE_END_LABEL = 'Дата и время окончания размещения';
+    private const string LABEL = 'Дата и время окончания размещения';
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -71,23 +67,30 @@ class DateEndElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): ?string
     {
-        return null;
-    }
+        if (null !== $data['product_date_begin'])
+        {
+            $date = new \DateTimeImmutable($data['product_date_begin']);
 
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data['product_date_over'];
+            return $date->format('Y-m-d H:i:s');
+        }
+
+        return null;
     }
 
     public function element(): string
     {
-        return self::DATE_END;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::DATE_END_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

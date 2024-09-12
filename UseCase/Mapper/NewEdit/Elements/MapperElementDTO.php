@@ -21,7 +21,6 @@ namespace BaksDev\Avito\Board\UseCase\Mapper\NewEdit\Elements;
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapperInterface;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,7 +35,6 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
      * Связь на свойство продукта в категории
      */
     #[Assert\Uuid]
-//    #[Assert\NotBlank()]
     #[Assert\When(expression: 'this.getDef() === null', constraints: new Assert\NotBlank())]
     private ?CategoryProductSectionFieldUid $productField = null;
 
@@ -44,12 +42,8 @@ final class MapperElementDTO implements AvitoBoardMapperInterface
     private ?string $def = null;
 
     /**
-     *  Для передачи в форму
-     *  @see MapperElementForm
-     *
-     * Элемент соответствия для построения фида для Авито
+     * Для доступа к методам объекта в форме @see MapperElementForm
      */
-    #[Assert\NotBlank]
     private ?AvitoBoardElementInterface $elementInstance = null;
 
     public function getElementInstance(): ?AvitoBoardElementInterface

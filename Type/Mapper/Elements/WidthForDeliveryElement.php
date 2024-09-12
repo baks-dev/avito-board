@@ -59,12 +59,7 @@ class WidthForDeliveryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         return $data['product_width_delivery'];
     }
@@ -77,5 +72,10 @@ class WidthForDeliveryElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

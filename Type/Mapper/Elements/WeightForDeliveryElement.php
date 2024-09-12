@@ -29,14 +29,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\AvitoBoardProductInterface;
 
 /**
  * Вес товара (кг), может использоваться для доставки.
- *
- * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
  */
 class WeightForDeliveryElement implements AvitoBoardElementInterface
 {
-    private const string WEIGHT_FOR_DELIVERY_ELEMENT = 'WeightForDelivery';
+    private const string ELEMENT = 'WeightForDelivery';
 
-    private const string WEIGHT_FOR_DELIVERY_LABEL = 'Вес товара (кг)';
+    private const string LABEL = 'Вес товара (кг)';
 
     public function isMapping(): false
     {
@@ -63,23 +61,23 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         return $data['product_weight_delivery'];
     }
 
     public function element(): string
     {
-        return self::WEIGHT_FOR_DELIVERY_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::WEIGHT_FOR_DELIVERY_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

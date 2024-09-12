@@ -25,24 +25,24 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
+use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Название объявления — строка до 50 символов.
  * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
- *
- * Элемент обязателен для продуктов:
- * - Кофты и футболки
  */
-class TitleElement implements AvitoBoardElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
-    private const string TITLE_ELEMENT = 'Title';
+    private const string ELEMENT = 'Title';
 
-    private const string TITLE_LABEL = 'Название объявления';
+    private const string LABEL = 'Название объявления';
 
-    // @TODO подумать давать выбор для маппинга свойству продукта или брать значение по ключу методом ->productData
-    // @todo если давать выбор из свойства продукта - как его добавить в выпадающий список
+    public function __construct(
+        private TireModelRequest $request,
+    ) {}
+
     public function isMapping(): false
     {
         return false;
@@ -68,24 +68,30 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return PassengerTireBoardProduct::class;
-    }
+        $search = $this->request->getModel($data['product_name']);
 
-    public function fetchData(string|array $data = null): ?string
-    {
-        // @TODO подумать по какому ключу формировать значение
-        return sprintf('%s %s', $data['product_name'], $data['product_article']);
+        if (null == $search)
+        {
+            return null;
+        }
+
+        return sprintf('%s %s', $search['brand'], $data['product_article']);
     }
 
     public function element(): string
     {
-        return self::TITLE_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::TITLE_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

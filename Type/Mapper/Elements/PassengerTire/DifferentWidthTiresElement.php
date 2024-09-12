@@ -25,8 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Разноширокий комплект шин
@@ -35,11 +34,12 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardPro
  * — Да
  * — Нет
  */
-class DifferentWidthTiresElement implements AvitoBoardElementInterface
+// @TODO без реализации AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
+class DifferentWidthTiresElement
 {
-    private const string DIFFERENT_WIDTH_TIRES_ELEMENT = 'DifferentWidthTires';
+    private const string ELEMENT = 'DifferentWidthTires';
 
-    private const string DIFFERENT_WIDTH_TIRES_LABEL = 'Разноширокий комплект шин';
+    private const string LABEL = 'Разноширокий комплект шин';
 
     public function isMapping(): false
     {
@@ -56,7 +56,6 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
         return false;
     }
 
-    /** По умолчанию нет, так как не реализуем разноширокие комплекты */
     public function getDefault(): string
     {
         return 'Нет';
@@ -67,23 +66,23 @@ class DifferentWidthTiresElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
     {
-        return self::DIFFERENT_WIDTH_TIRES_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::DIFFERENT_WIDTH_TIRES_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[AsController]
-class FeedController extends AbstractController
+final class FeedController extends AbstractController
 {
     #[Route('/avito-board/{profile}/feed.xml', name: 'public.export.feed', methods: ['GET'])]
     public function feed(
@@ -19,7 +19,7 @@ class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $products = $allProductsWithMapping->findAll();
+        $products = $allProductsWithMapping->findAll($profile);
 
         $response = $this->render(
             [

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Индекс скорости шины
@@ -35,9 +35,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardPro
  */
 class SpeedIndexElement implements AvitoBoardElementInterface
 {
-    private const string SPEED_INDEX_ELEMENT = 'SpeedIndex';
+    private const string ELEMENT = 'SpeedIndex';
 
-    private const string SPEED_INDEX_LABEL = 'Индекс скорости шины';
+    private const string LABEL = 'Индекс скорости шины';
 
     public function isMapping(): false
     {
@@ -59,29 +59,33 @@ class SpeedIndexElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/114281/values-xml';
+        return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
+        if(null === $data['product_modification_postfix'])
+        {
+            return null;
+        }
 
         return preg_replace('/[^a-zA-ZА-Яа-яЁё]/u', '', $data['product_modification_postfix']);
     }
 
     public function element(): string
     {
-        return self::SPEED_INDEX_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::SPEED_INDEX_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

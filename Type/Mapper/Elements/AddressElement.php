@@ -29,7 +29,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Полный адрес объекта — строка до 256 символов.
  * Является альтернативой параметрам Latitude, Longitude
  *
- * Элемент общий для всех продуктов Авито
+ * Элемент обязательный для всех продуктов Авито
  */
 class AddressElement implements AvitoBoardElementInterface
 {
@@ -52,11 +52,6 @@ class AddressElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -67,10 +62,9 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): string
     {
-        // @TODO временный адрес, так как нет таблицы откуда забирать данные
-        return 'Тамбовская область, Моршанск, Лесная улица, 7';
+        return $data['avito_profile_address'];
     }
 
     public function element(): string
@@ -81,5 +75,10 @@ class AddressElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

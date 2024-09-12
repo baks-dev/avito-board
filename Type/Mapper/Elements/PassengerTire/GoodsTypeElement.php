@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Вид товара.
@@ -36,9 +36,9 @@ use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardPro
  */
 class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    private const string GOODS_TYPE_ELEMENT = 'GoodsType';
+    private const string ELEMENT = 'GoodsType';
 
-    private const string GOODS_TYPE_LABEL = 'Вид товара';
+    private const string LABEL = 'Вид товара';
 
     public function isMapping(): false
     {
@@ -65,23 +65,23 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): null
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
     {
-        return self::GOODS_TYPE_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::GOODS_TYPE_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

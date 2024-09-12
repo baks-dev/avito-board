@@ -25,8 +25,9 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
+use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  * Название объявления — строка до 50 символов.
@@ -35,13 +36,15 @@ use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirts
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
  */
-class TitleElement implements AvitoBoardElementInterface
+final readonly class TitleElement implements AvitoBoardElementInterface
 {
-    public const string TITLE_ALIAS = 'product_category';
-
     private const string ELEMENT = 'Title';
 
     private const string LABEL = 'Название объявления';
+
+    public function __construct(
+        private ShirtModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
@@ -58,11 +61,6 @@ class TitleElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsBoardProduct::class;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -73,10 +71,40 @@ class TitleElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    // @TODO как формировать title?
+    public function fetchData(array $data): ?string
     {
-        // @TODO не уверен, из какого свойства брать название
-        return $data['product_category'];
+        $search = $this->request->getModel($data['product_name']);
+
+        if (null == $search)
+        {
+            return null;
+        }
+
+        $type = null;
+        $size = null;
+
+        /**
+         * @var object{
+         *     value: string,
+         *     element: string} $element
+         */
+        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        {
+            if ($element->element === GoodsSubTypeElement::ELEMENT)
+            {
+                $type = $element->value;
+                continue;
+            }
+
+            if ($element->element === SizeElement::ELEMENT)
+            {
+                $size = 'Размер ' . $element->value;
+            }
+        }
+
+
+        return sprintf('%s %s %s', $type, $search['brand'], $size);
     }
 
     public function element(): string
@@ -87,5 +115,10 @@ class TitleElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

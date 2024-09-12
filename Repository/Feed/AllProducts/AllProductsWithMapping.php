@@ -7,6 +7,9 @@ namespace BaksDev\Avito\Board\Repository\Feed\AllProducts;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Mapper\AvitoBoardMapper;
+use BaksDev\Avito\Entity\AvitoToken;
+use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
+use BaksDev\Avito\Entity\Profile\AvitoTokenProfile;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
 use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
@@ -35,15 +38,21 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
+use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 
-final readonly class AllProductsWithMapping implements AllProductsWithMappingInterface
+final class AllProductsWithMapping implements AllProductsWithMappingInterface
 {
-    public function __construct(private DBALQueryBuilder $DBALQueryBuilder) {}
+    public function __construct(
+        private readonly DBALQueryBuilder $DBALQueryBuilder,
+    ) {}
 
     /**
-     * Метод получает массив элементов продукции с соотношением свойств
+     * Метод получает массив свойств продукта с маппингом и данными токена
      */
-    public function findAll(): array|bool
+    public function findAll(UserProfileUid $profile): array|bool
     {
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -53,6 +62,51 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
             ->select('product.id')
             ->addSelect('product.event')
             ->from(Product::class, 'product');
+
+        /** Проверяю, есть ли соответствующий профиль */
+        $dbal
+            ->join(
+                'product',
+                AvitoToken::class,
+                'avito_token',
+                'avito_token.id = :profile'
+            )
+            ->setParameter('profile', $profile, UserProfileUid::TYPE);
+
+
+        $dbal
+            ->join(
+                'avito_token',
+                AvitoTokenEvent::class,
+                'avito_token_event',
+                '
+                        avito_token_event.id = avito_token.event AND
+                        avito_token_event.active = TRUE',
+            );
+
+        $dbal->join(
+            'avito_token',
+            UserProfileInfo::class,
+            'info',
+            '
+                info.profile = avito_token.id AND
+                info.status = :status',
+        );
+
+        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+
+        $dbal
+            ->addSelect('avito_token_profile.address AS avito_profile_address')
+            ->addSelect('avito_token_profile.percent AS avito_profile_percent')
+            ->addSelect('avito_token_profile.manager AS avito_profile_manager')
+            ->addSelect('avito_token_profile.phone AS avito_profile_phone')
+            ->join(
+                'avito_token',
+                AvitoTokenProfile::class,
+                'avito_token_profile',
+                '
+                        avito_token_profile.event = avito_token.event'
+            );
 
         // @TODO если ли смысл в этом объединении, так как в корне и тк активное событие, а из события никакой полезной информации не получить
         $dbal->leftJoin(
@@ -116,7 +170,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 'product_offer',
                 'product_offer.event = product_event.id'
             );
-
 
         /**
          * Тип торгового предложения
@@ -478,21 +531,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 'avito_mapper.event = avito_board.event'
             );
 
-        //                        $dbal->addSelect(
-        //                            "JSON_AGG
-        //                                    ( DISTINCT
-        //                                            JSONB_BUILD_OBJECT
-        //                                            (
-        //                                                'element', avito_mapper.element,
-        //                                                'field', avito_mapper.product_field,
-        //                                                'default', avito_mapper.def
-        //                                            )
-        //                                    )
-        //                                    AS avito_mapper"
-        //                        );
-        //                $dbal->allGroupByExclude();
-        //                dd($dbal->fetchAllAssociative());
-
         /** Получаем значение из СВОЙСТВ товара */
         $dbal
             ->leftJoin(
@@ -503,39 +541,6 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
                 product_property.event = product.event AND 
                 product_property.field = avito_mapper.product_field'
             );
-
-        //        /**
-        //         * Получаем ИМЕНОВАННОЕ значение из СВОЙСТВ товара
-        //         */
-        //        $dbal
-        //            ->leftJoin(
-        //                'product_property',
-        //                CategoryProductSectionField::class,
-        //                'product_category_section_field',
-        //                'product_property.field = product_category_section_field.const'
-        //            );
-        //
-        //        $dbal
-        //            ->leftJoin(
-        //                'product_category_section_field',
-        //                CategoryProductSectionFieldTrans::class,
-        //                'product_category_section_field_trans',
-        //                '
-        //                    product_category_section_field_trans.field = product_category_section_field.id AND
-        //                    product_category_section_field_trans.local = :local
-        //                '
-        //            );
-
-        //        /**
-        //         */
-        //        $dbal
-        //            ->leftJoin(
-        //                'avito_mapper',
-        //                ProductTrans::class,
-        //                'product_name_params',
-        //                '
-        //                    product_name_params.event = avito_mapper.product_field'
-        //            );
 
         /**
          * Получаем значение из торговых предложений
@@ -601,13 +606,12 @@ final readonly class AllProductsWithMapping implements AllProductsWithMappingInt
 
         $dbal->allGroupByExclude();
 
-//        dd($dbal->fetchAllAssociative());
-
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
+//        dd($dbal->fetchAllAssociative());
 
         return $dbal
-            // ->enableCache('Namespace', 3600)
+            ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
     }
 }

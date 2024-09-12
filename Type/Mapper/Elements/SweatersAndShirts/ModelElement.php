@@ -25,27 +25,33 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Api\ShirtModelRequest;
+use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
- * Одно из значений
- *
- * Элемент общий для всех продуктов Авито
+ * Параметр нужно заполнить одинаково во всех объявлениях с разными вариантами товара.
+ * Название модели от производителя или ваше. Например: Air Max для кроссовок Nike или «Беговая 21» для футболки.
+ * Не используйте символы (#, -, /, *, + и другие), только буквы и цифры. Название модели покупатели не увидят.
  */
-class ModelElement
+final readonly class ModelElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Model';
 
     private const string LABEL = 'Модель';
+
+    public function __construct(
+        private ShirtModelRequest $request,
+    ) {}
 
     public function isMapping(): false
     {
         return false;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -63,19 +69,26 @@ class ModelElement
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsBoardProduct::class;
-    }
-
     public function setData(string|array $product): void {}
 
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
-        // @TODO не понимаю, как сопоставить значение из свойства продукта со значением Авито
-        return 'Adidas';
+        $search = $this->request->getModel($data['product_name']);
 
-        //        $this->data = $product['product_name'];
+        if (null == $search)
+        {
+            return null;
+        }
+
+        if($search['model'])
+        {
+            return $search['model'];
+        }
+
+        else
+        {
+            return null;
+        }
     }
 
     public function element(): string
@@ -86,5 +99,10 @@ class ModelElement
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

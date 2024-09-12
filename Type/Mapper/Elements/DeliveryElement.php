@@ -31,7 +31,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  * Подробнее о работе с доставкой https://support.avito.ru/sections/62?articleId=2271
  *
  * Одно или несколько значений
- * @TODO тестирую - пока без implements AvitoBoardElementInterface
+ * @TODO без implements AvitoBoardElementInterface - не работаем через Авито доставку
  */
 class DeliveryElement
 {
@@ -44,9 +44,9 @@ class DeliveryElement
         return true;
     }
 
-    public function isRequired(): bool
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): bool
@@ -54,22 +54,9 @@ class DeliveryElement
         return true;
     }
 
-    public function getDefault(): array
+    public function getDefault(): null
     {
-        return [
-            'Выключена',
-            'ПВЗ',
-            'Курьер',
-            'Постамат',
-            'Свой курьер',
-            'Свой партнер СДЭК',
-            'Свой партнер Деловые Линии',
-            'Свой партнер DPD',
-            'Свой партнер ПЭК',
-            'Свой партнер Почта России',
-            'Свой партнер Boxberry',
-            'Свой партнер СДЭК курьер',
-        ];
+        return null;
     }
 
     public function getHelp(): null
@@ -77,15 +64,8 @@ class DeliveryElement
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): string
     {
-        return null;
-    }
-
-    /** Одно из дефолтных значений либо пользовательский ввод */
-    public function fetchData(string|array $data = null): string
-    {
-        // @TODO пока не понимаю, откуда брать информацию о доставке
         return sprintf('<Option>%s</Option>', $data['product_delivery']);
     }
 
@@ -97,5 +77,10 @@ class DeliveryElement
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

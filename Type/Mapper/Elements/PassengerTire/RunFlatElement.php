@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * RunFlat - наличие технологии RunFlat
@@ -66,12 +66,7 @@ class RunFlatElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
-    {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): ?string
+    public function fetchData(array $data): ?string
     {
         return match ($data[self::ELEMENT])
         {
@@ -89,5 +84,10 @@ class RunFlatElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

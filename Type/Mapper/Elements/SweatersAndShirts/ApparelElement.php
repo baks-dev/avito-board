@@ -26,11 +26,11 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 class ApparelElement implements AvitoBoardElementInterface
 {
-    public const string FEED_ELEMENT = 'Apparel';
+    public const string ELEMENT = 'Apparel';
 
     public const string LABEL = 'Тип товара';
 
@@ -49,9 +49,9 @@ class ApparelElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Кофты и футболки';
+        return null;
     }
 
     public function getHelp(): null
@@ -59,23 +59,42 @@ class ApparelElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return SweatersAndShirtsBoardProduct::class;
-    }
+        // @TODO или же проверять свойства продукта?
+        /**
+         * @var object{
+         *     value: string,
+         *     element: string} $element
+         */
+        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        {
+            if ($element->element === GoodsTypeElement::ELEMENT)
+            {
+                return match ($element->value)
+                {
+                    'Мужской' => 'Кофты и футболки',
+                    'Женский' => 'Топы и футболки',
+                    default => null
+                };
+            }
+        }
 
-    public function fetchData(string|array $data = null): string
-    {
-        return $data;
+        return null;
     }
 
     public function element(): string
     {
-        return self::FEED_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

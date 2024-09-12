@@ -26,13 +26,13 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 class TireSectionWidthElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'TireSectionWidth';
 
-    private const string ELEMENT_LABEL = 'Ширина профиля шины';
+    private const string LABEL = 'Ширина профиля шины';
 
     public function isMapping(): true
     {
@@ -54,21 +54,16 @@ class TireSectionWidthElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/731/values-xml';
+        return null;
     }
 
-    public function getProduct(): string
+    public function fetchData(array $data): ?string
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    public function fetchData(string|array $data = null): string
-    {
-        if(null === $data)
+        if(null === $data[self::ELEMENT])
         {
-            return $data;
+            return null;
         }
 
         return preg_replace('/\D/', '', $data[self::ELEMENT]);
@@ -81,6 +76,11 @@ class TireSectionWidthElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

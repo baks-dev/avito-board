@@ -25,30 +25,30 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\PassengerTire\PassengerTireProduct;
 
 /**
  * Диаметр задней оси, дюймы.
  *
  * Применимо, если в поле DifferentWidthTires указано значение 'Да'
  *
- * Одно из значений от Авито
- * @TODO Добавить реализацию AvitoBoardElementInterface, если элемент обязательный
+ * @see RimDiameterElement
  */
+// @TODO не реализует AvitoBoardElementInterface, так как не реализуем разноширокие комплекты
 class BackRimDiameterElement
 {
-    public const string BACK_RIM_DIAMETER_ELEMENT = 'BackRimDiameter';
+    public const string ELEMENT = 'BackRimDiameter';
 
-    public const string BACK_RIM_DIAMETER_LABEL = 'Диаметр шины задней оси';
+    public const string LABEL = 'Диаметр шины задней оси';
 
     public function isMapping(): true
     {
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): false
     {
-        return true;
+        return false;
     }
 
     public function isChoices(): false
@@ -61,37 +61,34 @@ class BackRimDiameterElement
         return null;
     }
 
-    public function getHelp(): string
+    public function getHelp(): null
     {
-        return 'https://www.avito.ru/web/1/autoload/user-docs/category/67016/field/119259/values-xml';
+        return null;
     }
 
-    public function getProduct(): string
+    // @TODO Если элемент обязательный, то значение будем брать такое же, как и в элементе RimDiameterElement
+    public function fetchData(array $data): ?string
     {
-        return PassengerTireBoardProduct::class;
-    }
-
-    /**
-     * Если элемент обязательный, то значение будем брать такое же, как и в элементе
-     * @see RimDiameterElement
-     */
-    public function fetchData(string|array $data = null): ?string
-    {
-        if(null === $data)
+        if(null === $data[self::ELEMENT])
         {
-            return $data;
+            return null;
         }
 
-        return preg_replace('/\D/', '', $data);
+        return preg_replace('/\D/', '', $data[self::ELEMENT]);
     }
 
     public function element(): string
     {
-        return self::BACK_RIM_DIAMETER_ELEMENT;
+        return self::ELEMENT;
     }
 
     public function label(): string
     {
-        return self::BACK_RIM_DIAMETER_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

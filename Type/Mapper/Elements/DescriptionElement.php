@@ -33,6 +33,7 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Элемент обязателен для всех продуктов Авито
  */
+// @TODO тестировать с отправкой без валидации тегов
 class DescriptionElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Description';
@@ -64,16 +65,33 @@ class DescriptionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
+    public function fetchData(array $data): ?string
     {
-        return null;
-    }
+        // @TODO для тестирования
+        // $str = '
+        //<p><br><strong><em><ul><ol><li>
+        //Triangle EffeXSport TH202
+        //</li></ol>></ul></em><strong></br></p>
+        //';
+        //
+        //        $str = '
+        //<p><br><strong><em><ul><a><li>
+        //Triangle EffeXSport TH202
+        //</li></a></ul></em><strong></br></p>
+        //';
 
-    public function fetchData(string|array $data = null): ?string
-    {
-        // @TODO что получать - краткое или полное описание
-        // @TODO обрезать $this->data под ограничения Авито
-        return sprintf('<![CDATA[%s]]>', $data['product_description']);
+        if(null === $data['product_description'])
+        {
+            return null;
+        }
+
+        $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
+
+        // @TODO тестировать со знаком переноса строки
+        // $clear = str_replace(PHP_EOL, "", $desc);
+        // return sprintf('<![CDATA[%s]]>', $clear);
+
+        return sprintf('<![CDATA[%s]]>', $desc);
     }
 
     public function element(): string
@@ -84,5 +102,10 @@ class DescriptionElement implements AvitoBoardElementInterface
     public function label(): string
     {
         return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }

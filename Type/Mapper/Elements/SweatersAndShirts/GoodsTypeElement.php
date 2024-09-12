@@ -26,23 +26,22 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Type\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Type\Mapper\Elements\AvitoBoardElementInterface;
-use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsBoardProduct;
+use BaksDev\Avito\Board\Type\Mapper\Products\SweatersAndShirts\SweatersAndShirtsProduct;
 
 /**
  * Вид товара.
- * Одно из значений
  *
- * Элемент обязательный для всех продуктов Авито
- */
+ * Мужская одежда', 'Женская одежда'
+ **/
 class GoodsTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'GoodsType';
+    public const string ELEMENT = 'GoodsType';
 
-    private const string LABEL = 'Вид товара';
+    private const string LABEL = 'Для кого';
 
-    public function isMapping(): false
+    public function isMapping(): true
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): true
@@ -55,9 +54,9 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): string
+    public function getDefault(): null
     {
-        return 'Мужская одежда';
+        return null;
     }
 
     public function getHelp(): ?string
@@ -65,9 +64,20 @@ class GoodsTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): ?string
     {
-        return $data;
+
+        if (null === $data[self::ELEMENT])
+        {
+            return null;
+        }
+
+        return match ($data[self::ELEMENT])
+        {
+            'Мужской' => 'Мужская одежда',
+            'Женский' => 'Женская одежда',
+            default => null
+        };
     }
 
     public function element(): string
@@ -82,6 +92,6 @@ class GoodsTypeElement implements AvitoBoardElementInterface
 
     public function getProduct(): string
     {
-        return SweatersAndShirtsBoardProduct::class;
+        return SweatersAndShirtsProduct::class;
     }
 }

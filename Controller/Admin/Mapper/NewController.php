@@ -43,50 +43,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class NewController extends AbstractController
 {
     /**
-     * Маппим локальную категорию с категорией Авито для создания формы сопоставления
-     */
-    #[Route('/admin/avito-board/mapper/before_new', name: 'admin.mapper.beforenew', methods: ['POST', 'GET'])]
-    public function beforeNew(Request $request): Response
-    {
-        $categoryMapperDTO = new CategoryMapperDTO();
-
-        $form = $this->createForm(CategoryMapperForm::class, $categoryMapperDTO, [
-            'action' => $this->generateUrl('avito-board:admin.mapper.beforenew'),
-        ]);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_before_new'))
-        {
-            $this->refreshTokenForm($form);
-
-            return $this->redirectToRoute(
-                'avito-board:admin.mapper.new',
-                [
-                    'localCategory' => $categoryMapperDTO->localCategory,
-                    'avitoCategory' => $categoryMapperDTO->avitoCategory->getProduct(),
-                ]
-            );
-        }
-
-        return $this->render(['form' => $form->createView()]);
-    }
-
-    /**
      * Создание формы сопоставления элементов категорий
      */
     #[Route(
         '/admin/avito-board/mapper/new/{localCategory}/{avitoCategory}',
         name: 'admin.mapper.new',
-        requirements: ['localCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'],
-        methods: ['GET', 'POST',]
+        requirements: [
+            'localCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$',
+            // @TODO добавить валидатор для категории Авито
+            // 'avitoCategory' => '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'
+        ],
+        methods: ['GET', 'POST']
     )]
     public function new(
-        Request                      $request,
-        MapperHandler                $handler,
+        Request $request,
+        MapperHandler $handler,
         #[MapEntity] CategoryProduct $localCategory,
-        string                       $avitoCategory
+        string $avitoCategory
     ): Response {
+
         $mapperDTO = new MapperDTO();
         $mapperDTO->setCategory($localCategory);
         $mapperDTO->setAvito($avitoCategory);

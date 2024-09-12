@@ -22,6 +22,19 @@ final readonly class AvitoBoardMapperProvider
         return iterator_to_array($this->products);
     }
 
+    public function getProduct(string $productCategory): AvitoBoardProductInterface
+    {
+        foreach ($this->products as $product)
+        {
+            if ($product->isEqual($productCategory))
+            {
+                return $product;
+            }
+        }
+
+        throw new \Exception('Не найдены категория продукта с названием ' . $productCategory);
+    }
+
     /**
      * @return list<AvitoBoardElementInterface>
      */
@@ -30,7 +43,7 @@ final readonly class AvitoBoardMapperProvider
         /** @var AvitoBoardProductInterface $product */
         foreach ($this->products as $product)
         {
-            if ($product->isEqualProduct($productCategory))
+            if ($product->isEqual($productCategory))
             {
                 return $product->getElements();
             }
@@ -40,12 +53,13 @@ final readonly class AvitoBoardMapperProvider
     }
 
     // @TODO подумать, как еще можно получать инстанс элемента
+    // @TODO не выкидывать исключение, а возвращать null?
     public function getElement(string $productCategory, string $elementName): AvitoBoardElementInterface
     {
         /** @var AvitoBoardProductInterface $product */
         foreach ($this->products as $product)
         {
-            if ($product->isEqualProduct($productCategory))
+            if ($product->isEqual($productCategory))
             {
                 $allElements = $product->getElements();
 
@@ -60,18 +74,5 @@ final readonly class AvitoBoardMapperProvider
         }
 
         throw new \Exception('Не найден элемент с названием: ' . $elementName);
-    }
-
-    public function getProduct(string $productCategory): AvitoBoardProductInterface
-    {
-        foreach ($this->products as $product)
-        {
-            if ($product->isEqualProduct($productCategory))
-            {
-                return $product;
-            }
-        }
-
-        throw new \Exception('Не найдены категория продукта с названием ' . $productCategory);
     }
 }

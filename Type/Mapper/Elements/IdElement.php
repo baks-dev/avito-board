@@ -39,11 +39,12 @@ namespace BaksDev\Avito\Board\Type\Mapper\Elements;
  *
  * Элемент обязателен для всех продуктов Авито
  */
+// @TODO валидация длины не нужна - 100 знаков
 class IdElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'Id';
 
-    private const string ELEMENT_LABEL = 'Идентификатор';
+    private const string LABEL = 'Идентификатор';
 
     public function isMapping(): bool
     {
@@ -70,12 +71,7 @@ class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getProduct(): null
-    {
-        return null;
-    }
-
-    public function fetchData(string|array $data = null): string
+    public function fetchData(array $data): string
     {
         return $data['product_article'];
     }
@@ -87,6 +83,11 @@ class IdElement implements AvitoBoardElementInterface
 
     public function label(): string
     {
-        return self::ELEMENT_LABEL;
+        return self::LABEL;
+    }
+
+    public function getProduct(): null
+    {
+        return null;
     }
 }
