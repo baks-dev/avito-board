@@ -1,5 +1,6 @@
+<?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2023.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -20,3 +21,32 @@
  *  THE SOFTWARE.
  */
 
+declare(strict_types=1);
+
+<<<<<<<< HEAD:Schedule/FeedCacheRefresh/FeedCacheRefreshScheduleMessage.php
+namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
+
+final class FeedCacheRefreshScheduleMessage {}
+========
+namespace BaksDev\Avito\Board\Security;
+
+use BaksDev\Users\Profile\Group\Security\RoleInterface;
+use BaksDev\Users\Profile\Group\Security\VoterInterface;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+
+#[AutoconfigureTag('baks.security.voter')]
+final class VoterBeforeNew implements VoterInterface
+{
+    public const string VOTER = 'BEFORE_NEW';
+
+    public static function getVoter(): string
+    {
+        return Role::ROLE.'_'.self::VOTER;
+    }
+
+    public function equals(RoleInterface $role): bool
+    {
+        return $role->getRole() === Role::ROLE;
+    }
+}
+>>>>>>>> refs/remotes/Kepler-62b/dev:Security/VoterBeforeNew.php

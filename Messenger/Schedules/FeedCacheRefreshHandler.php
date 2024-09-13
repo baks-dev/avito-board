@@ -28,6 +28,7 @@ namespace BaksDev\Avito\Board\Messenger\Schedules;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Twig\TemplateExtension;
+use DateInterval;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Twig\Environment;
@@ -51,12 +52,15 @@ final readonly class FeedCacheRefreshHandler
     {
         $profile = $message->getProfile();
 
-        $products = $this->allProductsWithMapping->findAll($profile);
+        $products = $this->allProductsWithMapping
+            ->profile($profile)
+            ->execute();
 
-        /** Если профилей с активным токеном не найдено - прерываем хендлер, пишем в лог */
+        /** Если продукты не найдены - прерываем хендлер, пишем в лог */
         if (empty($products))
         {
-            $this->logger->critical('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
+            $this->logger->warning('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
+
             return;
         }
 
@@ -68,7 +72,7 @@ final readonly class FeedCacheRefreshHandler
 
         $feed = $this->environment->render($template, ['products' => $products]);
 
-        $cachePool->expiresAfter(\DateInterval::createFromDateString('1 day'));
+        $cachePool->expiresAfter(DateInterval::createFromDateString('1 day'));
 
         $cachePool->set($feed);
         $cache->delete('feed-' . $profile);

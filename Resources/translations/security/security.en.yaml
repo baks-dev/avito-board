@@ -9,6 +9,10 @@ ROLE_AVITO_BOARD_INDEX:
   name: 'View'
   desc: ''
 
+ROLE_AVITO_BOARD_BEFORE_NEW:
+  name: 'Preview'
+  desc: ''
+
 ROLE_AVITO_BOARD_NEW:
   name: 'Add'
   desc: ''

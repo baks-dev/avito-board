@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
+ *  Copyright 2024.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Repository\AllCategoryWithMapper;
@@ -29,18 +30,12 @@ use Generator;
 
 interface AllCategoryWithMapperInterface
 {
-    /**
-     * Только активные разделы
-     */
+    /** Соответствие по активной категории */
     public function onlyActive(): self;
 
-    /**
-     * Фильтр по идентификатору категории
-     */
+    /** Соответствие по категории */
     public function category(CategoryProduct|CategoryProductUid|string $category): self;
 
-    /**
-     * Метод возвращает коллекцию категорий продукции с названием
-     */
-    public function findAll(): Generator;
+    /** Получаем коллекцию категорий, для которых не найдено совпадений с категорией из маппера */
+    public function execute(): Generator;
 }

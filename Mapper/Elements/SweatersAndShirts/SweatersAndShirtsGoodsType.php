@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -37,7 +38,7 @@ class SweatersAndShirtsGoodsType implements AvitoBoardElementInterface
 {
     public const string ELEMENT = 'GoodsType';
 
-    private const string LABEL = 'Для кого';
+    private const string LABEL = 'Для кого (пол)';
 
     public function isMapping(): true
     {

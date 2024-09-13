@@ -41,22 +41,49 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
+use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use InvalidArgumentException;
 
 final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
 {
+    private UserProfileUid|false $profile = false;
+
     public function __construct(
         private readonly DBALQueryBuilder $DBALQueryBuilder,
     ) {}
 
+    public function profile(UserProfile|UserProfileUid|string $profile): self
+    {
+        if ($profile instanceof UserProfile)
+        {
+            $profile = $profile->getId();
+        }
+
+        if (is_string($profile))
+        {
+            $profile = new ProductUid($profile);
+        }
+
+        $this->profile = $profile;
+
+        return $this;
+    }
+
     /**
      * Метод получает массив свойств продукта с маппингом и данными токена
      */
-    public function findAll(UserProfileUid $profile): iterable|bool
+    public function execute(): array|false
     {
+        if ($this->profile === false)
+        {
+            throw new InvalidArgumentException('Invalid Argument profile');
+        }
+
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
             ->bindLocal();
@@ -74,8 +101,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token',
                 'avito_token.id = :profile'
             )
-            ->setParameter('profile', $profile, UserProfileUid::TYPE);
-
+            ->setParameter('profile', $this->profile, UserProfileUid::TYPE);
 
         $dbal
             ->join(
@@ -668,8 +694,15 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        return $dbal
+        $result = $dbal
             ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
+
+        if (empty($result))
+        {
+            return false;
+        }
+
+        return $result;
     }
 }

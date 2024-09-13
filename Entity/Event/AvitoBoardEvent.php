@@ -37,9 +37,6 @@ class AvitoBoardEvent extends EntityEvent
     #[ORM\Column(type: CategoryProductUid::TYPE)]
     private CategoryProductUid $category;
 
-    /**
-     * Идентификатор категории Avito
-     */
     #[Assert\NotBlank]
     #[ORM\Column(type: Types::STRING)]
     private string $avito;
@@ -51,7 +48,7 @@ class AvitoBoardEvent extends EntityEvent
     private AvitoBoardModify $modify;
 
     /**
-     * Связь с характеристиками продукта Авито
+     * Связь с характеристиками продукта от Авито
      */
     #[Assert\Valid]
     #[ORM\OneToMany(targetEntity: AvitoBoardMapperElement::class, mappedBy: 'event', cascade: ['all'])]
@@ -73,7 +70,7 @@ class AvitoBoardEvent extends EntityEvent
 
     public function __toString(): string
     {
-        return (string) $this->id;
+        return (string)$this->id;
     }
 
     /**
@@ -81,7 +78,7 @@ class AvitoBoardEvent extends EntityEvent
      */
     public function getDto($dto): mixed
     {
-        if($dto instanceof AvitoBoardEventInterface)
+        if ($dto instanceof AvitoBoardEventInterface)
         {
             return parent::getDto($dto);
         }
@@ -91,7 +88,7 @@ class AvitoBoardEvent extends EntityEvent
 
     public function setEntity($dto): mixed
     {
-        if($dto instanceof AvitoBoardEventInterface)
+        if ($dto instanceof AvitoBoardEventInterface)
         {
             return parent::setEntity($dto);
         }

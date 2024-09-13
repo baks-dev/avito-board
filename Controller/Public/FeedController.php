@@ -7,6 +7,7 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Type\UidType\ParamConverter;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use DateInterval;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -22,13 +23,15 @@ final class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $products = $allProductsWithMapping->findAll($profile);
+        $products = $allProductsWithMapping
+            ->profile($profile)
+            ->execute();
 
         $cache = $cache->init('avito-board');
 
         $feed = $cache->get('feed-' . $profile, function (ItemInterface $item) use ($products): string {
 
-            $item->expiresAfter(86400);
+            $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
 
             return $this->render(
                 [
