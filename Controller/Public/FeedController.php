@@ -18,7 +18,7 @@ final class FeedController extends AbstractController
 {
     #[Route('/avito-board/{profile}/feed.xml', name: 'public.export.feed', methods: ['GET'])]
     public function feed(
-        AppCacheInterface $cache,
+        AppCacheInterface $appCache,
         AllProductsWithMapperInterface $allProductsWithMapping,
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
@@ -27,9 +27,9 @@ final class FeedController extends AbstractController
             ->profile($profile)
             ->execute();
 
-        $cache = $cache->init('avito-board');
+        $cache = $appCache->init('avito-board');
 
-        $feed = $cache->get('feed-' . $profile, function (ItemInterface $item) use ($products): string {
+        $feed = $cache->get('feed-'.$profile, function (ItemInterface $item) use ($products): string {
 
             $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
 

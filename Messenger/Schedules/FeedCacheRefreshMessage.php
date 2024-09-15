@@ -21,30 +21,6 @@
  *  THE SOFTWARE.
  */
 
-<<<<<<<< HEAD:Repository/AllCategoryWithMapper/AllCategoryWithMapperInterface.php
-namespace BaksDev\Avito\Board\Repository\AllCategoryWithMapper;
-
-use BaksDev\Products\Category\Entity\CategoryProduct;
-use BaksDev\Products\Category\Type\Id\CategoryProductUid;
-use Generator;
-
-interface AllCategoryWithMapperInterface
-{
-    /**
-     * Только активные разделы
-     */
-    public function onlyActive(): self;
-
-    /**
-     * Фильтр по идентификатору категории
-     */
-    public function category(CategoryProduct|CategoryProductUid|string $category): self;
-
-    /**
-     * Метод возвращает коллекцию категорий продукции с названием
-     */
-    public function findAll(): Generator;
-========
 declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Messenger\Schedules;
@@ -67,6 +43,4 @@ final class FeedCacheRefreshMessage
     {
         return $this->profile;
     }
-
->>>>>>>> refs/remotes/Kepler-62b/dev:Messenger/Schedules/FeedCacheRefreshMessage.php
 }

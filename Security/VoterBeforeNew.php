@@ -23,11 +23,6 @@
 
 declare(strict_types=1);
 
-<<<<<<<< HEAD:Schedule/FeedCacheRefresh/FeedCacheRefreshScheduleMessage.php
-namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
-
-final class FeedCacheRefreshScheduleMessage {}
-========
 namespace BaksDev\Avito\Board\Security;
 
 use BaksDev\Users\Profile\Group\Security\RoleInterface;
@@ -49,4 +44,3 @@ final class VoterBeforeNew implements VoterInterface
         return $role->getRole() === Role::ROLE;
     }
 }
->>>>>>>> refs/remotes/Kepler-62b/dev:Security/VoterBeforeNew.php

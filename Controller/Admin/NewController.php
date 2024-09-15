@@ -65,13 +65,13 @@ final class NewController extends AbstractController
         $form = $this->createForm(AvitoBoardMapperForm::class, $mapperDTO);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
         {
             $this->refreshTokenForm($form);
 
             $result = $handler->handle($mapperDTO);
 
-            if ($result instanceof AvitoBoard)
+            if($result instanceof AvitoBoard)
             {
                 $this->addFlash('page.new', 'success.new', 'avito-board.admin');
 

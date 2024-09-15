@@ -41,8 +41,11 @@ use Symfony\Component\Routing\Attribute\Route;
 final class EditController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/edit/{id}', name: 'admin.mapper.edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, #[MapEntity] AvitoBoardEvent $event, AvitoBoardMapperHandler $handler): Response
-    {
+    public function edit(
+        Request $request,
+        #[MapEntity] AvitoBoardEvent $event,
+        AvitoBoardMapperHandler $handler
+    ): Response {
         $mapperDTO = new AvitoBoardMapperDTO();
 
         $event->getDto($mapperDTO);
@@ -50,13 +53,13 @@ final class EditController extends AbstractController
         $form = $this->createForm(AvitoBoardMapperForm::class, $mapperDTO);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('mapper_new'))
         {
             $this->refreshTokenForm($form);
 
             $result = $handler->handle($mapperDTO);
 
-            if ($result)
+            if($result)
             {
                 $this->addFlash('page.edit', 'success.edit', 'avito-board.admin');
 

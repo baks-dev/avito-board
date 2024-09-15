@@ -42,8 +42,11 @@ use Symfony\Component\Routing\Attribute\Route;
 final class DeleteController extends AbstractController
 {
     #[Route('/admin/avito-board/mapper/delete/{id}', name: 'admin.mapper.delete', methods: ['POST', 'GET'])]
-    public function delete(Request $request, #[MapEntity] AvitoBoardEvent $event, AvitoBoardDeleteMapperHandler $handler): Response
-    {
+    public function delete(
+        Request $request,
+        #[MapEntity] AvitoBoardEvent $event,
+        AvitoBoardDeleteMapperHandler $handler
+    ): Response {
         $deleteMapperDTO = new AvitoBoardDeleteMapperDTO();
 
         /** Гидрируем ДТО из события */
@@ -60,13 +63,13 @@ final class DeleteController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('delete_mapper'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('delete_mapper'))
         {
             $this->refreshTokenForm($form);
 
             $handlerResult = $handler->handle($deleteMapperDTO);
 
-            if ($handlerResult instanceof AvitoBoard)
+            if($handlerResult instanceof AvitoBoard)
             {
                 $this->addFlash('page.delete', 'success.delete', 'avito-board.admin');
 

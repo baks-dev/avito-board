@@ -23,27 +23,6 @@
 
 declare(strict_types=1);
 
-<<<<<<<< HEAD:Messenger/Schedules/FeedCacheRefreshMessage.php
-namespace BaksDev\Avito\Board\Messenger\Schedules;
-
-use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-
-final class FeedCacheRefreshMessage
-{
-    /**
-     * Идентификатор
-     */
-    private UserProfileUid $profile;
-
-    public function __construct(UserProfileUid $profile)
-    {
-        $this->profile = $profile;
-    }
-
-    public function getProfile(): UserProfileUid
-    {
-        return $this->profile;
-========
 namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 
 use BaksDev\Core\Schedule\ScheduleInterface;
@@ -69,7 +48,5 @@ final class FeedCacheRefreshSchedule implements ScheduleInterface
     public function getInterval(): DateInterval
     {
         return DateInterval::createFromDateString('10 minutes');
->>>>>>>> refs/remotes/Kepler-62b/dev:Schedule/FeedCacheRefresh/FeedCacheRefreshSchedule.php
     }
-
 }
