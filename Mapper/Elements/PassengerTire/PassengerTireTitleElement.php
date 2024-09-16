@@ -39,10 +39,6 @@ final readonly class PassengerTireTitleElement implements AvitoBoardElementInter
 
     private const string LABEL = 'Название объявления';
 
-    public function __construct(
-        private TireModelRequest $request,
-    ) {}
-
     public function isMapping(): false
     {
         return false;
@@ -70,14 +66,39 @@ final readonly class PassengerTireTitleElement implements AvitoBoardElementInter
 
     public function fetchData(array $data): ?string
     {
-        $search = $this->request->getModel($data['product_name']);
+        $name = 'Шины '.$data['product_name'];
 
-        if (null == $search)
+        if($data['product_variation_value'])
         {
-            return null;
+            $name .= ' '.$data['product_variation_value'];
         }
 
-        return sprintf('%s %s', $search['brand'], $data['product_article']);
+        if($data['product_modification_value'])
+        {
+            $name .= '/'.$data['product_modification_value'];
+        }
+
+        if($data['product_offer_value'])
+        {
+            $name .= ' R'.$data['product_offer_value'];
+        }
+
+        if($data['product_offer_postfix'])
+        {
+            $name .= ' '.$data['product_offer_postfix'];
+        }
+
+        if($data['product_variation_postfix'])
+        {
+            $name .= ' '.$data['product_variation_postfix'];
+        }
+
+        if($data['product_modification_postfix'])
+        {
+            $name .= ' '.$data['product_modification_postfix'];
+        }
+
+        return $name;
     }
 
     public function element(): string

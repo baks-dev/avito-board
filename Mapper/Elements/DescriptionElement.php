@@ -69,8 +69,6 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        $desc = null;
-
         // Если есть шаблон для описания - форматируем
         if (null !== $data['avito_product_description'])
         {
@@ -91,21 +89,19 @@ class DescriptionElement implements AvitoBoardElementInterface
             ];
 
             $desc = str_replace($search, $replace, $data['avito_product_description']);
+
+            return sprintf('<![CDATA[%s]]>', $desc);
         }
 
         // Если есть описания продукта - форматируем
         if (null !== $data['product_description'])
         {
             $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
+
+            return sprintf('<![CDATA[%s]]>', $desc);
         }
 
-        // Если описание нет - не рендерим
-        if (null === $desc)
-        {
-            return null;
-        }
-
-        return sprintf('<![CDATA[%s]]>', $desc);
+        return null;
     }
 
     public function element(): string
