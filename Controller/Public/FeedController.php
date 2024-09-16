@@ -23,23 +23,24 @@ final class FeedController extends AbstractController
         #[ParamConverter(UserProfileUid::class)] $profile,
     ): Response {
 
-        $products = $allProductsWithMapping
-            ->profile($profile)
-            ->execute();
-
         $cache = $appCache->init('avito-board');
 
-        $feed = $cache->get('feed-'.$profile, function (ItemInterface $item) use ($products): string {
+        $feed = $cache->get(
+            'feed-'.$profile,
+            function (ItemInterface $item) use (
+                $allProductsWithMapping,
+                $profile
+            ): string {
 
-            $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
+                $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
 
-            return $this->render(
-                [
-                    'products' => $products,
-                ],
-                file: 'export.html.twig'
-            )->getContent();
-        });
+                $products = $allProductsWithMapping
+                    ->profile($profile)
+                    ->execute();
+
+                return $this->render(['products' => $products], file: 'export.html.twig')->getContent();
+            }
+        );
 
         $response = new Response($feed);
         $response->headers->set('Content-Type', 'application/xml');
