@@ -56,9 +56,8 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
     private const string LABEL = 'Фотографии';
 
     public function __construct(
-        private UrlHelper $helper,
-        #[Autowire(env: 'CDN_HOST')]
-        private string $cdnHost,
+        #[Autowire(env: 'CDN_HOST')] private string $cdnHost,
+        #[Autowire(env: 'HOST')] private string $host,
     ) {}
 
     public function isMapping(): false
@@ -90,7 +89,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
     {
         $avitoIMG = $this->transform($data['avito_product_images']);
 
-        if (null !== $avitoIMG)
+        if(null !== $avitoIMG)
         {
             return $avitoIMG;
         }
@@ -134,18 +133,18 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
          *     img_ext: string,
          *     img_root: bool}|null $image
          */
-        foreach ($array as $image)
+        foreach($array as $image)
         {
             // Если изображение не загружено - не рендерим
-            if (null === $image)
+            if(null === $image)
             {
                 return null;
             }
 
-            $imgHost = $image->img_cdn ? 'https://'.$this->cdnHost : '';
+            $imgHost = 'https://'.($image->img_cdn === true ? $this->cdnHost : $this->host);
             $imgDir = $image->img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $imgFile = ($image->img_cdn === true ? '/large.' : '/image.').$image->img_ext;
+            $imgPath = $imgHost.$imgDir.$imgFile;
             $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
             $render .= $element;
         }
