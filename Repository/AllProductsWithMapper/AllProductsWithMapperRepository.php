@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Entity\AvitoToken;
 use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
 use BaksDev\Avito\Entity\Profile\AvitoTokenProfile;
@@ -41,6 +41,7 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -65,7 +66,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         if (is_string($profile))
         {
-            $profile = new UserProfileUid($profile);
+            $profile = new ProductUid($profile);
         }
 
         $this->profile = $profile;
