@@ -123,16 +123,16 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
     {
         $size = $data[self::ELEMENT];
 
-        if (null === $size)
+        if(null === $size)
         {
             return null;
         }
 
-        if ($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
+        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
         {
             $men = $this->translator->trans($size, [], 'avito-board.mapper.size.men');
 
-            if ($men === $size)
+            if($men === $size)
             {
                 return 'Без размера';
             }
@@ -140,11 +140,11 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
             return $men;
         }
 
-        if ($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
+        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
         {
             $women = $this->translator->trans($size, [], 'avito-board.mapper.size.women');
 
-            if ($women === $size)
+            if($women === $size)
             {
                 return 'Без размера';
             }

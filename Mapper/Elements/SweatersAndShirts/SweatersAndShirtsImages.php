@@ -90,7 +90,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
     {
         $avitoIMG = $this->transform($data['avito_product_images']);
 
-        if (null !== $avitoIMG)
+        if(null !== $avitoIMG)
         {
             return $avitoIMG;
         }
@@ -123,7 +123,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
 
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, function ($f) {
+        usort($array, function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 
@@ -134,18 +134,18 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
          *     img_ext: string,
          *     img_root: bool}|null $image
          */
-        foreach ($array as $image)
+        foreach($array as $image)
         {
             // Если изображение не загружено - не рендерим
-            if (null === $image)
+            if(null === $image)
             {
                 return null;
             }
 
             $imgHost = $image->img_cdn ? 'https://'.$this->cdnHost : '';
             $imgDir = $image->img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $imgFile = ($imgHost === '' ? '/image.' : '/large.').$image->img_ext;
+            $imgPath = $this->helper->getAbsoluteUrl($imgHost.$imgDir.$imgFile);
             $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
             $render .= $element;
         }

@@ -51,15 +51,15 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
         $passengerTireElements = null;
 
         /** @var AvitoBoardElementInterface $element */
-        foreach ($this->elements as $element)
+        foreach($this->elements as $element)
         {
-            if (null === $element->getProduct() || $element->getProduct() === self::class)
+            if(null === $element->getProduct() || $element->getProduct() === self::class)
             {
                 $passengerTireElements[] = $element;
             }
         }
 
-        if (null === $passengerTireElements)
+        if(null === $passengerTireElements)
         {
             throw new \Exception('Не найдено ни одного элемента');
         }
@@ -71,11 +71,11 @@ final readonly class PassengerTireProduct implements AvitoBoardProductInterface
     public function getElement(string $elementName): ?AvitoBoardElementInterface
     {
         /** @var AvitoBoardElementInterface $element */
-        foreach ($this->elements as $element)
+        foreach($this->elements as $element)
         {
-            if ($element->element() === $elementName)
+            if($element->element() === $elementName)
             {
-                if ($element->getProduct() === null || $element->getProduct() === self::class)
+                if($element->getProduct() === null || $element->getProduct() === self::class)
                 {
                     return $element;
                 }

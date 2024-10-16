@@ -40,7 +40,8 @@ final class ShirtModelRequest
     public function __construct(
         LoggerInterface $avitoBoardLogger,
         private readonly AppCacheInterface $cache,
-    ) {
+    )
+    {
         $this->logger = $avitoBoardLogger;
     }
 
@@ -58,7 +59,7 @@ final class ShirtModelRequest
 
         $brands = $cache->get(
             'avito-board-model-'.md5($productName),
-            function (ItemInterface $item): array {
+            function(ItemInterface $item): array {
 
                 $this->cached = false;
 

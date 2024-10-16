@@ -43,7 +43,7 @@ final class GetIdByArticleRequest extends AvitoApi
     {
         $cache = $this->getCacheInit('avito-promotion');
 
-        $id = $cache->get($this->profile.'.'.$article, function (ItemInterface $item) use ($article): int|false {
+        $id = $cache->get($this->profile.'.'.$article, function(ItemInterface $item) use ($article): int|false {
 
             /** По умолчанию кешируем на 1 сек на случай, если результат вернет FALSE */
             $item->expiresAfter(DateInterval::createFromDateString('1 second'));
@@ -64,7 +64,8 @@ final class GetIdByArticleRequest extends AvitoApi
             if(
                 false === isset($content['items']) ||
                 false === is_array($content['items'])
-            ) {
+            )
+            {
                 return false;
             }
 

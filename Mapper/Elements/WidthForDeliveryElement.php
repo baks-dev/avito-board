@@ -65,7 +65,7 @@ class WidthForDeliveryElement implements AvitoBoardElementInterface
 
         if(null !== $width)
         {
-            return (string)$width;
+            return (string) $width;
         }
 
         return null;

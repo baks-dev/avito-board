@@ -27,7 +27,6 @@ namespace BaksDev\Avito\Board\Mapper\Products;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts\SweatersAndShirtsCategory;
-use BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts\SweatersAndShirtsGoodsType;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterface
@@ -49,15 +48,15 @@ final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterf
         $elements = null;
 
         /** @var AvitoBoardElementInterface $element */
-        foreach ($this->elements as $element)
+        foreach($this->elements as $element)
         {
-            if ($element->getProduct() === null || $element->getProduct() === self::class)
+            if($element->getProduct() === null || $element->getProduct() === self::class)
             {
                 $elements[] = $element;
             }
         }
 
-        if (null === $elements)
+        if(null === $elements)
         {
             throw new \Exception('Не найдено ни одного элемента');
         }
@@ -68,11 +67,11 @@ final readonly class SweatersAndShirtsProduct implements AvitoBoardProductInterf
     public function getElement(string $elementName): ?AvitoBoardElementInterface
     {
         /** @var AvitoBoardElementInterface $element */
-        foreach ($this->elements as $element)
+        foreach($this->elements as $element)
         {
-            if ($element->element() === $elementName)
+            if($element->element() === $elementName)
             {
-                if ($element->getProduct() === null || $element->getProduct() === self::class)
+                if($element->getProduct() === null || $element->getProduct() === self::class)
                 {
                     return $element;
                 }

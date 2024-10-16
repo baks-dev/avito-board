@@ -46,7 +46,8 @@ final class DeleteController extends AbstractController
         Request $request,
         #[MapEntity] AvitoBoardEvent $event,
         AvitoBoardDeleteMapperHandler $handler
-    ): Response {
+    ): Response
+    {
         $deleteMapperDTO = new AvitoBoardDeleteMapperDTO();
 
         /** Гидрируем ДТО из события */

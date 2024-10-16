@@ -68,7 +68,7 @@ class SweatersAndShirtsGoodsType implements AvitoBoardElementInterface
     public function fetchData(array $data): ?string
     {
 
-        if (null === $data[self::ELEMENT])
+        if(null === $data[self::ELEMENT])
         {
             return null;
         }

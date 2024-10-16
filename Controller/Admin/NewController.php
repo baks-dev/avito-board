@@ -56,7 +56,8 @@ final class NewController extends AbstractController
         AvitoBoardMapperHandler $handler,
         #[MapEntity] CategoryProduct $localCategory,
         string $avitoCategory
-    ): Response {
+    ): Response
+    {
 
         $mapperDTO = new AvitoBoardMapperDTO();
         $mapperDTO->setCategory($localCategory);

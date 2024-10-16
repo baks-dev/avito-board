@@ -68,7 +68,7 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         }
 
         /** если связанный элемент не присутствует в маппере или его значение null, то не рендерим ОБЯЗАТЕЛЬНЫЙ элемент */
-        if (false === isset($data[PassengerTireSpikesElement::ELEMENT]) || null === $data[PassengerTireSpikesElement::ELEMENT])
+        if(false === isset($data[PassengerTireSpikesElement::ELEMENT]) || null === $data[PassengerTireSpikesElement::ELEMENT])
         {
             return null;
         }
@@ -86,7 +86,7 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
             TireSeasonEnum::ALL->value => 'Всесезонные',
         };
 
-        if ($tireType === 'Летние' || $tireType === 'Всесезонные')
+        if($tireType === 'Летние' || $tireType === 'Всесезонные')
         {
             return $tireType;
         }

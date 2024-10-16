@@ -27,7 +27,6 @@ namespace BaksDev\Avito\Board\UseCase\BeforeNew;
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use BaksDev\Avito\Board\Repository\AllCategoryWithMapper\AllCategoryWithMapperRepository;
-use BaksDev\Products\Category\Repository\CategoryChoice\CategoryChoiceInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -51,10 +50,10 @@ final class AvitoBoardCategoryMapperForm extends AbstractType
         $builder
             ->add('localCategory', ChoiceType::class, [
                 'choices' => $localCategories,
-                'choice_value' => function (?CategoryProductUid $type) {
+                'choice_value' => function(?CategoryProductUid $type) {
                     return $type?->getValue();
                 },
-                'choice_label' => function (CategoryProductUid $type) {
+                'choice_label' => function(CategoryProductUid $type) {
                     return $type?->getOptions();
                 },
                 'label' => false,
@@ -69,10 +68,10 @@ final class AvitoBoardCategoryMapperForm extends AbstractType
         $builder
             ->add('avitoCategory', ChoiceType::class, [
                 'choices' => $avitoCategories,
-                'choice_value' => static function (?AvitoBoardProductInterface $avitoCategories) {
+                'choice_value' => static function(?AvitoBoardProductInterface $avitoCategories) {
                     return $avitoCategories?->getProductCategory();
                 },
-                'choice_label' => static function (AvitoBoardProductInterface $avitoCategories) {
+                'choice_label' => static function(AvitoBoardProductInterface $avitoCategories) {
                     return $avitoCategories;
                 },
                 'expanded' => false,

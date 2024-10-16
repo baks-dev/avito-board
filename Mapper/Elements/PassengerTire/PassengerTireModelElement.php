@@ -71,7 +71,7 @@ final readonly class PassengerTireModelElement implements AvitoBoardElementInter
     {
         $search = $this->request->getModel($data['product_name']);
 
-        if (null == $search)
+        if(null == $search)
         {
             return null;
         }

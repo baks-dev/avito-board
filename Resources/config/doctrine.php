@@ -30,7 +30,7 @@ use BaksDev\Avito\Board\Type\Event\AvitoBoardEventType;
 use BaksDev\Avito\Board\Type\Event\AvitoBoardEventUid;
 use Symfony\Config\DoctrineConfig;
 
-return static function (DoctrineConfig $doctrine): void {
+return static function(DoctrineConfig $doctrine): void {
 
     $doctrine->dbal()->type(AvitoBoardUid::TYPE)->class(AvitoBoardType::class);
     $doctrine->dbal()->type(AvitoBoardEventUid::TYPE)->class(AvitoBoardEventType::class);

@@ -59,12 +59,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
     public function profile(UserProfile|UserProfileUid|string $profile): self
     {
-        if ($profile instanceof UserProfile)
+        if($profile instanceof UserProfile)
         {
             $profile = $profile->getId();
         }
 
-        if (is_string($profile))
+        if(is_string($profile))
         {
             $profile = new ProductUid($profile);
         }
@@ -79,7 +79,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
      */
     public function execute(): array|false
     {
-        if ($this->profile === false)
+        if($this->profile === false)
         {
             throw new InvalidArgumentException('Invalid Argument profile');
         }
@@ -493,7 +493,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_offer_images.root,
-                            'img', CONCAT ( '/upload/" . $dbal->table(ProductOfferImage::class) . "' , '/', product_offer_images.name),
+                            'img', CONCAT ( '/upload/".$dbal->table(ProductOfferImage::class)."' , '/', product_offer_images.name),
                             'img_ext', product_offer_images.ext,
                             'img_cdn', product_offer_images.cdn
                         ) 
@@ -501,7 +501,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_variation_image.root,
-                            'img', CONCAT ( '/upload/" . $dbal->table(ProductVariationImage::class) . "' , '/', product_variation_image.name),
+                            'img', CONCAT ( '/upload/".$dbal->table(ProductVariationImage::class)."' , '/', product_variation_image.name),
                             'img_ext', product_variation_image.ext,
                             'img_cdn', product_variation_image.cdn
                         )	
@@ -509,7 +509,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_modification_image.root,
-                            'img', CONCAT ( '/upload/" . $dbal->table(ProductModificationImage::class) . "' , '/', product_modification_image.name),
+                            'img', CONCAT ( '/upload/".$dbal->table(ProductModificationImage::class)."' , '/', product_modification_image.name),
                             'img_ext', product_modification_image.ext,
                             'img_cdn', product_modification_image.cdn
                         )
@@ -517,7 +517,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_photo.root,
-                            'img', CONCAT ( '/upload/" . $dbal->table(ProductPhoto::class) . "' , '/', product_photo.name),
+                            'img', CONCAT ( '/upload/".$dbal->table(ProductPhoto::class)."' , '/', product_photo.name),
                             'img_ext', product_photo.ext,
                             'img_cdn', product_photo.cdn
                         )
@@ -525,7 +525,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
         /**  Вес продукта  */
-        if (class_exists(BaksDevDeliveryTransportBundle::class))
+        if(class_exists(BaksDevDeliveryTransportBundle::class))
         {
             $dbal
                 ->addSelect('product_parameter.length AS product_length_delivery')
@@ -680,7 +680,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     WHEN avito_product_images.name IS NOT NULL THEN JSONB_BUILD_OBJECT
                     (
                         'img_root', avito_product_images.root,
-                        'img', CONCAT ( '/upload/" . $dbal->table(AvitoProductImage::class) . "' , '/', avito_product_images.name),
+                        'img', CONCAT ( '/upload/".$dbal->table(AvitoProductImage::class)."' , '/', avito_product_images.name),
                         'img_ext', avito_product_images.ext,
                         'img_cdn', avito_product_images.cdn
                     )
@@ -698,7 +698,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->enableCache('orders-order', 3600)
             ->fetchAllAssociative();
 
-        if (empty($result))
+        if(empty($result))
         {
             return false;
         }

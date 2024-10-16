@@ -27,8 +27,6 @@ namespace BaksDev\Avito\Board\Api\Tests;
 
 use BaksDev\Avito\Board\Api\GetIdByArticleRequest;
 use BaksDev\Avito\Type\Authorization\AvitoTokenAuthorization;
-use BaksDev\Core\Deduplicator\Deduplicator;
-use BaksDev\Core\Deduplicator\DeduplicatorInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;

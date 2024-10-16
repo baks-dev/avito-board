@@ -25,4 +25,4 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Schedule\FeedCacheRefresh;
 
-final class FeedCacheRefreshScheduleMessage {}
+final class FeedCacheRefreshScheduleMessage { }

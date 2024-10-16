@@ -49,7 +49,7 @@ final class AvitoBoardMapperForm extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
 
             $form = $event->getForm();
 
@@ -67,7 +67,7 @@ final class AvitoBoardMapperForm extends AbstractType
             $avitoProduct = $this->mapperProvider->getProduct($avitoBoardMapperDTO->getAvito());
 
             /** Проверка для new */
-            if ($avitoBoardMapperDTO->getMapperElements()->isEmpty())
+            if($avitoBoardMapperDTO->getMapperElements()->isEmpty())
             {
                 /**
                  * Фильтрация элементов по соответствующей категории Авито
@@ -75,9 +75,9 @@ final class AvitoBoardMapperForm extends AbstractType
                  */
                 $elements = $this->mapperProvider->filterElements($avitoBoardMapperDTO->getAvito());
 
-                foreach ($elements as $element)
+                foreach($elements as $element)
                 {
-                    if ($element->isMapping())
+                    if($element->isMapping())
                     {
                         $mapperElementDTO = new AvitoBoardMapperElementDTO();
                         $mapperElementDTO->setElement($element->element());
@@ -146,7 +146,7 @@ final class AvitoBoardMapperForm extends AbstractType
             return $productFields;
         }
 
-        if ($productOffer)
+        if($productOffer)
         {
             $productFields->add($productOffer);
 
@@ -155,7 +155,7 @@ final class AvitoBoardMapperForm extends AbstractType
                 ->offer($productOffer->getValue())
                 ->findAllCategoryProductSectionField();
 
-            if ($productVariation)
+            if($productVariation)
             {
                 $productFields->add($productVariation);
 
@@ -164,7 +164,7 @@ final class AvitoBoardMapperForm extends AbstractType
                     ->variation($productVariation->getValue())
                     ->findAllCategoryProductSectionField();
 
-                if ($productModification)
+                if($productModification)
                 {
                     $productFields->add($productModification);
                 }

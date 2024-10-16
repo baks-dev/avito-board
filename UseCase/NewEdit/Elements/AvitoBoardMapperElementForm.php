@@ -34,12 +34,12 @@ final class AvitoBoardMapperElementForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($options) {
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($options) {
 
             $form = $event->getForm();
 
             /** @var AvitoBoardMapperElementDTO $mapperElementDTO */
-            if ($mapperElementDTO = $event->getData())
+            if($mapperElementDTO = $event->getData())
             {
                 /** @var AvitoBoardProductInterface $avitoProduct */
                 $avitoProduct = $options['avito_product'];
@@ -53,15 +53,15 @@ final class AvitoBoardMapperElementForm extends AbstractType
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
                 $productFields = $options['product_fields'];
 
-                if (null === $element->getDefault())
+                if(null === $element->getDefault())
                 {
                     $form
                         ->add('productField', ChoiceType::class, [
                             'choices' => $productFields,
-                            'choice_value' => function (?CategoryProductSectionFieldUid $field) {
+                            'choice_value' => function(?CategoryProductSectionFieldUid $field) {
                                 return $field?->getValue();
                             },
-                            'choice_label' => function (CategoryProductSectionFieldUid $field) {
+                            'choice_label' => function(CategoryProductSectionFieldUid $field) {
                                 return $field->getAttr();
                             },
                             'label' => $element->label(),
@@ -72,17 +72,17 @@ final class AvitoBoardMapperElementForm extends AbstractType
                         ]);
                 }
 
-                if (null !== $element->getDefault())
+                if(null !== $element->getDefault())
                 {
-                    if ($element->isChoices())
+                    if($element->isChoices())
                     {
                         $form
                             ->add('def', ChoiceType::class, [
                                 'choices' => $element->getDefault(),
-                                'choice_value' => function (?string $element) {
+                                'choice_value' => function(?string $element) {
                                     return $element;
                                 },
-                                'choice_label' => function (string $element) {
+                                'choice_label' => function(string $element) {
                                     return $element;
                                 },
                                 'label' => $element->label(),

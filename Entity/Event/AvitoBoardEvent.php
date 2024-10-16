@@ -70,7 +70,7 @@ class AvitoBoardEvent extends EntityEvent
 
     public function __toString(): string
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     /**
@@ -78,7 +78,7 @@ class AvitoBoardEvent extends EntityEvent
      */
     public function getDto($dto): mixed
     {
-        if ($dto instanceof AvitoBoardEventInterface)
+        if($dto instanceof AvitoBoardEventInterface)
         {
             return parent::getDto($dto);
         }
@@ -88,7 +88,7 @@ class AvitoBoardEvent extends EntityEvent
 
     public function setEntity($dto): mixed
     {
-        if ($dto instanceof AvitoBoardEventInterface)
+        if($dto instanceof AvitoBoardEventInterface)
         {
             return parent::setEntity($dto);
         }

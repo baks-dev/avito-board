@@ -18,7 +18,8 @@ final class TireModelRequest
     public function __construct(
         LoggerInterface $avitoBoardLogger,
         private readonly AppCacheInterface $cache,
-    ) {
+    )
+    {
         $this->logger = $avitoBoardLogger;
     }
 
@@ -32,7 +33,7 @@ final class TireModelRequest
 
         $cache = $this->cache->init('avito-board');
 
-        $array = $cache->get('avito-board-model-'.md5($this->nameInfo), function (ItemInterface $item): array {
+        $array = $cache->get('avito-board-model-'.md5($this->nameInfo), function(ItemInterface $item): array {
 
             $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 

@@ -40,7 +40,8 @@ final readonly class FeedCacheRefreshScheduleHandler
         LoggerInterface $avitoBoardLogger,
         private MessageDispatchInterface $messageDispatch,
         private AllUserProfilesByTokenRepository $allProfilesByToken,
-    ) {
+    )
+    {
         $this->logger = $avitoBoardLogger;
     }
 
@@ -49,21 +50,21 @@ final readonly class FeedCacheRefreshScheduleHandler
         /** Получаем все активные профили, у которых активный токен */
         $profiles = $this->allProfilesByToken->findProfilesByActiveToken();
 
-        if (false === $profiles->valid())
+        if(false === $profiles->valid())
         {
             $this->logger->warning(
                 'Профилей с активным токеном не найдено',
-                [__FILE__ . ':' . __LINE__]
+                [__FILE__.':'.__LINE__]
             );
 
             return;
         }
 
-        foreach ($profiles as $profile)
+        foreach($profiles as $profile)
         {
             $this->messageDispatch->dispatch(
                 message: new FeedCacheRefreshMessage($profile),
-                transport: (string)$profile,
+                transport: (string) $profile,
             );
         }
     }

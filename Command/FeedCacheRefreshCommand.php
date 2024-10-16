@@ -36,7 +36,8 @@ class FeedCacheRefreshCommand extends Command
         private readonly AppCacheInterface $cache,
         private readonly MessageDispatchInterface $messageDispatch,
         private readonly AllUserProfilesByTokenRepository $allProfilesByToken,
-    ) {
+    )
+    {
         parent::__construct();
     }
 
@@ -49,28 +50,28 @@ class FeedCacheRefreshCommand extends Command
 
         $cached = null;
 
-        if ($profiles->valid())
+        if($profiles->valid())
         {
-            foreach ($profiles as $profile)
+            foreach($profiles as $profile)
             {
-                $key = 'feed-' . $profile;
+                $key = 'feed-'.$profile;
                 $this->messageDispatch->dispatch(new FeedCacheRefreshMessage($profile));
                 $cacheItem = $cache->getItem($key);
 
-                if (true === $cacheItem->isHit())
+                if(true === $cacheItem->isHit())
                 {
-                    $cached[] = (string)$profile;
+                    $cached[] = (string) $profile;
                 }
             }
         }
 
-        if (null !== $cached)
+        if(null !== $cached)
         {
             $result = 'Кеширование фида выполнено успешно для следующих профилей:';
 
-            foreach ($cached as $profile)
+            foreach($cached as $profile)
             {
-                $result .= ' | ID: ' . $profile;
+                $result .= ' | ID: '.$profile;
             }
 
             $output->writeln([$result]);

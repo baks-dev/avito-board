@@ -21,13 +21,14 @@ final class FeedController extends AbstractController
         AppCacheInterface $appCache,
         AllProductsWithMapperInterface $allProductsWithMapping,
         #[ParamConverter(UserProfileUid::class)] $profile,
-    ): Response {
+    ): Response
+    {
 
         $cache = $appCache->init('avito-board');
 
         $feed = $cache->get(
             'feed-'.$profile,
-            function (ItemInterface $item) use (
+            function(ItemInterface $item) use (
                 $allProductsWithMapping,
                 $profile
             ): string {

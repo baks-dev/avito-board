@@ -78,7 +78,7 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
     {
         $search = $this->request->getModel($data['product_name']);
 
-        if (null == $search)
+        if(null == $search)
         {
             return null;
         }
@@ -91,17 +91,17 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
          *     value: string,
          *     element: string} $element
          */
-        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        foreach(json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
         {
-            if ($element->element === SweatersAndShirtsGoodsSubType::ELEMENT)
+            if($element->element === SweatersAndShirtsGoodsSubType::ELEMENT)
             {
                 $type = $element->value;
                 continue;
             }
 
-            if ($element->element === SweatersAndShirtsSize::ELEMENT)
+            if($element->element === SweatersAndShirtsSize::ELEMENT)
             {
-                $size = 'Размер ' . $element->value;
+                $size = 'Размер '.$element->value;
             }
         }
 

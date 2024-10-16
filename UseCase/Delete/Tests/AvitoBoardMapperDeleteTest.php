@@ -107,7 +107,7 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
         $events = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
 
-        foreach ($events as $event)
+        foreach($events as $event)
         {
             $em->remove($event);
         }
