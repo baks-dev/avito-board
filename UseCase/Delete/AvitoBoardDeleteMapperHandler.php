@@ -47,13 +47,13 @@ final class AvitoBoardDeleteMapperHandler extends AbstractHandler
         {
             $this->preRemove($command);
         }
-        catch (DomainException $errorUniqid)
+        catch(DomainException $errorUniqid)
         {
             return $errorUniqid->getMessage();
         }
 
         /** Валидация всех объектов */
-        if ($this->validatorCollection->isInvalid())
+        if($this->validatorCollection->isInvalid())
         {
             return $this->validatorCollection->getErrorUniqid();
         }

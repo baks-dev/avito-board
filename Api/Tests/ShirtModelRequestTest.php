@@ -102,7 +102,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandHasModelsAndModelExist'];
 
-        foreach ($productNames as $productName)
+        foreach($productNames as $productName)
         {
             $result = self::$request->getModel($productName);
             self::assertNotNull($result);
@@ -118,7 +118,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandHasModelsAndModelNotExist'];
 
-        foreach ($productNames as $productName)
+        foreach($productNames as $productName)
         {
             $result = self::$request->getModel($productName['productName']);
             self::assertNotNull($result);
@@ -138,7 +138,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandHasNoModels'];
 
-        foreach ($productNames as $productName)
+        foreach($productNames as $productName)
         {
             $result = self::$request->getModel($productName);
             self::assertNotNull($result);
@@ -156,7 +156,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandAndModelNotExist'];
 
-        foreach ($productNames as $productName)
+        foreach($productNames as $productName)
         {
             $result = self::$request->getModel($productName);
             self::assertNull($result);

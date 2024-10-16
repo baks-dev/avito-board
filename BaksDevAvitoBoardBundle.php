@@ -31,11 +31,11 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 class BaksDevAvitoBoardBundle extends AbstractBundle
 {
-    public const string NAMESPACE = __NAMESPACE__ . '\\';
+    public const string NAMESPACE = __NAMESPACE__.'\\';
 
-    public const string PATH = __DIR__ . DIRECTORY_SEPARATOR;
+    public const string PATH = __DIR__.DIRECTORY_SEPARATOR;
 
-//    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    //    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     //    {
     //        $services = $container->services();
     //

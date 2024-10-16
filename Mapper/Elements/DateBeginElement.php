@@ -81,7 +81,7 @@ class DateBeginElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
-        if ($data['product_quantity'] === 0)
+        if($data['product_quantity'] === 0)
         {
             $date = new DateTimeImmutable('+1 year');
             return $date->format('Y-m-d H:i:s');

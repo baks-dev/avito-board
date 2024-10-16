@@ -70,7 +70,7 @@ class DescriptionElement implements AvitoBoardElementInterface
     public function fetchData(array $data): ?string
     {
         // Если есть шаблон для описания - форматируем
-        if (null !== $data['avito_product_description'])
+        if(null !== $data['avito_product_description'])
         {
             $search = [
                 '%PRODUCT_NAME%',
@@ -94,7 +94,7 @@ class DescriptionElement implements AvitoBoardElementInterface
         }
 
         // Если есть описания продукта - форматируем
-        if (null !== $data['product_description'])
+        if(null !== $data['product_description'])
         {
             $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
 

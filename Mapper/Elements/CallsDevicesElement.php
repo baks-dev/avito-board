@@ -36,7 +36,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements;
  *  Список элементов для категории "Легковые шины"
  *  https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false&fileFormat=xml
  *
- *  @see InternetCallsElement
+ * @see InternetCallsElement
  */
 class CallsDevicesElement
 {

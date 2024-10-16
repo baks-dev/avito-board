@@ -66,9 +66,9 @@ class SweatersAndShirtsApparel implements AvitoBoardElementInterface
          *     value: string,
          *     element: string} $element
          */
-        foreach (json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        foreach(json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
         {
-            if ($element->element === SweatersAndShirtsGoodsType::ELEMENT)
+            if($element->element === SweatersAndShirtsGoodsType::ELEMENT)
             {
                 return match ($element->value)
                 {

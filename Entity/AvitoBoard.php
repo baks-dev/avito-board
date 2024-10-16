@@ -37,7 +37,7 @@ class AvitoBoard
 
     public function __toString(): string
     {
-        return (string)$this->id;
+        return (string) $this->id;
     }
 
     public function getId(): CategoryProductUid

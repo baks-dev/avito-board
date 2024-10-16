@@ -67,9 +67,9 @@ class LengthForDeliveryElement implements AvitoBoardElementInterface
     {
         $length = $data['product_length_delivery'];
 
-        if (null !== $length)
+        if(null !== $length)
         {
-            return (string)$length;
+            return (string) $length;
         }
 
         return null;

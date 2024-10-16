@@ -65,7 +65,7 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
 
         if(null !== $weight)
         {
-            return (string)$weight;
+            return (string) $weight;
         }
 
         return null;

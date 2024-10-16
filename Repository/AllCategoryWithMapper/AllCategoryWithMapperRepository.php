@@ -53,12 +53,12 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
     /** Соответствие по категории */
     public function category(CategoryProduct|CategoryProductUid|string $category): self
     {
-        if ($category instanceof CategoryProduct)
+        if($category instanceof CategoryProduct)
         {
             $category = $category->getId();
         }
 
-        if (is_string($category))
+        if(is_string($category))
         {
             $category = new CategoryProductUid($category);
         }
@@ -96,7 +96,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
             );
 
         /** Категория с определенным идентификатором */
-        if ($this->category)
+        if($this->category)
         {
             $dbal
                 ->where('category.id = :category')
@@ -104,7 +104,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
         }
 
         /** Выбираем только активные категории */
-        if ($this->active)
+        if($this->active)
         {
             $dbal->join(
                 'category',
@@ -136,7 +136,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
 
         $result = $dbal->findAllRecursive(['parent' => 'id']);
 
-        foreach ($result as $item)
+        foreach($result as $item)
         {
             yield new CategoryProductUid($item['id'], $item['name'], $item['parent']);
         }

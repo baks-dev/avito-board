@@ -72,9 +72,9 @@ final readonly class SweatersAndShirtsBrand implements AvitoBoardElementInterfac
 
     public function fetchData(array $data): ?string
     {
-        $search =  $this->request->getModel($data['product_name']);
+        $search = $this->request->getModel($data['product_name']);
 
-        if (null == $search)
+        if(null == $search)
         {
             return null;
         }

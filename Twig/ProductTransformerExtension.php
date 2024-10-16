@@ -44,7 +44,8 @@ final class ProductTransformerExtension extends AbstractExtension
     public function __construct(
         LoggerInterface $avitoBoardLogger,
         private readonly AvitoBoardMapperProvider $mapperProvider,
-    ) {
+    )
+    {
         $this->logger = $avitoBoardLogger;
     }
 
@@ -68,7 +69,7 @@ final class ProductTransformerExtension extends AbstractExtension
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
             $avitoBoardElements,
-            static function (AvitoBoardElementInterface $element) {
+            static function(AvitoBoardElementInterface $element) {
                 return $element->isMapping() === false;
             }
         );
@@ -141,7 +142,7 @@ final class ProductTransformerExtension extends AbstractExtension
         /**
          * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
          */
-        array_walk($mapper, function (&$value, $element) use ($mapper, &$require) {
+        array_walk($mapper, function(&$value, $element) use ($mapper, &$require) {
 
             $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 

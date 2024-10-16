@@ -28,7 +28,6 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\UrlHelper;
 
 /**
  * Фотографии — вложенные элементы, по одному элементу «Image» на каждое изображение.
@@ -122,7 +121,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
 
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, function ($f) {
+        usort($array, function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 

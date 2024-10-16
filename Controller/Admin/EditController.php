@@ -45,7 +45,8 @@ final class EditController extends AbstractController
         Request $request,
         #[MapEntity] AvitoBoardEvent $event,
         AvitoBoardMapperHandler $handler
-    ): Response {
+    ): Response
+    {
         $mapperDTO = new AvitoBoardMapperDTO();
 
         $event->getDto($mapperDTO);

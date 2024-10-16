@@ -25,8 +25,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\UseCase\NewEdit;
 
-use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Messenger\AvitoBoardMessage;
 use BaksDev\Core\Entity\AbstractHandler;
 use DomainException;
@@ -45,13 +45,13 @@ final class AvitoBoardMapperHandler extends AbstractHandler
         {
             $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
         }
-        catch (DomainException $errorUniqid)
+        catch(DomainException $errorUniqid)
         {
             return $errorUniqid->getMessage();
         }
 
         /** Валидация всех объектов */
-        if ($this->validatorCollection->isInvalid())
+        if($this->validatorCollection->isInvalid())
         {
             return $this->validatorCollection->getErrorUniqid();
         }

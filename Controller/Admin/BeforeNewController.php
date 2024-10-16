@@ -50,7 +50,7 @@ final class BeforeNewController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $form->has('mapper_before_new'))
+        if($form->isSubmitted() && $form->isValid() && $form->has('mapper_before_new'))
         {
             $this->refreshTokenForm($form);
 

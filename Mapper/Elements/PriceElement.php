@@ -67,7 +67,7 @@ class PriceElement implements AvitoBoardElementInterface
     {
         if($data['product_price'] === 0)
         {
-            return (string)$data['product_price'];
+            return (string) $data['product_price'];
         }
 
         $money = new Money($data['product_price']);
@@ -75,7 +75,7 @@ class PriceElement implements AvitoBoardElementInterface
         $percent = $money->percent($data['avito_profile_percent']);
 
         $total = ($money->getValue() + $percent->getValue()) / 100;
-        return (string)$total;
+        return (string) $total;
     }
 
     public function element(): string

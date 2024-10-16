@@ -73,7 +73,7 @@ class AvitoBoardMapperElement extends EntityEvent
     {
         $dto = is_string($dto) && class_exists($dto) ? new $dto() : $dto;
 
-        if ($dto instanceof AvitoBoardMapperElementInterface)
+        if($dto instanceof AvitoBoardMapperElementInterface)
         {
             return parent::getDto($dto);
         }
@@ -83,7 +83,7 @@ class AvitoBoardMapperElement extends EntityEvent
 
     public function setEntity($dto): mixed
     {
-        if ($dto instanceof AvitoBoardMapperElementInterface || $dto instanceof self)
+        if($dto instanceof AvitoBoardMapperElementInterface || $dto instanceof self)
         {
             return parent::setEntity($dto);
         }

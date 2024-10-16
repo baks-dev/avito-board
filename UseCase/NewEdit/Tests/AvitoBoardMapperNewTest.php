@@ -32,7 +32,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $avitoBoard = $em->getRepository(AvitoBoard::class)
             ->find(CategoryProductUid::TEST);
 
-        if ($avitoBoard)
+        if($avitoBoard)
         {
             $em->remove($avitoBoard);
         }
@@ -40,7 +40,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $avitoBoardEvent = $em->getRepository(AvitoBoardEvent::class)
             ->findBy(['category' => CategoryProductUid::TEST]);
 
-        foreach ($avitoBoardEvent as $event)
+        foreach($avitoBoardEvent as $event)
         {
             $em->remove($event);
         }

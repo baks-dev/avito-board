@@ -44,7 +44,8 @@ final readonly class FeedCacheRefreshHandler
         private Environment $environment,
         private TemplateExtension $templateExtension,
         private AllProductsWithMapperInterface $allProductsWithMapping,
-    ) {
+    )
+    {
         $this->logger = $avitoBoardLogger;
     }
 
@@ -57,16 +58,16 @@ final readonly class FeedCacheRefreshHandler
             ->execute();
 
         /** Если продукты не найдены - прерываем хендлер, пишем в лог */
-        if (empty($products))
+        if(empty($products))
         {
-            $this->logger->warning('Продукты не найдены', [__FILE__ . ':' . __LINE__]);
+            $this->logger->warning('Продукты не найдены', [__FILE__.':'.__LINE__]);
 
             return;
         }
 
         $cache = $this->cache->init('avito-board');
 
-        $cachePool = $cache->getItem('feed-' . $profile);
+        $cachePool = $cache->getItem('feed-'.$profile);
 
         $template = $this->templateExtension->extends('@avito-board:public/export/feed/export.html.twig');
 
@@ -75,7 +76,7 @@ final readonly class FeedCacheRefreshHandler
         $cachePool->expiresAfter(DateInterval::createFromDateString('1 day'));
 
         $cachePool->set($feed);
-        $cache->delete('feed-' . $profile);
+        $cache->delete('feed-'.$profile);
         $cache->save($cachePool);
     }
 }

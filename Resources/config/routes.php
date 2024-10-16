@@ -24,7 +24,7 @@
 use BaksDev\Avito\Board\BaksDevAvitoBoardBundle;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
-return function (RoutingConfigurator $routes) {
+return function(RoutingConfigurator $routes) {
 
     $MODULE = BaksDevAvitoBoardBundle::PATH;
 
