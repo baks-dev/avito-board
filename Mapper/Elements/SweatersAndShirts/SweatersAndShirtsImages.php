@@ -1,17 +1,17 @@
 <?php
 /*
  *  Copyright 2024.  Baks.dev <admin@baks.dev>
- *
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -90,7 +90,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
     {
         $avitoIMG = $this->transform($data['avito_product_images']);
 
-        if (null !== $avitoIMG)
+        if(null !== $avitoIMG)
         {
             return $avitoIMG;
         }
@@ -123,7 +123,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
 
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, function ($f) {
+        usort($array, function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 
@@ -134,18 +134,18 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
          *     img_ext: string,
          *     img_root: bool}|null $image
          */
-        foreach ($array as $image)
+        foreach($array as $image)
         {
             // Если изображение не загружено - не рендерим
-            if (null === $image)
+            if(null === $image)
             {
                 return null;
             }
 
             $imgHost = $image->img_cdn ? 'https://'.$this->cdnHost : '';
             $imgDir = $image->img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.') . $image->img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost . $imgDir . $imgFile);
+            $imgFile = ($imgHost === '' ? '/image.' : '/large.').$image->img_ext;
+            $imgPath = $this->helper->getAbsoluteUrl($imgHost.$imgDir.$imgFile);
             $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
             $render .= $element;
         }
