@@ -158,7 +158,14 @@ final class TireModelRequest
 
                     if($count > 0)
                     {
-                        $result['models'][$models['@attributes']['name']] = $count;
+                        if(!isset($models['@attributes']) && isset($models['name']))
+                        {
+                            $result['models'][$models['name']] = $count;
+                        }
+                        else
+                        {
+                            $result['models'][$models['@attributes']['name']] = $count;
+                        }
                     }
                 }
 
