@@ -81,13 +81,18 @@ class DateBeginElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
-        if($data['product_quantity'] === 0)
-        {
-            $date = new DateTimeImmutable('+1 week');
-            return $date->format('Y-m-d');
-        }
+        // По умолчанию объявление не опубликовано
+        $date = new DateTimeImmutable('+ 1 day');
 
-        $date = new DateTimeImmutable();
+        /**
+         * Публикуем объявление только при наличии
+         */
+        $product_quantity = isset($data['product_quantity']) ? max($data['product_quantity'], 0) : 0;
+
+        if($product_quantity > 0)
+        {
+            $date = new DateTimeImmutable('now');
+        }
 
         return $date->format('Y-m-d');
     }
