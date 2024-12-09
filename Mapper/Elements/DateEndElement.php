@@ -71,14 +71,20 @@ class DateEndElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
-        if(null !== $data['product_date_over'])
-        {
-            $date = new DateTimeImmutable($data['product_date_begin']);
+        // По умолчанию объявление не опубликовано
+        $date = new DateTimeImmutable('+ 2 day');
 
-            return $date->format('Y-m-d H:i:s');
+        /**
+         * Публикуем объявление только при наличии
+         */
+        $product_quantity = isset($data['product_quantity']) ? max($data['product_quantity'], 0) : 0;
+
+        if($product_quantity > 0)
+        {
+            $date = new DateTimeImmutable('+ 1 day');
         }
 
-        return null;
+        return $date->format('Y-m-d').' 01:00:00';
     }
 
     public function element(): string
