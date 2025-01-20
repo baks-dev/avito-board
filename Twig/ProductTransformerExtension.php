@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -26,6 +26,7 @@ namespace BaksDev\Avito\Board\Twig;
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -39,15 +40,10 @@ final class ProductTransformerExtension extends AbstractExtension
 
     private ?string $article = null;
 
-    protected LoggerInterface $logger;
-
     public function __construct(
-        LoggerInterface $avitoBoardLogger,
+        #[Target('avitoBoardLogger')] private readonly LoggerInterface $logger,
         private readonly AvitoBoardMapperProvider $mapperProvider,
-    )
-    {
-        $this->logger = $avitoBoardLogger;
-    }
+    ) {}
 
     public function getFunctions(): array
     {
