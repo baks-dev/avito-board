@@ -1,6 +1,6 @@
 # BaksDev Avito Board
 
-[![Version](https://img.shields.io/badge/version-7.1.18-blue)](https://github.com/baks-dev/avito-board/releases)
+[![Version](https://img.shields.io/badge/version-7.1.20-blue)](https://github.com/baks-dev/avito-board/releases)
 ![php 8.3+](https://img.shields.io/badge/php-min%208.3-red.svg)
 
 Модуль объявлений Avito
@@ -20,4 +20,3 @@ $ php bin/phpunit --group=avito-board
 ## Лицензия ![License](https://img.shields.io/badge/MIT-green)
 
 The MIT License (MIT). Обратитесь к [Файлу лицензии](LICENSE.md) за дополнительной информацией.
-
