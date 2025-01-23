@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +30,20 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Twig\TemplateExtension;
 use DateInterval;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Twig\Environment;
 
 #[AsMessageHandler]
 final readonly class FeedCacheRefreshHandler
 {
-    protected LoggerInterface $logger;
-
     public function __construct(
-        LoggerInterface $avitoBoardLogger,
+        #[Target('avitoBoardLogger')] private LoggerInterface $logger,
         private AppCacheInterface $cache,
         private Environment $environment,
         private TemplateExtension $templateExtension,
         private AllProductsWithMapperInterface $allProductsWithMapping,
-    )
-    {
-        $this->logger = $avitoBoardLogger;
-    }
+    ) {}
 
     public function __invoke(FeedCacheRefreshMessage $message): void
     {

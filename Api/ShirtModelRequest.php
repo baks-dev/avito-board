@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,23 +27,19 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Type\UserAgent\UserAgentGenerator;
 use DateInterval;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
 
 final class ShirtModelRequest
 {
-    protected LoggerInterface $logger;
-
     // флаг для отслеживания кеширования
     private bool $cached = true;
 
     public function __construct(
-        LoggerInterface $avitoBoardLogger,
+        #[Target('avitoBoardLogger')] protected readonly LoggerInterface $logger,
         private readonly AppCacheInterface $cache,
-    )
-    {
-        $this->logger = $avitoBoardLogger;
-    }
+    ) {}
 
     /**
      * @return array{'band': string, 'model': null, 'cached': bool }
