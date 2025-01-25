@@ -50,32 +50,30 @@ final class ShirtModelRequest
      */
     public function getModel(string $productName): ?array
     {
-
         $cache = $this->cache->init('avito-board');
+        $key = 'avito-board-model-'.md5($productName);
+        // $cache->delete($key);
 
-        $brands = $cache->get(
-            'avito-board-model-'.md5($productName),
-            function(ItemInterface $item): array {
+        $brands = $cache->get($key, function(ItemInterface $item): array {
 
-                $this->cached = false;
+            $this->cached = false;
 
-                $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
-                $UserAgentGenerator = new UserAgentGenerator();
-                $userAgent = $UserAgentGenerator->genDesktop();
+            $UserAgentGenerator = new UserAgentGenerator();
+            $userAgent = $UserAgentGenerator->genDesktop();
 
-                $httpClient = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
-                    ->withOptions(['base_uri' => 'https://autoload.avito.ru']);
+            $httpClient = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
+                ->withOptions(['base_uri' => 'https://autoload.avito.ru']);
 
-                $request = $httpClient->request('GET', 'format/brendy_fashion.xml');
+            $request = $httpClient->request('GET', 'format/brendy_fashion.xml');
 
-                $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
+            $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
 
-                $json = json_encode($xml);
+            $json = json_encode($xml);
 
-                return json_decode($json, true);
-            }
-        );
+            return json_decode($json, true);
+        });
 
         $productNameLower = mb_strtolower($productName);
 

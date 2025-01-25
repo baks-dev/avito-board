@@ -31,13 +31,11 @@ use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
 
-final class TireModelRequest
+final readonly class TireModelRequest
 {
-    private string $nameInfo;
-
     public function __construct(
-        #[Target('avitoBoardLogger')] private readonly LoggerInterface $logger,
-        private readonly AppCacheInterface $cache,
+        #[Target('avitoBoardLogger')] private LoggerInterface $logger,
+        private AppCacheInterface $cache,
     ) {}
 
     /**
@@ -46,11 +44,11 @@ final class TireModelRequest
      */
     public function getModel(string $nameInfo): ?array
     {
-        $this->nameInfo = $nameInfo;
-
         $cache = $this->cache->init('avito-board');
+        $key = 'avito-board-model-'.md5($nameInfo);
+        // $cache->delete($key);
 
-        $array = $cache->get('avito-board-model-'.md5($this->nameInfo), function(ItemInterface $item): array {
+        $array = $cache->get($key, function(ItemInterface $item): array {
 
             $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
@@ -69,7 +67,7 @@ final class TireModelRequest
             return json_decode($json, true);
         });
 
-        $string = mb_strtolower($this->nameInfo);
+        $string = mb_strtolower($nameInfo);
         $searchArray = explode(" ", $string);
 
         $result = [];

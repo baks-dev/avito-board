@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -51,15 +51,10 @@ class GetIdByArticleRequestTest extends KernelTestCase
 
     public function testUseCase(): void
     {
-        if(false)
-        {
-            /** @var GetIdByArticleRequest $AllPromotionRequest */
-            $AllPromotionRequest = self::getContainer()->get(GetIdByArticleRequest::class);
-            $AllPromotionRequest->tokenHttpClient(self::$authorization);
-            $id = $AllPromotionRequest->find('twhgPhXME');
-            dump($id);
-        }
-
-        self::assertTrue(true);
+        /** @var GetIdByArticleRequest $AllPromotionRequest */
+        $AllPromotionRequest = self::getContainer()->get(GetIdByArticleRequest::class);
+        $AllPromotionRequest->tokenHttpClient(self::$authorization);
+        $id = $AllPromotionRequest->find('TH202-18-235-55-104W');
+        self::assertIsInt($id);
     }
 }
