@@ -62,7 +62,6 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
-use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -551,19 +550,35 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         if(class_exists(BaksDevDeliveryTransportBundle::class))
         {
             $dbal
-                ->addSelect('product_parameter.length AS product_length_delivery')
-                ->addSelect('product_parameter.width AS product_width_delivery')
-                ->addSelect('product_parameter.height AS product_height_delivery')
-                ->addSelect('product_parameter.weight AS product_weight_delivery')
+                ->addSelect('product_package.length AS product_length_delivery')
+                ->addSelect('product_package.width AS product_width_delivery')
+                ->addSelect('product_package.height AS product_height_delivery')
+                ->addSelect('product_package.weight AS product_weight_delivery')
                 ->leftJoin(
                     'product_modification',
                     DeliveryPackageProductParameter::class,
-                    'product_parameter',
-                    'product_parameter.product = product.id AND
-                        (product_parameter.offer IS NULL OR product_parameter.offer = product_offer.const) AND
-                        (product_parameter.variation IS NULL OR product_parameter.variation = product_variation.const) AND
-                        (product_parameter.modification IS NULL OR product_parameter.modification = product_modification.const)'
-                );
+                    'product_package',
+                    'product_package.product = product.id AND 
+                    
+                    (
+                        (product_offer.const IS NOT NULL AND product_package.offer = product_offer.const) OR 
+                        (product_offer.const IS NULL AND product_package.offer IS NULL)
+                    )
+                    
+                    AND
+                     
+                    (
+                        (product_variation.const IS NOT NULL AND product_package.variation = product_variation.const) OR 
+                        (product_variation.const IS NULL AND product_package.variation IS NULL)
+                    )
+                     
+                   AND
+                   
+                   (
+                        (product_modification.const IS NOT NULL AND product_package.modification = product_modification.const) OR 
+                        (product_modification.const IS NULL AND product_package.modification IS NULL)
+                   )
+                ');
         }
 
         /** Avito mapper */
