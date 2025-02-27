@@ -121,7 +121,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token',
                 'avito_token.id = :profile'
             )
-            ->setParameter('profile', $this->profile, UserProfileUid::TYPE);
+            ->setParameter(
+                key: 'profile',
+                value: $this->profile,
+                type: UserProfileUid::TYPE
+            );
 
         $dbal
             ->join(
@@ -140,9 +144,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             '
                 info.profile = avito_token.id AND
                 info.status = :status',
-        );
-
-        $dbal->setParameter('status', new UserProfileStatus(UserProfileStatusActive::class), UserProfileStatus::TYPE);
+        )
+            ->setParameter(
+                'status',
+                UserProfileStatusActive::class,
+                UserProfileStatus::TYPE
+            );
 
         $dbal
             ->addSelect('avito_token_profile.address AS avito_profile_address')
@@ -153,8 +160,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token',
                 AvitoTokenProfile::class,
                 'avito_token_profile',
-                '
-                        avito_token_profile.event = avito_token.event'
+                'avito_token_profile.event = avito_token.event'
             );
 
 
@@ -284,7 +290,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          * Категория
          */
         $dbal
-            ->join(
+            ->leftJoin(
                 'product_event',
                 ProductCategory::class,
                 'product_category',
@@ -412,7 +418,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
 			   THEN product_price.currency
 			   
-			   ELSE NULL
+			   ELSE 0
 			END AS product_currency'
         );
 
@@ -425,8 +431,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ProductOfferQuantity::class,
             'product_offer_quantity',
             'product_offer_quantity.offer = product_offer.id'
-        )
-            ->addGroupBy('product_offer_quantity.reserve');
+        );
 
         /**
          * Наличие и резерв множественного варианта
@@ -436,16 +441,14 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ProductVariationQuantity::class,
             'product_variation_quantity',
             'product_variation_quantity.variation = product_variation.id'
-        )
-            ->addGroupBy('product_variation_quantity.reserve');
+        );
 
         $dbal->leftJoin(
             'product_modification',
             ProductModificationQuantity::class,
             'product_modification_quantity',
             'product_modification_quantity.modification = product_modification.id'
-        )
-            ->addGroupBy('product_modification_quantity.reserve');
+        );
 
         $dbal->addSelect(
             '
@@ -467,6 +470,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
         /** Фото продукции*/
+
         /**
          * Фото модификаций
          */
@@ -519,6 +523,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_ext', product_offer_images.ext,
                             'img_cdn', product_offer_images.cdn
                         ) 
+                    
                     WHEN product_variation_image.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
@@ -527,6 +532,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_ext', product_variation_image.ext,
                             'img_cdn', product_variation_image.cdn
                         )	
+                    
                     WHEN product_modification_image.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
@@ -535,6 +541,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_ext', product_modification_image.ext,
                             'img_cdn', product_modification_image.cdn
                         )
+                    
                     WHEN product_photo.ext IS NOT NULL 
                     THEN JSONB_BUILD_OBJECT
                         (
@@ -582,6 +589,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         }
 
         /** Avito mapper */
+
         /**
          * Категория, для которой создан маппер. Для каждой карточки
          */
