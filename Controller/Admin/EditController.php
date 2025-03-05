@@ -54,7 +54,7 @@ final class EditController extends AbstractController
             ->createForm(
                 type: AvitoBoardMapperForm::class,
                 data: $mapperDTO,
-                options: ['action' => $this->generateUrl('avito-board:admin.mapper.edit')]
+                options: ['action' => $this->generateUrl('avito-board:admin.mapper.edit', ['id' => $event->getId()])]
             )
             ->handleRequest($request);
 
