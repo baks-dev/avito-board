@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -118,7 +118,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandHasModelsAndModelNotExist'];
 
-        foreach($productNames as $productName)
+        foreach($productNames as $key => $productName)
         {
             $result = self::$request->getModel($productName['productName']);
             self::assertNotNull($result);
@@ -138,7 +138,7 @@ final class ShirtModelRequestTest extends KernelTestCase
     {
         $productNames = self::$productNames['brandHasNoModels'];
 
-        foreach($productNames as $productName)
+        foreach($productNames as $key => $productName)
         {
             $result = self::$request->getModel($productName);
             self::assertNotNull($result);
@@ -149,6 +149,8 @@ final class ShirtModelRequestTest extends KernelTestCase
             $result = self::$request->getModel($random);
             self::assertNotNull($result);
             self::assertSame(null, $result['model']);
+
+
         }
     }
 
