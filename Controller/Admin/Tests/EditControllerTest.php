@@ -35,7 +35,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-controller
  * @group avito-board-controller-edit
- * @depends \BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
+ * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
  */
 #[When(env: 'test')]
 final class EditControllerTest extends WebTestCase

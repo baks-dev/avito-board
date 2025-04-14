@@ -41,7 +41,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-usecase
  *
- * @depends \BaksDev\Avito\Board\Controller\Admin\Tests\NewControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\NewControllerTest::class
  */
 #[When(env: 'test')]
 class AvitoBoardMapperEditTest extends KernelTestCase

@@ -32,7 +32,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board-controller
  * @group avito-board-controller-before-new
  *
- * @depends \BaksDev\Avito\Board\Controller\Admin\Tests\IndexControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\IndexControllerTest::class
  */
 #[When(env: 'test')]
 final class BeforeNewControllerTest extends WebTestCase
