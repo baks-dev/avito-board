@@ -406,6 +406,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal->addSelect(
             '
 			CASE
+			
 			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0 
 			   THEN product_modification_price.currency
 			   
@@ -418,7 +419,8 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
 			   THEN product_price.currency
 			   
-			   ELSE 0
+			   ELSE NULL
+			   
 			END AS product_currency'
         );
 
