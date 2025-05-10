@@ -23,58 +23,25 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
-use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Products\Category\Entity\CategoryProduct;
-use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
  * @group avito-board-controller
- * @group avito-board-controller-delete
+ * @group avito-board-controller-before-new
  *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\EditControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\IndexControllerTest::class
  */
 #[When(env: 'test')]
-final class DeleteControllerTest extends WebTestCase
+final class BeforeNewAdminControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_DELETE';
+    private const string URL = '/admin/avito-board/mapper/before_new';
 
-    private static string $url = '/admin/avito-board/mapper/delete/%s';
+    private const string ROLE = 'ROLE_AVITO_BOARD_BEFORE_NEW';
 
-    public static function setUpBeforeClass(): void
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-
-        /** Находим корень */
-        $avitoBoard = $em->getRepository(AvitoBoard::class)
-            ->find(CategoryProductUid::TEST);
-
-        if(empty($avitoBoard))
-        {
-            self::assertNull($avitoBoard);
-            return;
-        }
-
-        self::assertNotNull($avitoBoard);
-
-        /** Находим активное событие */
-        $activeEvent = $em->getRepository(AvitoBoardEvent::class)
-            ->find($avitoBoard->getEvent());
-
-        self::assertNotNull($activeEvent);
-
-        self::$url = sprintf(self::$url, $activeEvent);
-
-        $em->clear();
-    }
-
-    /** Доступ по роли */
+    /** Доступ по роли  */
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -87,10 +54,12 @@ final class DeleteControllerTest extends WebTestCase
             $usr = TestUserAccount::getModer(self::ROLE);
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseIsSuccessful();
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_ADMIN */
@@ -106,14 +75,16 @@ final class DeleteControllerTest extends WebTestCase
             $usr = TestUserAccount::getAdmin();
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseIsSuccessful();
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_USER */
-    public function testRoleUserDeny(): void
+    public function testRoleUserFiled(): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -124,10 +95,12 @@ final class DeleteControllerTest extends WebTestCase
 
             $usr = TestUserAccount::getUsr();
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseStatusCodeSame(403);
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ без роли */
@@ -140,10 +113,12 @@ final class DeleteControllerTest extends WebTestCase
         {
             $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             // Full authentication is required to access this resource
             self::assertResponseStatusCodeSame(401);
         }
+
+        self::assertTrue(true);
     }
 }
