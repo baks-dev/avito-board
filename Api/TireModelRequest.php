@@ -67,6 +67,10 @@ final readonly class TireModelRequest
             return json_decode($json, true);
         });
 
+
+        // Форматированная строка модели без найденного бренда
+        $formatModel = $nameInfo;
+
         $string = mb_strtolower($nameInfo);
         $searchArray = explode(" ", $string);
 
@@ -78,6 +82,10 @@ final readonly class TireModelRequest
 
             if(in_array(mb_strtolower($brandName), $searchArray, false))
             {
+
+                // Форматируем строку с моделью, удаляя найденный бренд
+                $formatModel = str_ireplace($brandName, '', $formatModel);
+                $formatModel = trim($formatModel);
 
                 // удаляем название бренда из массива для поиска
                 $unset = array_search(mb_strtolower($brandName), $searchArray);
@@ -172,13 +180,14 @@ final readonly class TireModelRequest
             }
         }
 
+
         if(isset($result['models']))
         {
             $maxValue = max($result['models']);
             $result['model'] = array_search($maxValue, $result['models'], true);
         }
 
-        // если модель не найдена - возвращаем null
+        // если модель не найдена - возвращаем результат отформатированной строки
         if(empty($result))
         {
             $this->logger->critical(
@@ -186,7 +195,7 @@ final readonly class TireModelRequest
                 [__FILE__.':'.__LINE__]
             );
 
-            return null;
+            $result['model'] = $formatModel;
         }
 
         return $result;
