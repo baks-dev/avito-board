@@ -191,8 +191,8 @@ final readonly class TireModelRequest
         if(empty($result))
         {
             $this->logger->critical(
-                'Не найдено совпадений бренда или модели для продукта '.$nameInfo,
-                [__FILE__.':'.__LINE__]
+                sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
+                [self::class.':'.__LINE__, $formatModel],
             );
 
             $result = $formatModel;
