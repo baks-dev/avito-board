@@ -29,7 +29,11 @@ use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Entity\AvitoToken;
+use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
 use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
+use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
+use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
+use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
 use BaksDev\Avito\Entity\Profile\AvitoTokenProfile;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
@@ -77,16 +81,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         private readonly DBALQueryBuilder $DBALQueryBuilder,
     ) {}
 
-    public function profile(UserProfile|UserProfileUid|string $profile): self
+    public function forProfile(UserProfile|UserProfileUid $profile): self
     {
         if($profile instanceof UserProfile)
         {
             $profile = $profile->getId();
-        }
-
-        if(is_string($profile))
-        {
-            $profile = new UserProfileUid($profile);
         }
 
         $this->profile = $profile;
@@ -97,7 +96,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
     /**
      * Метод получает массив свойств продукта с маппингом и данными токена
      */
-    public function execute(): array|false
+    public function findAll(): array|false
     {
         if($this->profile === false)
         {
@@ -151,7 +150,47 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 UserProfileStatus::TYPE
             );
 
+
         $dbal
+            ->addSelect('avito_token_percent.value AS avito_profile_percent')
+            ->leftJoin(
+                'avito_token',
+                AvitoTokenPercent::class,
+                'avito_token_percent',
+                'avito_token_percent.event = avito_token.event',
+            );
+
+        $dbal
+            ->addSelect('avito_token_address.value AS avito_profile_address')
+            ->leftJoin(
+                'avito_token',
+                AvitoTokenAddress::class,
+                'avito_token_address',
+                'avito_token_address.event = avito_token.event',
+            );
+
+
+        $dbal
+            ->addSelect('avito_token_manager.value AS avito_profile_manager')
+            ->leftJoin(
+                'avito_token',
+                AvitoTokenManager::class,
+                'avito_token_manager',
+                'avito_token_manager.event = avito_token.event',
+            );
+
+
+        $dbal
+            ->addSelect('avito_token_profile.value AS avito_profile_phone')
+            ->leftJoin(
+                'avito_token',
+                AvitoTokenPhone::class,
+                'avito_token_phone',
+                'avito_token_phone.event = avito_token.event',
+            );
+
+
+        /*$dbal
             ->addSelect('avito_token_profile.address AS avito_profile_address')
             ->addSelect('avito_token_profile.percent AS avito_profile_percent')
             ->addSelect('avito_token_profile.manager AS avito_profile_manager')
@@ -161,7 +200,8 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 AvitoTokenProfile::class,
                 'avito_token_profile',
                 'avito_token_profile.event = avito_token.event'
-            );
+            );*/
+
 
 
         $dbal->leftJoin(
@@ -185,7 +225,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     product_active.active IS TRUE'
             );
 
-
         $dbal
             ->leftJoin(
                 'product_event',
@@ -193,6 +232,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'product_info',
                 'product_info.product = product.id'
             );
+
 
         /** Получаем название с учетом настроек локализации */
         $dbal
@@ -743,7 +783,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
         $result = $dbal
-            ->enableCache('orders-order', 3600)
+            ->enableCache('orders-order', '1 day')
             ->fetchAllAssociative();
 
         if(empty($result))

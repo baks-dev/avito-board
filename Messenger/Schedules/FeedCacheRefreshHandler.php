@@ -50,8 +50,8 @@ final readonly class FeedCacheRefreshHandler
         $profile = $message->getProfile();
 
         $products = $this->allProductsWithMapping
-            ->profile($profile)
-            ->execute();
+            ->forProfile($profile)
+            ->findAll();
 
         /** Если продукты не найдены - прерываем хендлер, пишем в лог */
         if(empty($products))
