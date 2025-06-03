@@ -29,6 +29,7 @@ use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Entity\AvitoToken;
+use BaksDev\Avito\Entity\Event\Active\AvitoTokenActive;
 use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
 use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
 use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
@@ -129,12 +130,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal
             ->join(
                 'avito_token',
-                AvitoTokenEvent::class,
-                'avito_token_event',
+                AvitoTokenActive::class,
+                'avito_token_active',
                 '
-                        avito_token_event.id = avito_token.event AND
-                        avito_token_event.active = TRUE',
-            );
+                    avito_token_active.event = avito_token.event AND
+                    avito_token_active.value IS TRUE
+                ');
 
         $dbal->join(
             'avito_token',
@@ -181,7 +182,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
 
         $dbal
-            ->addSelect('avito_token_profile.value AS avito_profile_phone')
+            ->addSelect('avito_token_phone.value AS avito_profile_phone')
             ->leftJoin(
                 'avito_token',
                 AvitoTokenPhone::class,
