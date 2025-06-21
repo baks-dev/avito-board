@@ -63,18 +63,16 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(array $data): string|null
     {
-        if($data['product_price'] === 0)
+        if(true === empty($data['product_price']))
         {
-            return (string) $data['product_price'];
+            return 'По запросу';
         }
 
         $money = new Money($data['product_price'], true);
 
         $money->applyString($data['avito_profile_percent']);
-
-        //$total = ($money->getValue() + $percent->getValue()) / 100;
 
         return (string) $money->getRoundValue();
     }

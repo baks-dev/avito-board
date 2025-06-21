@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -73,12 +73,6 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
             return null;
         }
 
-        $spikes = match ($data[PassengerTireSpikesElement::ELEMENT])
-        {
-            'true' => 'шипованные',
-            'false' => 'нешипованные',
-        };
-
         $tireType = match ($data[self::ELEMENT])
         {
             TireSeasonEnum::WINTER->value => 'Зимние',
@@ -90,10 +84,15 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         {
             return $tireType;
         }
-        else
+
+        /** Если шина зимняя - проверяем, является ли она шипованная и конкатенируем */
+        $spikes = match ($data[PassengerTireSpikesElement::ELEMENT])
         {
-            return sprintf('%s %s', $tireType, $spikes);
-        }
+            'true' => 'шипованные',
+            'false' => 'нешипованные',
+        };
+
+        return sprintf('%s %s', $tireType, $spikes);
     }
 
     public function element(): string

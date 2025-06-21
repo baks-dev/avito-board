@@ -67,7 +67,7 @@ final class ProductTransformerExtension extends AbstractExtension
             $avitoBoardElements,
             static function(AvitoBoardElementInterface $element) {
                 return $element->isMapping() === false;
-            }
+            },
         );
 
         /**
@@ -78,56 +78,40 @@ final class ProductTransformerExtension extends AbstractExtension
 
         foreach($unmappedElements as $element)
         {
-            if($element->getDefault() === null)
+            $data = $element->fetchData($product);
+
+            /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
+            if($data === null && $element->isRequired())
             {
-                $data = $element->fetchData($product);
+                $this->logger->critical(
+                    sprintf(
+                        'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
+                        $element->element(),
+                        $this->product,
+                        $this->article,
+                    ),
+                    [self::class.':'.__LINE__],
+                );
 
-                /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-                if($data === null && $element->isRequired())
-                {
-                    $this->logger->critical(
-                        sprintf(
-                            'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
-                            $element->element(),
-                            $this->product,
-                            $this->article
-                        ),
-                        [self::class.':'.__LINE__]
-                    );
-
-                    return null;
-                }
-
-                /** Если значение свойства продукта null - пропускать элемент, не добавлять в фид */
-                if($data === null)
-                {
-                    continue;
-                }
-
-                $elements[$element->element()] = $data;
+                return null;
             }
-            else
+
+            /** Добавляем элемент если имеется результат значения */
+            if(false === empty($data))
             {
-                $elements[$element->element()] = $element->getDefault();
+                $elements[$element->element()] = $data;
             }
         }
 
         /** Преобразуем строку маппера в массив элементов */
         $mappedElements = $this->getElements();
 
-        if(null === $mappedElements)
+        if(empty($mappedElements))
         {
             return null;
         }
 
-        /**
-         * Объединяем массивы элементов по принципу:
-         * - элемент, описанный в классе имеет приоритет над элементом, полученным из маппера
-         *  (элемент класса перезаписывает элемент из маппера)
-         */
-        $feedElements = array_merge($mappedElements, $elements);
-
-        return $feedElements;
+        return array_merge($mappedElements, $elements);
     }
 
     private function getElements(): ?array
@@ -154,9 +138,9 @@ final class ProductTransformerExtension extends AbstractExtension
                         'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                         $element->element(),
                         $this->product,
-                        $this->article
+                        $this->article,
                     ),
-                    [self::class.':'.__LINE__]
+                    [self::class.':'.__LINE__],
                 );
             }
         });
