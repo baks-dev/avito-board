@@ -46,23 +46,21 @@ final class FeedController extends AbstractController
     {
 
         $cache = $appCache->init('avito-board');
+        //$cache->deleteItem('feed-'.$profile); // отключаем кеш для debug
 
-        $feed = $cache->get(
-            'feed-'.$profile,
-            function(ItemInterface $item) use (
-                $allProductsWithMapping,
-                $profile
-            ): string {
+        $feed = $cache->get('feed-'.$profile, function(ItemInterface $item) use (
+            $allProductsWithMapping,
+            $profile
+        ): string {
 
-                $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
+            $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
 
-                $products = $allProductsWithMapping
-                    ->forProfile($profile)
-                    ->findAll();
+            $products = $allProductsWithMapping
+                ->forProfile($profile)
+                ->findAll();
 
-                return $this->render(['products' => $products], file: 'export.html.twig')->getContent();
-            },
-        );
+            return $this->render(['products' => $products], file: 'export.html.twig')->getContent();
+        });
 
         $response = new Response($feed);
         $response->headers->set('Content-Type', 'application/xml');

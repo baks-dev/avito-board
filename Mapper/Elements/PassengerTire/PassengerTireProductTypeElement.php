@@ -39,9 +39,9 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
 
     private const string LABEL = 'Тип автомобиля (тип продукта)';
 
-    public function isMapping(): true
+    public function isMapping(): false
     {
-        return true;
+        return false;
     }
 
     public function isRequired(): true
@@ -54,10 +54,9 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function getDefault(): null
+    public function getDefault(): string
     {
-        return null;
-        //return 'Легковые шины';
+        return 'Легковые шины';
     }
 
     public function getHelp(): null
@@ -67,6 +66,16 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string
     {
+        if(str_starts_with($data["product_article"], 'WL-H188'))
+        {
+            return 'Шины для грузовиков и спецтехники';
+        }
+
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         return match ($data[self::ELEMENT])
         {
             //TireCarTypeEnum::PASSENGER->value => 'Легковые шины',
