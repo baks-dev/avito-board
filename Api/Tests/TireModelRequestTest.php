@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Api\Tests;
 
 use BaksDev\Avito\Board\Api\TireModelRequest;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
@@ -35,7 +36,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 final class TireModelRequestTest extends KernelTestCase
 {
-    public function modelProvider(): array
+    public static function modelProvider(): array
     {
         return [
             ["Triangle Sportex XL TH201"],
@@ -53,9 +54,7 @@ final class TireModelRequestTest extends KernelTestCase
         ];
     }
 
-    /**
-     * @dataProvider modelProvider
-     */
+    #[DataProvider(methodName: 'modelProvider')]
     public function testRequest(string $productName): void
     {
         self::bootKernel();
