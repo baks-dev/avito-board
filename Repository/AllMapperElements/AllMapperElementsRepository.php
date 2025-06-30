@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2023.  Baks.dev <admin@baks.dev>
- *
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -47,10 +47,10 @@ final class AllMapperElementsRepository implements AllMapperElementsInterface
             ->createQueryBuilder(self::class)
             ->bindLocal();
 
-        $dbal->select('avito_board.id');
-        $dbal->addSelect('avito_board.event');
-
-        $dbal->from(AvitoBoard::class, 'avito_board');
+        $dbal
+            ->select('avito_board.id')
+            ->addSelect('avito_board.event')
+            ->from(AvitoBoard::class, 'avito_board');
 
         $dbal->join(
             'avito_board',
@@ -60,14 +60,15 @@ final class AllMapperElementsRepository implements AllMapperElementsInterface
         );
 
         /** Категория */
-        $dbal->addSelect('category.id as category_id');
-        $dbal->addSelect('category.event as category_event');
-        $dbal->join(
-            'avito_board',
-            CategoryProduct::class,
-            'category',
-            'category.id = avito_board.id'
-        );
+        $dbal
+            ->addSelect('category.id as category_id')
+            ->addSelect('category.event as category_event')
+            ->join(
+                'avito_board',
+                CategoryProduct::class,
+                'category',
+                'category.id = avito_board.id',
+            );
 
         /** События категории */
         $dbal->addSelect('category_event.sort');
@@ -80,8 +81,7 @@ final class AllMapperElementsRepository implements AllMapperElementsInterface
         );
 
         /** Обложка */
-        $dbal->addSelect('category_cover.ext');
-        $dbal->addSelect('category_cover.cdn');
+
         $dbal->leftJoin(
             'category_event',
             CategoryProductCover::class,
@@ -89,26 +89,28 @@ final class AllMapperElementsRepository implements AllMapperElementsInterface
             'category_cover.event = category_event.id',
         );
 
-        $dbal->addSelect(
-            "
-			CASE
-			   WHEN category_cover.name IS NOT NULL THEN
-					CONCAT ( '/upload/".$dbal->table(CategoryProductCover::class)."' , '/', category_cover.name)
-			   ELSE NULL
-			END AS cover
-		"
-        );
+        $dbal
+            ->addSelect("
+                CASE
+                   WHEN category_cover.name IS NOT NULL THEN
+                        CONCAT ( '/upload/".$dbal->table(CategoryProductCover::class)."' , '/', category_cover.name)
+                   ELSE NULL
+                END AS cover
+			")
+            ->addSelect('category_cover.ext')
+            ->addSelect('category_cover.cdn');
+
 
         /** Перевод категории */
-        $dbal->addSelect('category_trans.name as category_name');
-        $dbal->addSelect('category_trans.description as category_description');
-
-        $dbal->leftJoin(
-            'category_event',
-            CategoryProductTrans::class,
-            'category_trans',
-            'category_trans.event = category_event.id AND category_trans.local = :local',
-        );
+        $dbal
+            ->addSelect('category_trans.name as category_name')
+            ->addSelect('category_trans.description as category_description')
+            ->leftJoin(
+                'category_event',
+                CategoryProductTrans::class,
+                'category_trans',
+                'category_trans.event = category_event.id AND category_trans.local = :local',
+            );
 
         return $this->paginator->fetchAllAssociative($dbal);
     }

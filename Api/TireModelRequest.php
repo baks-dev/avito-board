@@ -67,6 +67,11 @@ final readonly class TireModelRequest
             return json_decode($json, true);
         });
 
+
+        // Форматированная строка модели без найденного бренда
+        $formatModel['brand'] = $nameInfo;
+        $formatModel['model'] = $nameInfo;
+
         $string = mb_strtolower($nameInfo);
         $searchArray = explode(" ", $string);
 
@@ -78,6 +83,10 @@ final readonly class TireModelRequest
 
             if(in_array(mb_strtolower($brandName), $searchArray, false))
             {
+
+                // Форматируем массив с брендом и моделью
+                $formatModel['model'] = trim(str_ireplace($brandName, '', $formatModel['brand']));
+                $formatModel['brand'] = $brandName;
 
                 // удаляем название бренда из массива для поиска
                 $unset = array_search(mb_strtolower($brandName), $searchArray);
@@ -178,15 +187,15 @@ final readonly class TireModelRequest
             $result['model'] = array_search($maxValue, $result['models'], true);
         }
 
-        // если модель не найдена - возвращаем null
+        // если модель не найдена - возвращаем результат отформатированной строки
         if(empty($result))
         {
             $this->logger->critical(
-                'Не найдено совпадений бренда или модели для продукта '.$nameInfo,
-                [__FILE__.':'.__LINE__]
+                sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
+                [self::class.':'.__LINE__, $formatModel],
             );
 
-            return null;
+            $result = $formatModel;
         }
 
         return $result;

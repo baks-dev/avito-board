@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -63,19 +63,18 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(array $data): string|null
     {
-        if($data['product_price'] === 0)
+        if(true === empty($data['product_price']))
         {
-            return (string) $data['product_price'];
+            return 'По запросу';
         }
 
-        $money = new Money($data['product_price']);
+        $money = new Money($data['product_price'], true);
 
-        $percent = $money->percent($data['avito_profile_percent']);
+        $money->applyString($data['avito_profile_percent']);
 
-        $total = ($money->getValue() + $percent->getValue()) / 100;
-        return (string) $total;
+        return (string) $money->getRoundValue();
     }
 
     public function element(): string

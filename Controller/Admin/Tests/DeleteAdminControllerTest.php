@@ -23,9 +23,10 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
+use BaksDev\Avito\Board\Entity\AvitoBoard;
+use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
-use BaksDev\Products\Category\UseCase\Admin\NewEdit\Tests\CategoryProductNewTest;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -34,31 +35,41 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 /**
  * @group avito-board
  * @group avito-board-controller
- * @group avito-board-controller-new
+ * @group avito-board-controller-delete
  *
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\EditControllerTest::class
  */
 #[When(env: 'test')]
-final class NewControllerTest extends WebTestCase
+final class DeleteAdminControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_NEW';
+    private const string ROLE = 'ROLE_AVITO_BOARD_DELETE';
 
-    private static string $url = '/admin/avito-board/mapper/new/%s/%s';
+    private static string $url = '/admin/avito-board/mapper/delete/%s';
 
     public static function setUpBeforeClass(): void
     {
-        $testCategory = new CategoryProductNewTest();
-        $testCategory::setUpBeforeClass();
-        $testCategory->testUseCase();
-
         /** @var EntityManagerInterface $em */
         $em = self::getContainer()->get(EntityManagerInterface::class);
 
-        $category = $em->getRepository(CategoryProduct::class)->find(CategoryProductUid::TEST);
+        /** Находим корень */
+        $avitoBoard = $em->getRepository(AvitoBoard::class)
+            ->find(CategoryProductUid::TEST);
 
-        self::assertNotNull($category);
+        if(empty($avitoBoard))
+        {
+            self::assertNull($avitoBoard);
+            return;
+        }
 
-        self::$url = sprintf(self::$url, $category->getId(), 'Легковые шины');
+        self::assertNotNull($avitoBoard);
+
+        /** Находим активное событие */
+        $activeEvent = $em->getRepository(AvitoBoardEvent::class)
+            ->find($avitoBoard->getEvent());
+
+        self::assertNotNull($activeEvent);
+
+        self::$url = sprintf(self::$url, $activeEvent);
 
         $em->clear();
     }
@@ -80,7 +91,6 @@ final class NewControllerTest extends WebTestCase
 
             self::assertResponseIsSuccessful();
         }
-        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_ADMIN */
@@ -100,12 +110,10 @@ final class NewControllerTest extends WebTestCase
 
             self::assertResponseIsSuccessful();
         }
-
-        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_USER */
-    public function testRoleUserFiled(): void
+    public function testRoleUserDeny(): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -120,8 +128,6 @@ final class NewControllerTest extends WebTestCase
 
             self::assertResponseStatusCodeSame(403);
         }
-
-        self::assertTrue(true);
     }
 
     /** Доступ без роли */
@@ -139,7 +145,5 @@ final class NewControllerTest extends WebTestCase
             // Full authentication is required to access this resource
             self::assertResponseStatusCodeSame(401);
         }
-
-        self::assertTrue(true);
     }
 }

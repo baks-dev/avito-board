@@ -21,31 +21,32 @@
  *  THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace BaksDev\Avito\Board\Controller\Public\Tests;
 
-namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper\Tests;
-
-use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
-
 
 /**
  * @group avito-board
+ * @group avito-board-controller-feed
+ *
  */
 #[When(env: 'test')]
-class AllProductsWithMapperRepositoryTest extends KernelTestCase
+final class FeedPublicControllerTest extends WebTestCase
 {
-    public function testUseCase(): void
+    private const string URL = '/avito-board/%s/feed.xml';
+
+    /** Доступ по без роли */
+    public function testGuestFiled(): void
     {
-        /** @var AllProductsWithMapperInterface $AllProductsWithMapper */
-        $AllProductsWithMapper = self::getContainer()->get(AllProductsWithMapperInterface::class);
+        $url = sprintf(self::URL, UserProfileUid::TEST);
 
-        $AllProductsWithMapper
-            ->forProfile(new UserProfileUid())
-            ->findAll();
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request('GET', $url);
 
-        self::assertTrue(true);
+        // Full authentication is required to access this resource
+        self::assertResponseStatusCodeSame(200);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -38,28 +38,22 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
 
     private ?CategoryProductUid $category = null;
 
-    public function __construct(
-        private readonly DBALQueryBuilder $DBALQueryBuilder
-    ) {}
+    public function __construct(private readonly DBALQueryBuilder $DBALQueryBuilder) {}
 
     /** Соответствие по активной категории */
     public function onlyActive(): self
     {
         $this->active = true;
+
         return $this;
     }
 
     /** Соответствие по категории */
-    public function category(CategoryProduct|CategoryProductUid|string $category): self
+    public function forCategory(CategoryProduct|CategoryProductUid $category): self
     {
         if($category instanceof CategoryProduct)
         {
             $category = $category->getId();
-        }
-
-        if(is_string($category))
-        {
-            $category = new CategoryProductUid($category);
         }
 
         $this->category = $category;
@@ -68,7 +62,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
     }
 
     /** Получаем коллекцию категорий, для которых не найдено совпадений с категорией из маппера */
-    public function execute(): Generator
+    public function findAll(): Generator
     {
         $dbal = $this->DBALQueryBuilder
             ->createQueryBuilder(self::class)
@@ -83,7 +77,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
                 'category',
                 CategoryProductEvent::class,
                 'category_event',
-                'category_event.id = category.event'
+                'category_event.id = category.event',
             );
 
         $dbal
@@ -91,7 +85,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
                 'category',
                 CategoryProductTrans::class,
                 'category_trans',
-                'category_trans.event = category.event AND category_trans.local = :local'
+                'category_trans.event = category.event AND category_trans.local = :local',
             );
 
         /** Категория с определенным идентификатором */

@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,8 @@ use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
 
 /**
  * Название объявления — строка до 50 символов.
- * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте
+ * слово «продам».
  *
  * Элемент обязателен для продуктов:
  * - Кофты и футболки
@@ -78,7 +79,12 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
     {
         $search = $this->request->getModel($data['product_name']);
 
-        if(null == $search)
+        if(true === empty($search))
+        {
+            return null;
+        }
+
+        if(false === json_validate($data['avito_board_mapper']))
         {
             return null;
         }

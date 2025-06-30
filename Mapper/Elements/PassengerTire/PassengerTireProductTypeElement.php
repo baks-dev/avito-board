@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
- *
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *
+ *  
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *
+ *  
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,6 +27,8 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Field\Tire\CarType\Type\TireCarTypeEnum;
+use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
 /**
  * Тип товара
@@ -35,7 +37,7 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'ProductType';
 
-    private const string LABEL = 'Тип товара';
+    private const string LABEL = 'Тип автомобиля (тип продукта)';
 
     public function isMapping(): false
     {
@@ -62,9 +64,26 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): null
+    public function fetchData(array $data): string
     {
-        return null;
+        if(str_starts_with($data["product_article"], 'WL-H188'))
+        {
+            return 'Шины для грузовиков и спецтехники';
+        }
+
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
+        return match ($data[self::ELEMENT])
+        {
+            //TireCarTypeEnum::PASSENGER->value => 'Легковые шины',
+            //TireCarTypeEnum::JEEP->value => 'Легковые шины',
+            //TireCarTypeEnum::BUS->value => 'Легковые шины',
+            TireCarTypeEnum::TRUCK->value => 'Шины для грузовиков и спецтехники',
+            default => 'Легковые шины',
+        };
     }
 
     public function element(): string

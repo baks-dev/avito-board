@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -67,12 +67,12 @@ class LengthForDeliveryElement implements AvitoBoardElementInterface
     {
         $length = $data['product_length_delivery'];
 
-        if(null !== $length)
+        if(true === empty($length))
         {
-            return (string) $length;
+            return null;
         }
 
-        return null;
+        return (string) $length;
     }
 
     public function element(): string

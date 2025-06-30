@@ -23,57 +23,25 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
-use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
-use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
  * @group avito-board-controller
- * @group avito-board-controller-edit
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
+ * @group avito-board-controller-index
+ *
+ * @depends BaksDev\Avito\Board\Controller\Public\Tests\FeedControllerTest::class
  */
 #[When(env: 'test')]
-final class EditControllerTest extends WebTestCase
+final class IndexAdminControllerTest extends WebTestCase
 {
-    private const string ROLE = 'ROLE_AVITO_BOARD_EDIT';
+    private const string URL = '/admin/avito-board/mapper/categories';
 
-    private static string $url = '/admin/avito-board/mapper/edit/%s';
+    private const string ROLE = 'ROLE_AVITO_BOARD_INDEX';
 
-    public static function setUpBeforeClass(): void
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-
-        /** Находим корень */
-        $avitoBoard = $em->getRepository(AvitoBoard::class)
-            ->find(CategoryProductUid::TEST);
-
-        if(empty($avitoBoard))
-        {
-            self::assertNull($avitoBoard);
-            return;
-        }
-
-        self::assertNotNull($avitoBoard);
-
-        /** Находим активное событие */
-        $activeEvent = $em
-            ->getRepository(AvitoBoardEvent::class)
-            ->find($avitoBoard->getEvent());
-
-        self::assertNotNull($activeEvent);
-
-        self::$url = sprintf(self::$url, $activeEvent);
-
-        $em->clear();
-    }
-
-    /** Доступ по роли */
+    /** Доступ по роли ROLE_PRODUCT */
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -86,10 +54,12 @@ final class EditControllerTest extends WebTestCase
             $usr = TestUserAccount::getModer(self::ROLE);
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseIsSuccessful();
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_ADMIN */
@@ -101,17 +71,20 @@ final class EditControllerTest extends WebTestCase
         foreach(TestUserAccount::getDevice() as $device)
         {
             $client->setServerParameter('HTTP_USER_AGENT', $device);
+
             $usr = TestUserAccount::getAdmin();
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseIsSuccessful();
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ по роли ROLE_USER */
-    public function testRoleUserDeny(): void
+    public function testRoleUserFiled(): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();
@@ -122,10 +95,12 @@ final class EditControllerTest extends WebTestCase
 
             $usr = TestUserAccount::getUsr();
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::$url);
+            $client->request('GET', self::URL);
 
             self::assertResponseStatusCodeSame(403);
         }
+
+        self::assertTrue(true);
     }
 
     /** Доступ без роли */
@@ -137,10 +112,13 @@ final class EditControllerTest extends WebTestCase
         foreach(TestUserAccount::getDevice() as $device)
         {
             $client->setServerParameter('HTTP_USER_AGENT', $device);
-            $client->request('GET', self::$url);
+
+            $client->request('GET', self::URL);
 
             // Full authentication is required to access this resource
             self::assertResponseStatusCodeSame(401);
         }
+
+        self::assertTrue(true);
     }
 }

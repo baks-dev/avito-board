@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -88,14 +88,12 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
     {
         $avitoIMG = $this->transform($data['avito_product_images']);
 
-        if(null !== $avitoIMG)
+        if(true === empty($avitoIMG))
         {
-            return $avitoIMG;
+            $this->transform($data['product_images']);
         }
-        else
-        {
-            return $this->transform($data['product_images']);
-        }
+
+        return $avitoIMG;
     }
 
     public function element(): string
@@ -121,7 +119,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
 
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, function($f) {
+        usort($array, static function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 
@@ -135,9 +133,9 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         foreach($array as $image)
         {
             // Если изображение не загружено - не рендерим
-            if(null === $image)
+            if(true === empty($image))
             {
-                return null;
+                continue;
             }
 
             $imgHost = 'https://'.($image->img_cdn === true ? $this->cdnHost : $this->host);
@@ -148,6 +146,6 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
             $render .= $element;
         }
 
-        return $render;
+        return $render ?: null;
     }
 }

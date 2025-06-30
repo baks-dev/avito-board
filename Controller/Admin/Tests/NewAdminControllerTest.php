@@ -23,25 +23,47 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
+use BaksDev\Products\Category\Entity\CategoryProduct;
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\UseCase\Admin\NewEdit\Tests\CategoryProductNewTest;
 use BaksDev\Users\User\Tests\TestUserAccount;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
 /**
  * @group avito-board
  * @group avito-board-controller
- * @group avito-board-controller-before-new
+ * @group avito-board-controller-new
  *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\IndexControllerTest::class
+ * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
  */
 #[When(env: 'test')]
-final class BeforeNewControllerTest extends WebTestCase
+final class NewAdminControllerTest extends WebTestCase
 {
-    private const string URL = '/admin/avito-board/mapper/before_new';
+    private const string ROLE = 'ROLE_AVITO_BOARD_NEW';
 
-    private const string ROLE = 'ROLE_AVITO_BOARD_BEFORE_NEW';
+    private static string $url = '/admin/avito-board/mapper/new/%s/%s';
 
-    /** Доступ по роли  */
+    public static function setUpBeforeClass(): void
+    {
+        $testCategory = new CategoryProductNewTest();
+        $testCategory::setUpBeforeClass();
+        $testCategory->testUseCase();
+
+        /** @var EntityManagerInterface $em */
+        $em = self::getContainer()->get(EntityManagerInterface::class);
+
+        $category = $em->getRepository(CategoryProduct::class)->find(CategoryProductUid::TEST);
+
+        self::assertNotNull($category);
+
+        self::$url = sprintf(self::$url, $category->getId(), 'Легковые шины');
+
+        $em->clear();
+    }
+
+    /** Доступ по роли */
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -54,11 +76,10 @@ final class BeforeNewControllerTest extends WebTestCase
             $usr = TestUserAccount::getModer(self::ROLE);
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::URL);
+            $client->request('GET', self::$url);
 
             self::assertResponseIsSuccessful();
         }
-
         self::assertTrue(true);
     }
 
@@ -75,7 +96,7 @@ final class BeforeNewControllerTest extends WebTestCase
             $usr = TestUserAccount::getAdmin();
 
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::URL);
+            $client->request('GET', self::$url);
 
             self::assertResponseIsSuccessful();
         }
@@ -95,7 +116,7 @@ final class BeforeNewControllerTest extends WebTestCase
 
             $usr = TestUserAccount::getUsr();
             $client->loginUser($usr, 'user');
-            $client->request('GET', self::URL);
+            $client->request('GET', self::$url);
 
             self::assertResponseStatusCodeSame(403);
         }
@@ -113,7 +134,7 @@ final class BeforeNewControllerTest extends WebTestCase
         {
             $client->setServerParameter('HTTP_USER_AGENT', $device);
 
-            $client->request('GET', self::URL);
+            $client->request('GET', self::$url);
 
             // Full authentication is required to access this resource
             self::assertResponseStatusCodeSame(401);
