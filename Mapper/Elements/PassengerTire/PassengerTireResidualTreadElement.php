@@ -55,11 +55,6 @@ class PassengerTireResidualTreadElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     // Т.к. не реализуем б/у, значение будет максимально возможное
     public function getDefault(): string
     {

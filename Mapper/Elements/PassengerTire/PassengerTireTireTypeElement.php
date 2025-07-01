@@ -35,19 +35,14 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
 
     private const string LABEL = 'Сезонность шин';
 
-    public function isMapping(): true
+    public function isMapping(): bool
     {
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): bool
     {
         return true;
-    }
-
-    public function isChoices(): false
-    {
-        return false;
     }
 
     public function getDefault(): null
@@ -55,13 +50,19 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function getHelp(): null
+    public function getHelp(): ?string
     {
         return null;
     }
 
     public function fetchData(array $data): ?string
     {
+
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         if(null === $data[self::ELEMENT])
         {
             return null;

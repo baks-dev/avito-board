@@ -55,11 +55,6 @@ class PassengerTireBackTireSectionWidthElement
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -72,9 +67,14 @@ class PassengerTireBackTireSectionWidthElement
 
     public function fetchData(array $data): ?string
     {
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         if(null === $data[self::ELEMENT])
         {
-            return null;
+            return $this->getDefault();
         }
 
         return preg_replace('/\D/', '', $data[self::ELEMENT]);
