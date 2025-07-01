@@ -54,11 +54,6 @@ final readonly class PassengerTireBrandElement implements AvitoBoardElementInter
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;

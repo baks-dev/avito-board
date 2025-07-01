@@ -62,11 +62,6 @@ class PassengerTireQuantityElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     // публикуем цену за 1 шт.
     public function getDefault(): string
     {

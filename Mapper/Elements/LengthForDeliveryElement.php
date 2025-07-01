@@ -48,11 +48,6 @@ class LengthForDeliveryElement implements AvitoBoardElementInterface
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;

@@ -784,7 +784,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
         $result = $dbal
-            ->enableCache('orders-order', '1 day')
+            ->enableCache('avito-board', '1 day')
             ->fetchAllAssociative();
 
         if(empty($result))

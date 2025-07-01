@@ -28,7 +28,6 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Field\Tire\CarType\Type\TireCarTypeEnum;
-use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
 /**
  * Тип товара
@@ -39,9 +38,9 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
 
     private const string LABEL = 'Тип автомобиля (тип продукта)';
 
-    public function isMapping(): false
+    public function isMapping(): true
     {
-        return false;
+        return true;
     }
 
     public function isRequired(): true
@@ -49,12 +48,7 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
-    public function getDefault(): string
+    public function getDefault(): string|null
     {
         return 'Легковые шины';
     }
@@ -64,26 +58,21 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(array $data): string|null
     {
-        if(str_starts_with($data["product_article"], 'WL-H188'))
-        {
-            return 'Шины для грузовиков и спецтехники';
-        }
-
         if(false === isset($data[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        return match ($data[self::ELEMENT])
+        $match = match ($data[self::ELEMENT])
         {
-            //TireCarTypeEnum::PASSENGER->value => 'Легковые шины',
-            //TireCarTypeEnum::JEEP->value => 'Легковые шины',
-            //TireCarTypeEnum::BUS->value => 'Легковые шины',
+            TireCarTypeEnum::PASSENGER->value, TireCarTypeEnum::JEEP->value, TireCarTypeEnum::BUS->value => 'Легковые шины',
             TireCarTypeEnum::TRUCK->value => 'Шины для грузовиков и спецтехники',
-            default => 'Легковые шины',
+            default => null,
         };
+
+        return $match;
     }
 
     public function element(): string

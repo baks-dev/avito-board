@@ -58,24 +58,9 @@ class SweatersAndShirtsGoodsSubType implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): true
+    public function getDefault(): string
     {
-        return true;
-    }
-
-    public function getDefault(): array
-    {
-        return [
-            'Футболка',
-            'Поло',
-            'Майка',
-            'Свитшот',
-            'Толстовка / худи',
-            'Джемпер',
-            'Свитер',
-            'Кардиган',
-            'Кофта'
-        ];
+        return 'Футболка';
     }
 
     public function getHelp(): null
@@ -85,9 +70,14 @@ class SweatersAndShirtsGoodsSubType implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         if(null === $data[self::ELEMENT])
         {
-            return null;
+            return $this->getDefault();
         }
 
         return $data[self::ELEMENT];

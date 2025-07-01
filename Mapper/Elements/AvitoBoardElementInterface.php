@@ -29,34 +29,34 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 interface AvitoBoardElementInterface
 {
     /**
-     * @return true если элемент будет участвовать в маппинге и данные будут браться из маппера
-     *
-     * @return false если элемент не участвует в маппинге и его не нужно показывать в форме соответствия
+     * @return true если элемент будет участвовать в маппинге и данные будут браться из формы маппера
+     * @return false если элемент не участвует в маппинге и его не нужно показывать в форме маппера
      */
     public function isMapping(): bool;
 
     /**
-     * @return true если значение ОБЯЗАТЕЛЬНО для элемента Авито и для нас
-     * @return false если значение НЕ ОБЯЗАТЕЛЬНО для элемента Авито и для нас
+     * @return true если значение ОБЯЗАТЕЛЬНО для элемента Авито
+     * @return false если значение НЕ ОБЯЗАТЕЛЬНО для элемента Авито
      */
     public function isRequired(): bool;
 
-    public function isChoices(): bool;
-
     /**
-     * @return null|false если данные берутся не из класса, а из свойства продукта по соответствующему ключу
-     *
-     * @return string|array если данные берутся статически, из описания класса
+     * @return null|false - если данные берутся не из класса, а из свойства продукта (БД) по соответствующему ключу
+     * @return string - если данные берутся статически, из описания класса
      */
-    public function getDefault(): null|string|array|false;
+    public function getDefault(): string|false|null;
 
     /**
-     * Возвращает название шаблона формата <@domain:path-to-folder>
+     * Возвращает название шаблона формата <@package:path-to-folder>
      */
     public function getHelp(): ?string;
 
     /**
-     * Извлекает данные из массива данных, форматирует их (опционально)
+     * Извлекает данные из массива данных, форматирует их
+     *
+     * @param array $data
+     * - свойства из продукта, если элемент НЕ УЧАСТВУЕТ в маппинге ($this->isMapping() === false)
+     * - свойства из результата маппера, если элемент УЧАСТВУЕТ в маппинге ($this->isMapping() === true)
      */
     public function fetchData(array $data): ?string;
 

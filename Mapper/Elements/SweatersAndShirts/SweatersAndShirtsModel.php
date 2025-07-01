@@ -54,11 +54,6 @@ final readonly class SweatersAndShirtsModel implements AvitoBoardElementInterfac
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -68,8 +63,6 @@ final readonly class SweatersAndShirtsModel implements AvitoBoardElementInterfac
     {
         return null;
     }
-
-    public function setData(string|array $product): void {}
 
     public function fetchData(array $data): ?string
     {

@@ -44,11 +44,6 @@ class SweatersAndShirtsApparel implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -74,7 +69,7 @@ class SweatersAndShirtsApparel implements AvitoBoardElementInterface
                 {
                     'Мужской' => 'Кофты и футболки',
                     'Женский' => 'Топы и футболки',
-                    default => null
+                    default => null,
                 };
             }
         }
