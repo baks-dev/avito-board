@@ -52,11 +52,6 @@ class DescriptionElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;

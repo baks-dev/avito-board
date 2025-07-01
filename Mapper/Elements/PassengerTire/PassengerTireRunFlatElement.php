@@ -51,11 +51,6 @@ class PassengerTireRunFlatElement
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): string
     {
         return 'Нет';
@@ -68,12 +63,19 @@ class PassengerTireRunFlatElement
 
     public function fetchData(array $data): ?string
     {
-        return match ($data[self::ELEMENT])
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
+        $match = match ($data[self::ELEMENT])
         {
             'true' => 'Да',
             'false' => 'Нет',
-            default => null
+            default => $this->getDefault(),
         };
+
+        return $match;
     }
 
     public function element(): string

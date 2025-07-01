@@ -42,10 +42,11 @@ class GetIdByArticleRequestTest extends KernelTestCase
     public static function setUpBeforeClass(): void
     {
         self::$authorization = new AvitoTokenAuthorization(
-            new UserProfileUid(),
-            $_SERVER['TEST_AVITO_CLIENT'],
-            $_SERVER['TEST_AVITO_SECRET'],
-            $_SERVER['TEST_AVITO_USER'],
+            profile: new UserProfileUid(),
+            client: $_SERVER['TEST_AVITO_CLIENT'],
+            secret: $_SERVER['TEST_AVITO_SECRET'],
+            user: $_SERVER['TEST_AVITO_USER'],
+            percent: '0',
         );
     }
 

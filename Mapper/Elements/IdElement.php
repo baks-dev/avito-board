@@ -58,11 +58,6 @@ class IdElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): bool
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -73,7 +68,7 @@ class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(array $data): string|null
     {
         return $data['product_article'];
     }

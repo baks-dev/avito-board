@@ -47,11 +47,6 @@ class AdTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): string
     {
         return 'Товар приобретен на продажу';

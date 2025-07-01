@@ -104,11 +104,6 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -151,7 +146,6 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
 
             return $women;
         }
-
 
         return null;
     }

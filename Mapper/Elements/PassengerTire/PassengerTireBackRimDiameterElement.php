@@ -45,17 +45,12 @@ class PassengerTireBackRimDiameterElement
 
     public const string LABEL = 'Диаметр шины задней оси';
 
-    public function isMapping(): true
+    public function isMapping(): bool
     {
         return true;
     }
 
-    public function isRequired(): false
-    {
-        return false;
-    }
-
-    public function isChoices(): false
+    public function isRequired(): bool
     {
         return false;
     }
@@ -72,9 +67,14 @@ class PassengerTireBackRimDiameterElement
 
     public function fetchData(array $data): ?string
     {
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         if(null === $data[self::ELEMENT])
         {
-            return null;
+            return $this->getDefault();
         }
 
         return preg_replace('/\D/', '', $data[self::ELEMENT]);
