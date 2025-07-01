@@ -28,6 +28,7 @@ use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldU
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -58,57 +59,29 @@ final class AvitoBoardMapperElementForm extends AbstractType
                 /** @var ArrayCollection<CategoryProductSectionFieldUid> $productFields */
                 $productFields = $options['product_fields'];
 
-                if(null === $element->getDefault())
-                {
-                    $form
-                        ->add('productField', ChoiceType::class, [
-                            'choices' => $productFields,
-                            'choice_value' => function(?CategoryProductSectionFieldUid $field) {
-                                return $field?->getValue();
-                            },
-                            'choice_label' => function(CategoryProductSectionFieldUid $field) {
-                                return $field->getAttr();
-                            },
-                            'label' => $element->label(),
-                            'help' => $element->getHelp(),
-                            'expanded' => false,
-                            'multiple' => false,
-                            'required' => false,
-                        ]);
-                }
+                $form
+                    ->add('productField', ChoiceType::class, [
+                        'choices' => $productFields,
+                        'choice_value' => function(?CategoryProductSectionFieldUid $field) {
+                            return $field?->getValue();
+                        },
+                        'choice_label' => function(CategoryProductSectionFieldUid $field) {
+                            return $field->getAttr();
+                        },
+                        'label' => $element->label(),
+                        'help' => $element->getHelp(),
+                        'expanded' => false,
+                        'multiple' => false,
+                        'required' => false,
+                    ]);
 
-                if(null !== $element->getDefault())
-                {
-                    if($element->isChoices())
-                    {
-                        $form
-                            ->add('def', ChoiceType::class, [
-                                'choices' => $element->getDefault(),
-                                'choice_value' => function(?string $element) {
-                                    return $element;
-                                },
-                                'choice_label' => function(string $element) {
-                                    return $element;
-                                },
-                                'label' => $element->label(),
-                                'help' => $element->getHelp(),
-                                'expanded' => false,
-                                'multiple' => false,
-                                'translation_domain' => 'avito-board.settings',
-                                'required' => false,
-                            ]);
-                    }
-                    else
-                    {
-                        $form->add('def', TextType::class, [
-                            'data' => $mapperElementDTO->getDef() ?? $element->getDefault(),
-                            'label' => $element->label(),
-                            'help' => $element->getHelp(),
-                            'translation_domain' => 'avito-board.settings',
-                            'required' => false,
-                        ]);
-                    }
-                }
+                $form->add('def', HiddenType::class, [
+                    'data' => $mapperElementDTO->getDef() ?? $element->getDefault(),
+                    'label' => $element->label(),
+                    'help' => $element->getHelp(),
+                    'translation_domain' => 'avito-board.settings',
+                    'required' => false,
+                ]);
             }
         });
     }

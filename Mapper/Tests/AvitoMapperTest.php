@@ -23,9 +23,10 @@
 
 declare(strict_types=1);
 
-namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper\Tests;
+namespace BaksDev\Avito\Board\Mapper\Tests;
 
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
+use BaksDev\Avito\Board\Twig\ProductTransformerExtension;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
@@ -34,9 +35,13 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  */
 #[When(env: 'test')]
-class AllProductsWithMapperRepositoryTest extends KernelTestCase
+class AvitoMapperTest extends KernelTestCase
 {
-    public function testUseCase(): void
+    private static ?float $mappingExecTime = null;
+
+    private static ?array $products = null;
+
+    public static function setUpBeforeClass(): void
     {
         /** @var AllProductsWithMapperInterface $AllProductsWithMapper */
         $AllProductsWithMapper = self::getContainer()->get(AllProductsWithMapperInterface::class);
@@ -47,6 +52,44 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
             ->forProfile($profile)
             ->findAll();
 
-        self::assertTrue(true);
+        if(false === $products)
+        {
+            self::assertTrue(true);
+            return;
+        }
+
+        self::$products = $products;
+    }
+
+    public function testMapping(): void
+    {
+        $products = self::$products;
+
+        /** @var ProductTransformerExtension $ProductTransformerExtension */
+        $ProductTransformerExtension = self::getContainer()->get(ProductTransformerExtension::class);
+
+        $feed = null;
+
+        // время маппинга
+        $start = microtime(true);
+        foreach($products as $product)
+        {
+            $mappingProduct = $ProductTransformerExtension->productTransform($product);
+
+            if(false === is_null($mappingProduct))
+            {
+                $feed[] = $mappingProduct;
+            }
+        }
+
+        /** Если теги не смаппились и фид пустой */
+        if(true === is_null($feed))
+        {
+            self::assertTrue(true);
+            return;
+        }
+
+        self::assertIsArray($feed);
+        self::$mappingExecTime = microtime(true) - $start;
     }
 }

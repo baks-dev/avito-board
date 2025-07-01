@@ -69,11 +69,6 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;

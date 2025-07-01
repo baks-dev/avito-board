@@ -48,11 +48,6 @@ class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;
@@ -65,6 +60,11 @@ class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): ?string
     {
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
         return $data[self::ELEMENT] ?? null;
     }
 

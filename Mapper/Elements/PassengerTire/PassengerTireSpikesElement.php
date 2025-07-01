@@ -41,39 +41,42 @@ final class PassengerTireSpikesElement implements AvitoBoardElementInterface
 
     private const string LABEL = 'Шипы';
 
-    public function isMapping(): true
+    public function isMapping(): bool
     {
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): bool
     {
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
-    public function getDefault(): string
+    public function getDefault(): ?string
     {
         return 'не шипованные';
     }
 
-    public function getHelp(): null
+    public function getHelp(): ?string
     {
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(array $data): string|null
     {
-        return match ($data[self::ELEMENT])
+
+        if(false === isset($data[self::ELEMENT]))
+        {
+            return $this->getDefault();
+        }
+
+        $match = match ($data[self::ELEMENT])
         {
             'true' => 'шипованные',
             'false' => 'не шипованные',
-            default => null
+            default => null,
         };
+
+        return $match;
     }
 
     public function element(): string

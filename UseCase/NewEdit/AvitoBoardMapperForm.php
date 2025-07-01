@@ -71,23 +71,37 @@ final class AvitoBoardMapperForm extends AbstractType
              */
             $avitoProduct = $this->mapperProvider->getProduct($avitoBoardMapperDTO->getAvito());
 
-            /** Проверка для new */
-            if($avitoBoardMapperDTO->getMapperElements()->isEmpty())
-            {
-                /**
-                 * Фильтрация элементов по соответствующей категории Авито
-                 * @var list<AvitoBoardElementInterface>|null $elements
-                 */
-                $elements = $this->mapperProvider->filterElements($avitoBoardMapperDTO->getAvito());
+            /**
+             * Фильтрация элементов (тегов) по категории - Авито
+             * @var list<AvitoBoardElementInterface>|null $avitoElements
+             */
+            $avitoElements = $this->mapperProvider->filterElements($avitoBoardMapperDTO->getAvito());
 
-                foreach($elements as $element)
+            foreach($avitoElements as $element)
+            {
+                $mapperElementDTO = new AvitoBoardMapperElementDTO();
+                $mapperElementDTO->setElement($element->element());
+
+                $existFormElement = null;
+
+                /** Проверка существования элемента в текущей форме */
+                $existFormElement = $avitoBoardMapperDTO->getMapperElements()->findFirst(
+                    function($key, $element) use ($mapperElementDTO) {
+
+                        /** @var $element AvitoBoardMapperElementDTO */
+                        return $element->getElement() === $mapperElementDTO->getElement();
+                    });
+
+                /** При добавлении нового элемента в форму */
+                if(true === $element->isMapping() and null === $existFormElement)
                 {
-                    if($element->isMapping())
-                    {
-                        $mapperElementDTO = new AvitoBoardMapperElementDTO();
-                        $mapperElementDTO->setElement($element->element());
-                        $avitoBoardMapperDTO->addMapperElement($mapperElementDTO);
-                    }
+                    $avitoBoardMapperDTO->addMapperElement($mapperElementDTO);
+                }
+
+                /** При удалении уже добавленного элемента в форму */
+                if(false === $element->isMapping() and $existFormElement instanceof AvitoBoardMapperElementDTO)
+                {
+                    $avitoBoardMapperDTO->removeMapperElement($existFormElement);
                 }
             }
 

@@ -59,7 +59,7 @@ final class ProductTransformerExtension extends AbstractExtension
         $this->product = $product['product_name'];
         $this->article = $product['product_article'];
 
-        /* Список всех элементов категории */
+        /** Список всех элементов категории */
         $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
 
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
@@ -101,6 +101,7 @@ final class ProductTransformerExtension extends AbstractExtension
             {
                 $elements[$element->element()] = $data;
             }
+
         }
 
         /** Преобразуем строку маппера в массив элементов */
@@ -131,12 +132,15 @@ final class ProductTransformerExtension extends AbstractExtension
             /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
             if(null === $value && $instance->isRequired())
             {
+
                 $require = true;
 
                 $this->logger->warning(
                     sprintf(
-                        'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
-                        $element->element(),
+                        '
+                        В свойства продукта не найдено значение для обязательного элемента Авито! 
+                        Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
+                        $element,
                         $this->product,
                         $this->article,
                     ),

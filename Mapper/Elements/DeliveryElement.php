@@ -53,11 +53,6 @@ class DeliveryElement
         return false;
     }
 
-    public function isChoices(): bool
-    {
-        return true;
-    }
-
     public function getDefault(): null
     {
         return null;

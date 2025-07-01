@@ -55,11 +55,6 @@ final readonly class SweatersAndShirtsBrand implements AvitoBoardElementInterfac
         return true;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): null
     {
         return null;

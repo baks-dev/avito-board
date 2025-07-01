@@ -43,8 +43,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class FeedCacheRefreshCommand extends Command
 {
-    private SymfonyStyle $io;
-
     public function __construct(
         private readonly AppCacheInterface $cache,
         private readonly MessageDispatchInterface $messageDispatch,

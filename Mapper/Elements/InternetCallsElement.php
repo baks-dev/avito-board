@@ -62,11 +62,6 @@ class InternetCallsElement
         return false;
     }
 
-    public function isChoices(): false
-    {
-        return false;
-    }
-
     public function getDefault(): string
     {
         return 'Да';
