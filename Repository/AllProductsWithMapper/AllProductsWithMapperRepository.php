@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 declare(strict_types=1);
@@ -502,28 +501,27 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 ProductStockTotal::class,
                 'product_stock_total',
                 '
-                    product_stock_total.profile = :profile AND product_stock_total.product = product.id 
+                    product_stock_total.profile = :profile 
                     
-                    AND
-                    (
-                        (product_offer.const IS NOT NULL AND product_stock_total.offer = product_offer.const) 
-                        OR
-                        (product_offer.const IS NULL AND product_stock_total.offer IS NULL)
-                    )
-
-                    AND
-                    (
-                        (product_variation.const IS NOT NULL AND product_stock_total.variation = product_variation.const) 
-                        OR
-                        (product_variation.const IS NULL AND product_stock_total.variation IS NULL)
-                    )
-
-                   AND
-                   (
-                        (product_modification.const IS NOT NULL AND product_stock_total.modification = product_modification.const) 
-                        OR
-                        (product_modification.const IS NULL AND product_stock_total.modification IS NULL)
-                   )
+                    AND product_stock_total.product = product.id 
+                    
+                    AND (CASE 
+                        WHEN product_offer.const IS NOT NULL 
+                        THEN product_stock_total.offer = product_offer.const
+                        ELSE product_stock_total.offer IS NULL
+                    END)
+                    
+                    AND (CASE 
+                        WHEN product_variation.const IS NOT NULL 
+                        THEN product_stock_total.variation = product_variation.const
+                        ELSE product_stock_total.variation IS NULL
+                    END)
+                   
+                    AND (CASE 
+                        WHEN product_modification.const IS NOT NULL 
+                        THEN product_stock_total.modification = product_modification.const
+                        ELSE product_stock_total.modification IS NULL
+                    END)
                 '
             )
                 ->setParameter(
@@ -537,7 +535,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     CASE
                        WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
                        THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
-
                        ELSE 0
                     END AS product_quantity
                 ');
@@ -660,26 +657,26 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     'product_modification',
                     DeliveryPackageProductParameter::class,
                     'product_package',
-                    'product_package.product = product.id AND 
+                    'product_package.product = product.id 
                     
-                    (
-                        (product_offer.const IS NOT NULL AND product_package.offer = product_offer.const) OR 
-                        (product_offer.const IS NULL AND product_package.offer IS NULL)
-                    )
+                    AND (CASE 
+                        WHEN product_offer.const IS NOT NULL 
+                        THEN product_package.offer = product_offer.const
+                        ELSE product_package.offer IS NULL
+                    END)
                     
-                    AND
-                     
-                    (
-                        (product_variation.const IS NOT NULL AND product_package.variation = product_variation.const) OR 
-                        (product_variation.const IS NULL AND product_package.variation IS NULL)
-                    )
-                     
-                   AND
+                   AND (CASE 
+                        WHEN product_variation.const IS NOT NULL 
+                        THEN product_package.variation = product_variation.const
+                        ELSE product_package.variation IS NULL
+                    END)
+                    
+                   AND (CASE 
+                        WHEN product_modification.const IS NOT NULL 
+                        THEN product_package.modification = product_modification.const
+                        ELSE product_package.modification IS NULL
+                   END)
                    
-                   (
-                        (product_modification.const IS NOT NULL AND product_package.modification = product_modification.const) OR 
-                        (product_modification.const IS NULL AND product_package.modification IS NULL)
-                   )
                 ');
         }
 
