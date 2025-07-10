@@ -69,6 +69,7 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use BaksDev\Products\Stocks\Entity\Total\ProductStockTotal;
 use BaksDev\Users\Profile\UserProfile\Entity\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -200,20 +201,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token_phone',
                 'avito_token_phone.event = avito_token.event',
             );
-
-
-        /*$dbal
-            ->addSelect('avito_token_profile.address AS avito_profile_address')
-            ->addSelect('avito_token_profile.percent AS avito_profile_percent')
-            ->addSelect('avito_token_profile.manager AS avito_profile_manager')
-            ->addSelect('avito_token_profile.phone AS avito_profile_phone')
-            ->join(
-                'avito_token',
-                AvitoTokenProfile::class,
-                'avito_token_profile',
-                'avito_token_profile.event = avito_token.event'
-            );*/
-
 
         $dbal->leftJoin(
             'product',
@@ -503,24 +490,79 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'product_modification_quantity.modification = product_modification.id'
         );
 
-        $dbal->addSelect(
-            '
-            CASE
-			   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve 
-			   THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
-			
-			   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve 
-			   THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
-			
-			   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve 
-			   THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
-			  
-			   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve 
-			   THEN (product_price.quantity - product_price.reserve)
-			 
-			   ELSE 0
-			END AS product_quantity'
-        );
+        /**
+         * Наличие продукции
+         */
+
+        if(true === class_exists(ProductStockTotal::class))
+        {
+
+            $dbal->join(
+                'product_modification',
+                ProductStockTotal::class,
+                'product_stock_total',
+                '
+                    product_stock_total.profile = :profile AND product_stock_total.product = product.id 
+                    
+                    AND
+                    (
+                        (product_offer.const IS NOT NULL AND product_stock_total.offer = product_offer.const) 
+                        OR
+                        (product_offer.const IS NULL AND product_stock_total.offer IS NULL)
+                    )
+
+                    AND
+                    (
+                        (product_variation.const IS NOT NULL AND product_stock_total.variation = product_variation.const) 
+                        OR
+                        (product_variation.const IS NULL AND product_stock_total.variation IS NULL)
+                    )
+
+                   AND
+                   (
+                        (product_modification.const IS NOT NULL AND product_stock_total.modification = product_modification.const) 
+                        OR
+                        (product_modification.const IS NULL AND product_stock_total.modification IS NULL)
+                   )
+                '
+            )
+                ->setParameter(
+                    key: 'profile',
+                    value: $this->profile,
+                    type: UserProfileUid::TYPE
+                );
+
+            $dbal->addSelect(
+                '
+                    CASE
+                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
+                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
+
+                       ELSE 0
+                    END AS product_quantity
+                ');
+        }
+        else
+        {
+            $dbal->addSelect(
+                '
+                CASE
+                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve 
+                   THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
+                
+                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve 
+                   THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
+                
+                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve 
+                   THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
+                  
+                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve 
+                   THEN (product_price.quantity - product_price.reserve)
+                 
+                   ELSE 0
+                END AS product_quantity'
+            );
+        }
 
         /** Фото продукции*/
 
