@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\UseCase\NewEdit\Tests;
@@ -40,7 +41,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board
  * @group avito-board-usecase
  *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\BeforeNewControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\BeforeNewAdminControllerTest::class
  */
 #[When(env: 'test')]
 class AvitoBoardMapperNewTest extends KernelTestCase

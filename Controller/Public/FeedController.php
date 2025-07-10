@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Controller\Public;
@@ -46,7 +47,7 @@ final class FeedController extends AbstractController
     {
 
         $cache = $appCache->init('avito-board');
-        //$cache->deleteItem('feed-'.$profile); // отключаем кеш для debug
+        //        $cache->deleteItem('feed-'.$profile); // отключаем кеш для debug // @TODO
 
         $feed = $cache->get('feed-'.$profile, function(ItemInterface $item) use (
             $allProductsWithMapping,

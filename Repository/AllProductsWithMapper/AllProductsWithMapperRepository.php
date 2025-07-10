@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -32,6 +33,7 @@ use BaksDev\Avito\Entity\AvitoToken;
 use BaksDev\Avito\Entity\Event\Active\AvitoTokenActive;
 use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
 use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
+use BaksDev\Avito\Entity\Event\Kit\AvitoTokenKit;
 use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
 use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
 use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
@@ -128,6 +130,15 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
         $dbal
+            ->addSelect('avito_kit.value AS avito_kit_value')
+            ->leftJoin(
+                'avito_token',
+                AvitoTokenKit::class,
+                'avito_kit',
+                'avito_kit.event = avito_token.event'
+            );
+
+        $dbal
             ->join(
                 'avito_token',
                 AvitoTokenActive::class,
@@ -202,7 +213,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token_profile',
                 'avito_token_profile.event = avito_token.event'
             );*/
-
 
 
         $dbal->leftJoin(

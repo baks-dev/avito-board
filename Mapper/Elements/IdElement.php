@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -70,7 +71,16 @@ class IdElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string|null
     {
-        return $data['product_article'];
+        $id = $data['product_article'];
+        $kit = $data['avito_kit_value'];
+
+        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, к артикулу добавляется значение avito_kit_value */
+        if((false === empty($kit)) && $kit !== 1)
+        {
+            $id = (sprintf('%s-KIT-%s', $data['product_article'], $kit));
+        }
+
+        return $id;
     }
 
     public function element(): string

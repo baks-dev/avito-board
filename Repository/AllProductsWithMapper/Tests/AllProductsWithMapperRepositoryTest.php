@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -41,10 +42,10 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
         /** @var AllProductsWithMapperInterface $AllProductsWithMapper */
         $AllProductsWithMapper = self::getContainer()->get(AllProductsWithMapperInterface::class);
 
-        $profile = new UserProfileUid();
+        $profileUid = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
 
         $products = $AllProductsWithMapper
-            ->forProfile($profile)
+            ->forProfile(new UserProfileUid($profileUid))
             ->findAll();
 
         self::assertTrue(true);

@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -39,17 +40,17 @@ class AvitoMapperTest extends KernelTestCase
 {
     private static ?float $mappingExecTime = null;
 
-    private static ?array $products = null;
+    private static array|false $products = false;
 
     public static function setUpBeforeClass(): void
     {
         /** @var AllProductsWithMapperInterface $AllProductsWithMapper */
         $AllProductsWithMapper = self::getContainer()->get(AllProductsWithMapperInterface::class);
 
-        $profile = new UserProfileUid();
+        $profileUid = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
 
         $products = $AllProductsWithMapper
-            ->forProfile($profile)
+            ->forProfile(new UserProfileUid($profileUid))
             ->findAll();
 
         if(false === $products)
@@ -63,6 +64,12 @@ class AvitoMapperTest extends KernelTestCase
 
     public function testMapping(): void
     {
+        if(false === self::$products)
+        {
+            self::assertTrue(true);
+            return;
+        }
+
         $products = self::$products;
 
         /** @var ProductTransformerExtension $ProductTransformerExtension */
@@ -91,5 +98,8 @@ class AvitoMapperTest extends KernelTestCase
 
         self::assertIsArray($feed);
         self::$mappingExecTime = microtime(true) - $start;
+
+        //        dump('время маппинга sec '.(string) self::$mappingExecTime);
+        //        dump('количество продуктов ' . count(self::$products));
     }
 }

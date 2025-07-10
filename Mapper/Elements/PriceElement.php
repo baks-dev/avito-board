@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -60,13 +61,24 @@ class PriceElement implements AvitoBoardElementInterface
 
     public function fetchData(array $data): string|null
     {
-        if(true === empty($data['product_price']))
+        $price = $data['product_price'];
+        $kit = $data['avito_kit_value'];
+
+        if(true === empty($price))
         {
             return 'По запросу';
         }
 
-        $money = new Money($data['product_price'], true);
+        $money = new Money($price, true);
 
+        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
+        if((false === empty($kit)) && $kit !== 1)
+        {
+            $multiplePrice = $price * $kit;
+            $money = new Money($multiplePrice, true);
+        }
+
+        /** Применяем скидку профиля для всех объявлений */
         $money->applyString($data['avito_profile_percent']);
 
         return (string) $money->getRoundValue();

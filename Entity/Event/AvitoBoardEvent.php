@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -37,6 +38,9 @@ use Doctrine\ORM\Mapping as ORM;
 use InvalidArgumentException;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * @see AvitoBoardMapperDTO
+ */
 #[ORM\Entity]
 #[ORM\Table(name: 'avito_board_event')]
 class AvitoBoardEvent extends EntityEvent
