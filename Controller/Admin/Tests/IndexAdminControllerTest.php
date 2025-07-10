@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
@@ -32,7 +33,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board-controller
  * @group avito-board-controller-index
  *
- * @depends BaksDev\Avito\Board\Controller\Public\Tests\FeedControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Public\Tests\FeedPublicControllerTest::class
  */
 #[When(env: 'test')]
 final class IndexAdminControllerTest extends WebTestCase

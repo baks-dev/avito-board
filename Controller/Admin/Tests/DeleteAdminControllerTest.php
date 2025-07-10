@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
@@ -37,7 +38,7 @@ use Symfony\Component\DependencyInjection\Attribute\When;
  * @group avito-board-controller
  * @group avito-board-controller-delete
  *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\EditControllerTest::class
+ * @depends BaksDev\Avito\Board\Controller\Admin\Tests\EditAdminControllerTest::class
  */
 #[When(env: 'test')]
 final class DeleteAdminControllerTest extends WebTestCase
