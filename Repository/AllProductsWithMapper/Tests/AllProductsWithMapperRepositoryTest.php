@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper\Tests;
 
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
@@ -47,6 +48,18 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
         $products = $AllProductsWithMapper
             ->forProfile(new UserProfileUid($profileUid))
             ->findAll();
+
+        /** @var AllProductsWithMapperResult $product */
+        $product = $products->current();
+
+        dump($product->get);
+
+        dd();
+
+
+        // @TODO удалить при релизе
+        dump($products);
+        dd(self::class.':'.__LINE__);
 
         self::assertTrue(true);
     }

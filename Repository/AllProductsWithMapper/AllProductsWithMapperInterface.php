@@ -19,17 +19,19 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper;
 
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use Generator;
 
 interface AllProductsWithMapperInterface
 {
     public function forProfile(UserProfile|UserProfileUid $profile): self;
 
     /** Метод получает массив элементов продукции с соотношением свойств */
-    public function findAll(): array|false;
+    public function findAll(): Generator|false;
 }

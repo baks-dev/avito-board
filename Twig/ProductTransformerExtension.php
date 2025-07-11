@@ -19,12 +19,14 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Twig\Extension\AbstractExtension;
@@ -52,12 +54,18 @@ final class ProductTransformerExtension extends AbstractExtension
         ];
     }
 
-    public function productTransform(array $product): ?array
+    public function productTransform(AllProductsWithMapperResult|array $product): ?array
     {
-        $this->avitoCategory = $product['avito_board_avito_category'];
-        $this->mapper = $product['avito_board_mapper'];
-        $this->product = $product['product_name'];
-        $this->article = $product['product_article'];
+
+        //        $this->avitoCategory = $product['avito_board_avito_category'];
+        //        $this->mapper = $product['avito_board_mapper'];
+        //        $this->product = $product['product_name'];
+        //        $this->article = $product['product_article'];
+
+        $this->avitoCategory = $product->getAvitoBoardAvitoCategory();
+        $this->mapper = $product->getAvitoBoardMapper();
+        $this->product = $product->getProductName();
+        $this->article = $product->getProductArticle();
 
         /** Список всех элементов категории */
         $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
@@ -95,6 +103,7 @@ final class ProductTransformerExtension extends AbstractExtension
 
                 return null;
             }
+
 
             /** Добавляем элемент если имеется результат значения */
             if(false === empty($data))

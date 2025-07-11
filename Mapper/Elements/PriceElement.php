@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
 
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use BaksDev\Reference\Money\Type\Money;
 
 /**
@@ -59,10 +60,12 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string|null
+    public function fetchData(AllProductsWithMapperResult|array $data): string|null
     {
-        $price = $data['product_price'];
-        $kit = $data['avito_kit_value'];
+        $price = $data->getProductPrice();
+        $kit = $data->getAvitoKitValue();
+        //        $price = $data['product_price'];
+        //        $kit = $data['avito_kit_value'];
 
         if(true === empty($price))
         {
@@ -79,7 +82,8 @@ class PriceElement implements AvitoBoardElementInterface
         }
 
         /** Применяем скидку профиля для всех объявлений */
-        $money->applyString($data['avito_profile_percent']);
+        $money->applyString($data->getAvitoProfilePercent());
+        //        $money->applyString($data['avito_profile_percent']);
 
         return (string) $money->getRoundValue();
     }

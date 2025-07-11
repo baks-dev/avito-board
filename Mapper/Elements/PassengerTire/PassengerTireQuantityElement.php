@@ -28,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Количество шт. в комплекте
@@ -73,9 +74,10 @@ class PassengerTireQuantityElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string
+    public function fetchData(AllProductsWithMapperResult|array $data): string
     {
-        $kit = $data['avito_kit_value'];
+        $kit = $data->getAvitoKitValue();
+        //        $kit = $data['avito_kit_value'];
 
         /** Если параметр Количество товаров в объявлении НЕ УСТАНОВЛЕН - значить в объявлении 1 товар */
         $quantity = $this->getDefault();

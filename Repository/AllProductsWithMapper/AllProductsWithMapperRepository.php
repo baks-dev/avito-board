@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -31,12 +32,10 @@ use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Entity\AvitoToken;
 use BaksDev\Avito\Entity\Event\Active\AvitoTokenActive;
 use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
-use BaksDev\Avito\Entity\Event\AvitoTokenEvent;
 use BaksDev\Avito\Entity\Event\Kit\AvitoTokenKit;
 use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
 use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
 use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
-use BaksDev\Avito\Entity\Profile\AvitoTokenProfile;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
@@ -74,6 +73,7 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
+use Generator;
 use InvalidArgumentException;
 
 final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
@@ -97,9 +97,20 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
     }
 
     /**
-     * Метод получает массив свойств продукта с маппингом и данными токена
+     * Метод возвращает продукты по условию - старая цена продукта больше текущей цены
      */
-    public function findAll(): array|false
+    public function findAll(): Generator|false
+    {
+        $dbal = $this->builder();
+
+        $dbal->enableCache('avito-board', '1 day');
+
+        $result = $dbal->fetchAllHydrate(AllProductsWithMapperResult::class);
+
+        return (true === $result->valid()) ? $result : false;
+    }
+
+    private function builder(): DBALQueryBuilder
     {
         if($this->profile === false)
         {
@@ -493,56 +504,76 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          * Наличие продукции
          */
 
-        if(true === class_exists(ProductStockTotal::class))
-        {
+        //        if(true === class_exists(ProductStockTotal::class))
+        //        {
+        //
+        //            $dbal->join(
+        //                'product_modification',
+        //                ProductStockTotal::class,
+        //                'product_stock_total',
+        //                '
+        //                    product_stock_total.profile = :profile
+        //
+        //                    AND product_stock_total.product = product.id
+        //
+        //                    AND (CASE
+        //                        WHEN product_offer.const IS NOT NULL
+        //                        THEN product_stock_total.offer = product_offer.const
+        //                        ELSE product_stock_total.offer IS NULL
+        //                    END)
+        //
+        //                    AND (CASE
+        //                        WHEN product_variation.const IS NOT NULL
+        //                        THEN product_stock_total.variation = product_variation.const
+        //                        ELSE product_stock_total.variation IS NULL
+        //                    END)
+        //
+        //                    AND (CASE
+        //                        WHEN product_modification.const IS NOT NULL
+        //                        THEN product_stock_total.modification = product_modification.const
+        //                        ELSE product_stock_total.modification IS NULL
+        //                    END)
+        //                '
+        //            )
+        //                ->setParameter(
+        //                    key: 'profile',
+        //                    value: $this->profile,
+        //                    type: UserProfileUid::TYPE
+        //                );
+        //
+        //            $dbal->addSelect(
+        //                '
+        //                    CASE
+        //                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
+        //                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
+        //                       ELSE 0
+        //                    END AS product_quantity
+        //                ');
+        //        }
+        //        else
+        //        {
+        //            $dbal->addSelect(
+        //                '
+        //                CASE
+        //                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve
+        //                   THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
+        //
+        //                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve
+        //                   THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
+        //
+        //                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve
+        //                   THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
+        //
+        //                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve
+        //                   THEN (product_price.quantity - product_price.reserve)
+        //
+        //                   ELSE 0
+        //                END AS product_quantity'
+        //            );
+        //        }
 
-            $dbal->join(
-                'product_modification',
-                ProductStockTotal::class,
-                'product_stock_total',
-                '
-                    product_stock_total.profile = :profile 
-                    
-                    AND product_stock_total.product = product.id 
-                    
-                    AND (CASE 
-                        WHEN product_offer.const IS NOT NULL 
-                        THEN product_stock_total.offer = product_offer.const
-                        ELSE product_stock_total.offer IS NULL
-                    END)
-                    
-                    AND (CASE 
-                        WHEN product_variation.const IS NOT NULL 
-                        THEN product_stock_total.variation = product_variation.const
-                        ELSE product_stock_total.variation IS NULL
-                    END)
-                   
-                    AND (CASE 
-                        WHEN product_modification.const IS NOT NULL 
-                        THEN product_stock_total.modification = product_modification.const
-                        ELSE product_stock_total.modification IS NULL
-                    END)
-                '
-            )
-                ->setParameter(
-                    key: 'profile',
-                    value: $this->profile,
-                    type: UserProfileUid::TYPE
-                );
-
-            $dbal->addSelect(
-                '
-                    CASE
-                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
-                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
-                       ELSE 0
-                    END AS product_quantity
-                ');
-        }
-        else
-        {
-            $dbal->addSelect(
-                '
+        $dbal->addSelect(
+            '
                 CASE
                    WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve 
                    THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
@@ -558,8 +589,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                  
                    ELSE 0
                 END AS product_quantity'
-            );
-        }
+        );
 
         /** Фото продукции*/
 
@@ -832,15 +862,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
-        $result = $dbal
-            ->enableCache('avito-board', '1 day')
-            ->fetchAllAssociative();
-
-        if(empty($result))
-        {
-            return false;
-        }
-
-        return $result;
+        return $dbal;
     }
 }

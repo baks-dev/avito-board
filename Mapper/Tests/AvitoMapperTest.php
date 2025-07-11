@@ -38,9 +38,13 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 class AvitoMapperTest extends KernelTestCase
 {
+    /** Статистика */
+    private static int $productsInFeed = 0;
+    private static int $productsOutFeed = 0;
+
     private static ?float $mappingExecTime = null;
 
-    private static array|false $products = false;
+    private static \Generator|array|false $products = false;
 
     public static function setUpBeforeClass(): void
     {
@@ -81,10 +85,14 @@ class AvitoMapperTest extends KernelTestCase
         $start = microtime(true);
         foreach($products as $product)
         {
+            self::$productsOutFeed++;
+
             $mappingProduct = $ProductTransformerExtension->productTransform($product);
 
             if(false === is_null($mappingProduct))
             {
+                self::$productsInFeed++;
+
                 $feed[] = $mappingProduct;
             }
         }
@@ -99,7 +107,8 @@ class AvitoMapperTest extends KernelTestCase
         self::assertIsArray($feed);
         self::$mappingExecTime = microtime(true) - $start;
 
-        //        dump('время маппинга sec '.(string) self::$mappingExecTime);
-        //        dump('количество продуктов ' . count(self::$products));
+        dump('общее время маппинга - '.(string) self::$mappingExecTime.' sec');
+        dump('количество продуктов, добавленных в фид - '.self::$productsInFeed);
+        dump('количество продуктов, не добавленных в фид - '.self::$productsOutFeed);
     }
 }
