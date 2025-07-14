@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Api;
@@ -45,6 +46,15 @@ final readonly class TireModelRequest
     public function getModel(string $nameInfo): ?array
     {
         $cache = $this->cache->init('avito-board');
+
+        $nameInfoKey = md5($nameInfo);
+        $nameInfoItem = $cache->getItem('avito-board-'.$nameInfoKey);
+
+        if(true === $nameInfoItem->isHit())
+        {
+            return $nameInfoItem->get();
+        }
+
         $key = 'avito-board-model-'.md5($nameInfo);
         // $cache->delete($key);
 
@@ -66,7 +76,6 @@ final readonly class TireModelRequest
 
             return json_decode($json, true);
         });
-
 
         // Форматированная строка модели без найденного бренда
         $formatModel['brand'] = $nameInfo;
@@ -197,6 +206,10 @@ final readonly class TireModelRequest
 
             $result = $formatModel;
         }
+
+        $nameInfoItem->expiresAfter(DateInterval::createFromDateString('1 day'));
+        $nameInfoItem->set($result);
+        $cache->save($nameInfoItem);
 
         return $result;
     }
