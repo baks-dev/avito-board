@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\Controller\Public;
@@ -29,7 +28,6 @@ use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Controller\AbstractController;
 use BaksDev\Core\Type\UidType\ParamConverter;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
-use DateInterval;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Routing\Attribute\Route;
@@ -46,26 +44,34 @@ final class FeedController extends AbstractController
     ): Response
     {
 
-        $cache = $appCache->init('avito-board');
-        //        $cache->deleteItem('feed-'.$profile); // отключаем кеш для debug // @TODO
+        $products = $allProductsWithMapping
+            ->forProfile($profile)
+            ->findAll();
 
-        $feed = $cache->get('feed-'.$profile, function(ItemInterface $item) use (
-            $allProductsWithMapping,
-            $profile
-        ): string {
+        return $this->render(['products' => $products], file: 'export.html.twig');
 
-            $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
 
-            $products = $allProductsWithMapping
-                ->forProfile($profile)
-                ->findAll();
+        //        $cache = $appCache->init('avito-board');
+        //        //        $cache->deleteItem('feed-'.$profile); // отключаем кеш для debug
+        //
+        //        $feed = $cache->get('feed-'.$profile, function(ItemInterface $item) use (
+        //            $allProductsWithMapping,
+        //            $profile
+        //        ): string {
+        //
+        //            $item->expiresAfter(DateInterval::createFromDateString('1 hour'));
+        //
+        //            $products = $allProductsWithMapping
+        //                ->forProfile($profile)
+        //                ->findAll();
+        //
+        //            return $this->render(['products' => $products], file: 'export.html.twig')->getContent();
+        //        });
+        //
+        //        $response = new Response($feed);
+        //        $response->headers->set('Content-Type', 'application/xml');
+        //
+        //        return $response;
 
-            return $this->render(['products' => $products], file: 'export.html.twig')->getContent();
-        });
-
-        $response = new Response($feed);
-        $response->headers->set('Content-Type', 'application/xml');
-
-        return $response;
     }
 }
