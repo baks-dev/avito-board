@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\Api;
@@ -46,19 +45,10 @@ final readonly class TireModelRequest
     public function getModel(string $nameInfo): ?array
     {
         $cache = $this->cache->init('avito-board');
-
-        $nameInfoKey = md5($nameInfo);
-        $nameInfoItem = $cache->getItem('avito-board-'.$nameInfoKey);
-
-        if(true === $nameInfoItem->isHit())
-        {
-            return $nameInfoItem->get();
-        }
-
         $key = 'avito-board-model-'.md5($nameInfo);
         // $cache->delete($key);
 
-        $array = $cache->get($key, function(ItemInterface $item): array {
+        $result = $cache->get($key, function(ItemInterface $item) use ($nameInfo): array {
 
             $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
@@ -73,143 +63,142 @@ final readonly class TireModelRequest
             $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
 
             $json = json_encode($xml);
+            $array = json_decode($json, true);
 
-            return json_decode($json, true);
-        });
+            // Форматированная строка модели без найденного бренда
 
-        // Форматированная строка модели без найденного бренда
-        $formatModel['brand'] = $nameInfo;
-        $formatModel['model'] = $nameInfo;
+            $formatModel['brand'] = $nameInfo;
+            $formatModel['model'] = $nameInfo;
 
-        $string = mb_strtolower($nameInfo);
-        $searchArray = explode(" ", $string);
+            $string = mb_strtolower($nameInfo);
+            $searchArray = explode(" ", $string);
 
-        $result = [];
+            $result = [];
 
-        foreach($array['make'] as $make)
-        {
-            $brandName = trim(strtok($make['@attributes']['name'], " "));
-
-            if(in_array(mb_strtolower($brandName), $searchArray, false))
+            foreach($array['make'] as $make)
             {
+                $brandName = trim(strtok($make['@attributes']['name'], " "));
 
-                // Форматируем массив с брендом и моделью
-                $formatModel['model'] = trim(str_ireplace($brandName, '', $formatModel['brand']));
-                $formatModel['brand'] = $brandName;
-
-                // удаляем название бренда из массива для поиска
-                $unset = array_search(mb_strtolower($brandName), $searchArray);
-                unset($searchArray[$unset]);
-
-                foreach($make['model'] as $models)
+                if(in_array(mb_strtolower($brandName), $searchArray, false))
                 {
-                    $count = 0;
 
-                    foreach($searchArray as $in)
+                    // Форматируем массив с брендом и моделью
+                    $formatModel['model'] = trim(str_ireplace($brandName, '', $formatModel['brand']));
+                    $formatModel['brand'] = $brandName;
+
+                    // удаляем название бренда из массива для поиска
+                    $unset = array_search(mb_strtolower($brandName), $searchArray);
+                    unset($searchArray[$unset]);
+
+                    foreach($make['model'] as $models)
                     {
-                        $modelName = $models['@attributes']['name'] ?? $models['name'];
-                        $modelNameLower = mb_strtolower($modelName);
+                        $count = 0;
 
-                        $isset = mb_substr_count($modelNameLower, $in);
-
-                        // Определяем все элементы моделей, которые могут соответствовать поиску
-                        if($isset !== 0)
+                        foreach($searchArray as $in)
                         {
-                            $count++; // увеличиваем вес
+                            $modelName = $models['@attributes']['name'] ?? $models['name'];
+                            $modelNameLower = mb_strtolower($modelName);
 
-                            $searchModel = explode(' ', $modelNameLower);
+                            $isset = mb_substr_count($modelNameLower, $in);
 
-                            // проверяем соответствие модели строке поиска
-                            foreach($searchModel as $confirm)
+                            // Определяем все элементы моделей, которые могут соответствовать поиску
+                            if($isset !== 0)
                             {
-                                if(stripos($string, $confirm) === false)
+                                $count++; // увеличиваем вес
+
+                                $searchModel = explode(' ', $modelNameLower);
+
+                                // проверяем соответствие модели строке поиска
+                                foreach($searchModel as $confirm)
                                 {
-                                    $count--; // снимаем вес если не соответствует
+                                    if(stripos($string, $confirm) === false)
+                                    {
+                                        $count--; // снимаем вес если не соответствует
+                                    }
+                                }
+                            }
+
+                            // пробуем удалить в строке символы «-»
+                            if($isset === 0)
+                            {
+                                $ins = str_replace('-', '', $in);
+
+                                $isset = mb_substr_count($modelNameLower, $ins);
+
+                                if($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
+                                }
+                            }
+
+                            // пробуем заменить в строке символы «-» на пробел
+                            if($isset === 0)
+                            {
+                                $ins = str_replace('-', ' ', $in);
+
+                                $isset = mb_substr_count($modelNameLower, $ins);
+
+                                if($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
+                                }
+                            }
+
+                            if($isset === 0)
+                            {
+                                $ins = str_replace('-', '/', $in);
+
+                                $isset = mb_substr_count($modelNameLower, $ins);
+
+                                if($isset !== 0)
+                                {
+                                    $count++; // увеличиваем вес
                                 }
                             }
                         }
 
-                        // пробуем удалить в строке символы «-»
-                        if($isset === 0)
+                        if($count > 0)
                         {
-                            $ins = str_replace('-', '', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
+                            if(!isset($models['@attributes']) && isset($models['name']))
                             {
-                                $count++; // увеличиваем вес
+                                $result['models'][$models['name']] = $count;
                             }
-                        }
-
-                        // пробуем заменить в строке символы «-» на пробел
-                        if($isset === 0)
-                        {
-                            $ins = str_replace('-', ' ', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
+                            else
                             {
-                                $count++; // увеличиваем вес
-                            }
-                        }
-
-                        if($isset === 0)
-                        {
-                            $ins = str_replace('-', '/', $in);
-
-                            $isset = mb_substr_count($modelNameLower, $ins);
-
-                            if($isset !== 0)
-                            {
-                                $count++; // увеличиваем вес
+                                $result['models'][$models['@attributes']['name']] = $count;
                             }
                         }
                     }
 
-                    if($count > 0)
+                    if(isset($result['models']))
                     {
-                        if(!isset($models['@attributes']) && isset($models['name']))
-                        {
-                            $result['models'][$models['name']] = $count;
-                        }
-                        else
-                        {
-                            $result['models'][$models['@attributes']['name']] = $count;
-                        }
+                        // Присваиваем в массив название бренда если найдена модель
+                        $result['brand'] = $make['@attributes']['name'];
+                        break;
                     }
-                }
-
-                if(isset($result['models']))
-                {
-                    // Присваиваем в массив название бренда если найдена модель
-                    $result['brand'] = $make['@attributes']['name'];
-                    break;
                 }
             }
-        }
 
-        if(isset($result['models']))
-        {
-            $maxValue = max($result['models']);
-            $result['model'] = array_search($maxValue, $result['models'], true);
-        }
+            if(isset($result['models']))
+            {
+                $maxValue = max($result['models']);
+                $result['model'] = array_search($maxValue, $result['models'], true);
+            }
 
-        // если модель не найдена - возвращаем результат отформатированной строки
-        if(empty($result))
-        {
-            $this->logger->critical(
-                sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
-                [self::class.':'.__LINE__, $formatModel],
-            );
+            // если модель не найдена - возвращаем результат отформатированной строки
+            if(empty($result))
+            {
+                $this->logger->critical(
+                    sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
+                    [self::class.':'.__LINE__, $formatModel],
+                );
 
-            $result = $formatModel;
-        }
+                $result = $formatModel;
+            }
 
-        $nameInfoItem->expiresAfter(DateInterval::createFromDateString('1 day'));
-        $nameInfoItem->set($result);
-        $cache->save($nameInfoItem);
+            return $result;
+
+        });
 
         return $result;
     }
