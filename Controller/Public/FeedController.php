@@ -48,7 +48,12 @@ final class FeedController extends AbstractController
             ->forProfile($profile)
             ->findAll();
 
-        return $this->render(['products' => $products], file: 'export.html.twig');
+        $feed = $this->render(['products' => $products], file: 'export.html.twig')->getContent();
+
+        $response = new Response($feed);
+        $response->headers->set('Content-Type', 'application/xml');
+
+        return $response;
 
 
         //        $cache = $appCache->init('avito-board');
