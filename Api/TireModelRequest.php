@@ -45,7 +45,7 @@ final readonly class TireModelRequest
     public function getModel(string $nameInfo): ?array
     {
         $cache = $this->cache->init('avito-board');
-        $key = 'avito-board-model-'.md5($nameInfo);
+        $key = 'avito-board-'.md5($nameInfo);
         // $cache->delete($key);
 
         $result = $cache->get($key, function(ItemInterface $item) use ($nameInfo): array {
