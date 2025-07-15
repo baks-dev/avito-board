@@ -3,7 +3,7 @@
 
 <Ads formatVersion='3' target='Avito.ru'>
 
-    {% for product in products|filter(v => v.productPrice != false and v.productPrice.value > 0) %}
+    {% for product in products %}
 
         {% set tags = product_transform(product) %}
 
