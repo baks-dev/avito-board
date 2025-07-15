@@ -838,6 +838,27 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
 
+        /** Только заказы, у которых указана стоимость */
+        $dbal->andWhere('
+            (
+                CASE
+                   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0
+                   THEN product_modification_price.price
+
+                   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0
+                   THEN product_variation_price.price
+
+                   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0
+                   THEN product_offer_price.price
+
+                   WHEN product_price.price IS NOT NULL AND product_price.price > 0
+                   THEN product_price.price
+
+                   ELSE 0
+                END
+            ) > 0
+        ');
+
         return $dbal;
     }
 }

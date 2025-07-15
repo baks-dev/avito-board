@@ -28,21 +28,24 @@ use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\AvitoBoardProductInterface;
 use Exception;
 use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
+use Traversable;
 
-/**
- * @see PassengerTireProductInterface
- * @see SweatersAndShirtsProductInterface
- */
 final readonly class AvitoBoardMapperProvider
 {
     public function __construct(
         #[AutowireIterator('baks.avito.board.mapper.products')] private iterable $products,
     ) {}
 
-    /** @return list<AvitoBoardProductInterface> */
-    public function getProducts(): array
+    /**
+     * Возвращает генератор для категорий продуктов, который был теггирован symfony tag
+     * @return Traversable<AvitoBoardProductInterface>
+     * @see SweatersAndShirtsProductInterface
+     *
+     * @see PassengerTireProductInterface
+     */
+    public function getProducts(): iterable
     {
-        return iterator_to_array($this->products);
+        return $this->products;
     }
 
     /**
