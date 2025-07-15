@@ -65,7 +65,7 @@ class DescriptionElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         // Если есть шаблон для описания - форматируем
         if(false === is_null($data->getAvitoProductDescription()))

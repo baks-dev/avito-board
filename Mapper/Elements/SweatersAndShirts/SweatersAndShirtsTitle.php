@@ -72,7 +72,7 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $search = $this->request->getModel($data->getProductName());
 
@@ -89,7 +89,7 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
          *     'value': string,
          *     'element': string} $element
          */
-        foreach($data->getAvitoBoardMapper() as $element)
+        foreach($data->getAvitoBoardPropertyMapper() as $element)
         {
             if($element->element === SweatersAndShirtsGoodsSubType::ELEMENT)
             {
@@ -102,7 +102,6 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
                 $size = 'Размер '.$element->value;
             }
         }
-
 
         return sprintf('%s %s %s', $type, $search['brand'], $size);
     }

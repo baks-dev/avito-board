@@ -57,7 +57,7 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $weight = $data->getProductWeightDelivery();
 

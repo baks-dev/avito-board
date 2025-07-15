@@ -60,7 +60,7 @@ class ManagerNameElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string
+    public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $data->getAvitoProfileManager();
     }

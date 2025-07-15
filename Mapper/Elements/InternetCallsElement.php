@@ -73,7 +73,7 @@ class InternetCallsElement
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         return null;
     }

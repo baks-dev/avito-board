@@ -58,9 +58,8 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
     private const string LABEL = 'Фотографии';
 
     public function __construct(
-        private UrlHelper $helper,
-        #[Autowire(env: 'CDN_HOST')]
-        private string $cdnHost,
+        #[Autowire(env: 'CDN_HOST')] private string $cdnHost,
+        #[Autowire(env: 'HOST')] private string $host,
     ) {}
 
     public function isMapping(): false
@@ -83,7 +82,7 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $avitoIMG = $this->transform($data->getAvitoProductImages());
 

@@ -66,7 +66,7 @@ final readonly class PassengerTireBrandElement implements AvitoBoardElementInter
         return '@avito-board/admin/mapper/elements/tire/brand.html.twig';
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $search = $this->request->getModel($data->getProductName());
 

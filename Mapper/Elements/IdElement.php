@@ -71,7 +71,7 @@ class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
         $id = $data->getProductArticle();
         $kit = $data->getAvitoKitValue();

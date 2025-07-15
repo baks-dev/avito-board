@@ -76,7 +76,7 @@ class DateBeginElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string
+    public function fetchData(AllProductsWithMapperResult $data): string
     {
         /** По умолчанию объявление будет добавлено в фид, НО НЕ ОПУБЛИКОВАННО - дата в будущем */
         $date = new DateTimeImmutable('+ 1 day');

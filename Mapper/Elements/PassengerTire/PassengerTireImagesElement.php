@@ -81,7 +81,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $avitoIMG = $this->transform($data->getAvitoProductImages());
 

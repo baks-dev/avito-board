@@ -56,10 +56,9 @@ interface AvitoBoardElementInterface
     /**
      * Извлекает данные из массива данных, форматирует их для тега согласно бизнес логике
      *
-     * - @param AllProductsWithMapperResult $data - свойства из продукта, если элемент НЕ УЧАСТВУЕТ в маппинге ($this->isMapping() === false)
-     * - @param array $data - свойства из результата маппера, если элемент УЧАСТВУЕТ в маппинге ($this->isMapping() === true)
+     * - @param AllProductsWithMapperResult $data - свойства продукта
      */
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string;
+    public function fetchData(AllProductsWithMapperResult $data): ?string;
 
     /**
      * Получает название элемента из константы класса ELEMENT

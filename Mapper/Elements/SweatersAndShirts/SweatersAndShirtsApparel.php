@@ -56,14 +56,14 @@ class SweatersAndShirtsApparel implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         /**
          * @var object{
          *     'value': string,
          *     'element': string} $element
          */
-        foreach($data->getAvitoBoardMapper() as $element)
+        foreach($data->getAvitoBoardPropertyMapper() as $element)
         {
             if($element->element === SweatersAndShirtsGoodsType::ELEMENT)
             {

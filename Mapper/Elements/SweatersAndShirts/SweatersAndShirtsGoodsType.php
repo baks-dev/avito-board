@@ -61,20 +61,21 @@ class SweatersAndShirtsGoodsType implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($data[self::ELEMENT]))
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        if(null === $data[self::ELEMENT])
+        if(null === $AvitoBoardPropertyMapper[self::ELEMENT])
         {
             return null;
         }
 
-        return match ($data[self::ELEMENT])
+        return match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             'Мужской' => 'Мужская одежда',
             'Женский' => 'Женская одежда',

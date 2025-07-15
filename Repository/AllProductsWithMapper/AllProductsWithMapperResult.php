@@ -43,52 +43,55 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 /** @see AllProductsWithMapperRepository */
 #[Exclude]
-final readonly class AllProductsWithMapperResult
+final class AllProductsWithMapperResult
 {
+
+    private ?array $avito_board_mapper_decode = null;
+
     public function __construct(
-        private string $id,
-        private string $event,
-        private ?int $avito_kit_value,
-        private string $avito_profile_percent,
-        private string $avito_profile_address,
-        private string $avito_profile_manager,
-        private string $avito_profile_phone,
-        private string $product_date_begin,
-        private ?string $product_date_over,
-        private string $product_name,
-        private string $product_description,
-        private ?string $product_offer_id,
-        private ?string $product_offer_const,
-        private ?string $product_offer_value,
-        private ?string $product_offer_postfix,
-        private ?string $offer_section_field_uid,
-        private string $product_offer_reference,
-        private ?string $product_variation_id,
-        private ?string $product_variation_const,
-        private ?string $product_variation_value,
-        private ?string $product_variation_postfix,
-        private ?string $variation_section_field_uid,
-        private ?string $product_modification_id,
-        private ?string $product_modification_const,
-        private ?string $product_modification_value,
-        private ?string $product_modification_postfix,
-        private ?string $modification_section_field_uid,
-        private string $product_article,
-        private bool $category_active,
-        private string $product_category,
-        private ?int $product_price,
-        private ?string $product_currency,
-        private int $product_quantity,
-        private string $product_images,
-        private ?int $product_length_delivery,
-        private ?int $product_width_delivery,
-        private ?int $product_height_delivery,
-        private ?int $product_weight_delivery,
-        private string $avito_board_mapper_category_id,
-        private string $avito_board_avito_category,
-        private string $avito_board_mapper,
-        private ?string $avito_product_description,
-        private ?string $avito_product_images,
+        private readonly string $id,
+        private readonly string $event,
+        private readonly ?int $avito_kit_value,
+        private readonly string $avito_profile_percent,
+        private readonly string $avito_profile_address,
+        private readonly string $avito_profile_manager,
+        private readonly string $avito_profile_phone,
+        private readonly string $product_date_begin,
+        private readonly ?string $product_date_over,
+        private readonly string $product_name,
+        private readonly string $product_description,
+        private readonly ?string $product_offer_id,
+        private readonly ?string $product_offer_const,
+        private readonly ?string $product_offer_value,
+        private readonly ?string $product_offer_postfix,
+        private readonly ?string $offer_section_field_uid,
+        private readonly string $product_offer_reference,
+        private readonly ?string $product_variation_id,
+        private readonly ?string $product_variation_const,
+        private readonly ?string $product_variation_value,
+        private readonly ?string $product_variation_postfix,
+        private readonly ?string $variation_section_field_uid,
+        private readonly ?string $product_modification_id,
+        private readonly ?string $product_modification_const,
+        private readonly ?string $product_modification_value,
+        private readonly ?string $product_modification_postfix,
+        private readonly ?string $modification_section_field_uid,
+        private readonly string $product_article,
+        private readonly bool $category_active,
+        private readonly string $product_category,
+        private readonly ?int $product_price,
+        private readonly ?string $product_currency,
+        private readonly int $product_quantity,
+        private readonly string $product_images,
+        private readonly ?int $product_length_delivery,
+        private readonly ?int $product_width_delivery,
+        private readonly ?int $product_height_delivery,
+        private readonly ?int $product_weight_delivery,
+        private readonly string $avito_board_mapper_category_id,
+        private readonly string $avito_board_avito_category,
+        private readonly string $avito_board_mapper,
+        private readonly ?string $avito_product_description,
+        private readonly ?string $avito_product_images,
     ) {}
 
     public function getProductId(): ProductUid
@@ -326,33 +329,6 @@ final readonly class AllProductsWithMapperResult
         return $this->avito_board_avito_category;
     }
 
-    public function getAvitoBoardMapper(): ?array
-    {
-        if(is_null($this->avito_board_mapper))
-        {
-            return null;
-        }
-
-        if(false === json_validate($this->avito_board_mapper))
-        {
-            return null;
-        }
-
-        /**
-         * @var array{'value': string, 'element': string } $data
-         */
-        $data = json_decode($this->avito_board_mapper, false, 512, JSON_THROW_ON_ERROR);
-
-        if(null === current($data))
-        {
-            return null;
-        }
-
-        $mapper = array_column($data, 'value', 'element');
-
-        return $mapper;
-    }
-
     public function getAvitoProductDescription(): ?string
     {
         return $this->avito_product_description;
@@ -398,5 +374,36 @@ final readonly class AllProductsWithMapperResult
     public function getAvitoProfileManager(): string
     {
         return $this->avito_profile_manager;
+    }
+
+    /** Property Avito Board Mapper */
+    public function getAvitoBoardPropertyMapper(): ?array
+    {
+        if(true === is_null($this->avito_board_mapper_decode))
+        {
+            if(is_null($this->avito_board_mapper))
+            {
+                return null;
+            }
+
+            if(false === json_validate($this->avito_board_mapper))
+            {
+                return null;
+            }
+
+            /**
+             * @var array{'value': string, 'element': string } $data
+             */
+            $data = json_decode($this->avito_board_mapper, false, 512, JSON_THROW_ON_ERROR);
+
+            if(null === current($data))
+            {
+                return null;
+            }
+
+            $this->avito_board_mapper_decode = array_column($data, 'value', 'element');
+        }
+
+        return $this->avito_board_mapper_decode;
     }
 }

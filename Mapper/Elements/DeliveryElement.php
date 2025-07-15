@@ -66,7 +66,7 @@ class DeliveryElement
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string
+    public function fetchData(AllProductsWithMapperResult $data): string
     {
         return sprintf('<Option>%s</Option>', $data['product_delivery']);
     }

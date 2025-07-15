@@ -62,14 +62,16 @@ class PassengerTireRunFlatElement
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        if(false === isset($data[self::ELEMENT]))
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
+
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        $match = match ($data[self::ELEMENT])
+        $match = match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             'true' => 'Да',
             'false' => 'Нет',

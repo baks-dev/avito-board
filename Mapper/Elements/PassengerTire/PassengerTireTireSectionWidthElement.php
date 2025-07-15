@@ -56,19 +56,21 @@ class PassengerTireTireSectionWidthElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        if(false === isset($data[self::ELEMENT]))
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
+
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        if(null === $data[self::ELEMENT])
+        if(null === $AvitoBoardPropertyMapper[self::ELEMENT])
         {
             return null;
         }
 
-        return preg_replace('/\D\./', '', $data[self::ELEMENT]);
+        return preg_replace('/\D\./', '', $AvitoBoardPropertyMapper[self::ELEMENT]);
     }
 
     public function element(): string

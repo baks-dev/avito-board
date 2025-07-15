@@ -116,16 +116,18 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $size = $data[self::ELEMENT];
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
+
+        $size = $AvitoBoardPropertyMapper[self::ELEMENT];
 
         if(null === $size)
         {
             return null;
         }
 
-        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
+        if($AvitoBoardPropertyMapper[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
         {
             $men = $this->translator->trans($size, [], 'avito-board.mapper.size.men');
 
@@ -137,7 +139,7 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
             return $men;
         }
 
-        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
+        if($AvitoBoardPropertyMapper[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
         {
             $women = $this->translator->trans($size, [], 'avito-board.mapper.size.women');
 

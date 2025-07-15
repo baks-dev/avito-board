@@ -60,7 +60,7 @@ final readonly class PassengerTireTitleElement implements AvitoBoardElementInter
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         $name = 'Шины '.$data->getProductName();
 

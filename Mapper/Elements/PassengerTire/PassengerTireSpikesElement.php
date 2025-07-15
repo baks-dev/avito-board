@@ -63,15 +63,16 @@ final class PassengerTireSpikesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($data[self::ELEMENT]))
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        $match = match ($data[self::ELEMENT])
+        $match = match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             'true' => 'шипованные',
             'false' => 'не шипованные',

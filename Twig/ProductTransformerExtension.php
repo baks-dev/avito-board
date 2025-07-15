@@ -34,13 +34,15 @@ use Twig\TwigFunction;
 
 final class ProductTransformerExtension extends AbstractExtension
 {
+    private AllProductsWithMapperResult $productResult;
+
     private ?string $avitoCategory = null;
 
-    private ?array $mapper = null;
+    private ?array $avitoBoardPropertyMapper = null;
 
-    private ?string $product = null;
+    private ?string $productName = null;
 
-    private ?string $article = null;
+    private ?string $productArticle = null;
 
     public function __construct(
         #[Target('avitoBoardLogger')] private readonly LoggerInterface $logger,
@@ -56,10 +58,12 @@ final class ProductTransformerExtension extends AbstractExtension
 
     public function productTransform(AllProductsWithMapperResult $product): ?array
     {
+        $this->productResult = $product;
+        $this->productName = $product->getProductName();
+        $this->productArticle = $product->getProductArticle();
+
         $this->avitoCategory = $product->getAvitoBoardAvitoCategory();
-        $this->mapper = $product->getAvitoBoardMapper();
-        $this->product = $product->getProductName();
-        $this->article = $product->getProductArticle();
+        $this->avitoBoardPropertyMapper = $product->getAvitoBoardPropertyMapper();
 
         /** Список всех элементов категории */
         $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
@@ -88,8 +92,8 @@ final class ProductTransformerExtension extends AbstractExtension
                     sprintf(
                         'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                         $element->element(),
-                        $this->product,
-                        $this->article,
+                        $this->productName,
+                        $this->productArticle,
                     ),
                     [self::class.':'.__LINE__],
                 );
@@ -118,15 +122,15 @@ final class ProductTransformerExtension extends AbstractExtension
 
     private function getElements(): ?array
     {
-        $mapper = $this->mapper;
+        $mapper = $this->avitoBoardPropertyMapper;
 
         if(true === is_null($mapper))
         {
             $this->logger->critical(
                 sprintf(
                     'Соотношение свойств не найдено! Название продукта: %s. Артикул продукта: %s',
-                    $this->product,
-                    $this->article,
+                    $this->productName,
+                    $this->productArticle,
                 ),
                 [self::class.':'.__LINE__],
             );
@@ -139,14 +143,14 @@ final class ProductTransformerExtension extends AbstractExtension
         /**
          * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
          */
-        array_walk($mapper, function(&$value, $element) use ($mapper, &$require) {
+        array_walk($mapper, function(&$value, $element) use (&$require) {
 
-            $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
+            $AvitoBoardElementInstance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 
-            $value = $instance->fetchData($mapper);
+            $value = $AvitoBoardElementInstance->fetchData($this->productResult);
 
             /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-            if(null === $value && $instance->isRequired())
+            if(null === $value && $AvitoBoardElementInstance->isRequired())
             {
                 $require = true;
 
@@ -156,8 +160,8 @@ final class ProductTransformerExtension extends AbstractExtension
                         В свойства продукта не найдено значение для обязательного элемента Авито! 
                         Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                         $element,
-                        $this->product,
-                        $this->article,
+                        $this->productName,
+                        $this->productArticle,
                     ),
                     [self::class.':'.__LINE__],
                 );

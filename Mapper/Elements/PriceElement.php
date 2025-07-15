@@ -60,7 +60,7 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult|array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
         $price = $data->getProductPrice();
         $kit = $data->getAvitoKitValue();

@@ -123,7 +123,7 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
                 self::assertIsString($product->getAvitoProfileAddress());
                 self::assertIsString($product->getAvitoProfileManager());
                 self::assertIsString($product->getAvitoProfilePhone());
-                is_array($product->getAvitoBoardMapper()) ?: self::assertNull($product->getAvitoBoardMapper());
+                is_array($product->getAvitoBoardPropertyMapper()) ?: self::assertNull($product->getAvitoBoardPropertyMapper());
                 self::assertInstanceOf(CategoryProductUid::class, $product->getAvitoBoardMapperCategoryId());
                 self::assertIsString($product->getAvitoBoardAvitoCategory());
                 is_string($product->getAvitoProductDescription()) ?: self::assertNull($product->getAvitoProductDescription());
