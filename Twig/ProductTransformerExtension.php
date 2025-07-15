@@ -19,12 +19,14 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Twig;
 
 use BaksDev\Avito\Board\Mapper\AvitoBoardMapperProvider;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Twig\Extension\AbstractExtension;
@@ -32,13 +34,15 @@ use Twig\TwigFunction;
 
 final class ProductTransformerExtension extends AbstractExtension
 {
+    private AllProductsWithMapperResult $productResult;
+
     private ?string $avitoCategory = null;
 
-    private ?string $mapper = null;
+    private ?array $avitoBoardPropertyMapper = null;
 
-    private ?string $product = null;
+    private ?string $productName = null;
 
-    private ?string $article = null;
+    private ?string $productArticle = null;
 
     public function __construct(
         #[Target('avitoBoardLogger')] private readonly LoggerInterface $logger,
@@ -52,12 +56,14 @@ final class ProductTransformerExtension extends AbstractExtension
         ];
     }
 
-    public function productTransform(array $product): ?array
+    public function productTransform(AllProductsWithMapperResult $product): ?array
     {
-        $this->avitoCategory = $product['avito_board_avito_category'];
-        $this->mapper = $product['avito_board_mapper'];
-        $this->product = $product['product_name'];
-        $this->article = $product['product_article'];
+        $this->productResult = $product;
+        $this->productName = $product->getProductName();
+        $this->productArticle = $product->getProductArticle();
+
+        $this->avitoCategory = $product->getAvitoBoardAvitoCategory();
+        $this->avitoBoardPropertyMapper = $product->getAvitoBoardPropertyMapper();
 
         /** Список всех элементов категории */
         $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
@@ -73,7 +79,6 @@ final class ProductTransformerExtension extends AbstractExtension
         /**
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
-
         $elements = null;
 
         foreach($unmappedElements as $element)
@@ -87,8 +92,8 @@ final class ProductTransformerExtension extends AbstractExtension
                     sprintf(
                         'В свойства продукта не найдено значение для обязательного элемента Авито! Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                         $element->element(),
-                        $this->product,
-                        $this->article,
+                        $this->productName,
+                        $this->productArticle,
                     ),
                     [self::class.':'.__LINE__],
                 );
@@ -96,12 +101,12 @@ final class ProductTransformerExtension extends AbstractExtension
                 return null;
             }
 
+
             /** Добавляем элемент если имеется результат значения */
             if(false === empty($data))
             {
                 $elements[$element->element()] = $data;
             }
-
         }
 
         /** Преобразуем строку маппера в массив элементов */
@@ -117,22 +122,36 @@ final class ProductTransformerExtension extends AbstractExtension
 
     private function getElements(): ?array
     {
-        $mapper = $this->mapperTransform();
+        $mapper = $this->avitoBoardPropertyMapper;
+
+        if(true === is_null($mapper))
+        {
+            $this->logger->critical(
+                sprintf(
+                    'Соотношение свойств не найдено! Название продукта: %s. Артикул продукта: %s',
+                    $this->productName,
+                    $this->productArticle,
+                ),
+                [self::class.':'.__LINE__],
+            );
+
+            return null;
+        }
+
         $require = false;
 
         /**
          * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
          */
-        array_walk($mapper, function(&$value, $element) use ($mapper, &$require) {
+        array_walk($mapper, function(&$value, $element) use (&$require) {
 
-            $instance = $this->mapperProvider->getElement($this->avitoCategory, $element);
+            $AvitoBoardElementInstance = $this->mapperProvider->getElement($this->avitoCategory, $element);
 
-            $value = $instance->fetchData($mapper);
+            $value = $AvitoBoardElementInstance->fetchData($this->productResult);
 
             /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-            if(null === $value && $instance->isRequired())
+            if(null === $value && $AvitoBoardElementInstance->isRequired())
             {
-
                 $require = true;
 
                 $this->logger->warning(
@@ -141,8 +160,8 @@ final class ProductTransformerExtension extends AbstractExtension
                         В свойства продукта не найдено значение для обязательного элемента Авито! 
                         Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
                         $element,
-                        $this->product,
-                        $this->article,
+                        $this->productName,
+                        $this->productArticle,
                     ),
                     [self::class.':'.__LINE__],
                 );
@@ -155,24 +174,5 @@ final class ProductTransformerExtension extends AbstractExtension
         }
 
         return $mapper;
-    }
-
-    /**
-     * Преобразовываем маппер в массив элементов, где:
-     * - ключ - название элемента;
-     * - значение - значение из свойств маппера (значение из БД, без форматирования).
-     *
-     * @return array<string, string>
-     */
-    private function mapperTransform(): array
-    {
-        $transform = null;
-
-        foreach(json_decode($this->mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
-        {
-            $transform[$element->element] = $element->value;
-        }
-
-        return $transform;
     }
 }

@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -27,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
 
 final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
@@ -55,26 +57,27 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($data[self::ELEMENT]))
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        if(null === $data[self::ELEMENT])
+        if(null === $AvitoBoardPropertyMapper[self::ELEMENT])
         {
             return null;
         }
 
         /** если связанный элемент не присутствует в маппере или его значение null, то не рендерим ОБЯЗАТЕЛЬНЫЙ элемент */
-        if(false === isset($data[PassengerTireSpikesElement::ELEMENT]) || null === $data[PassengerTireSpikesElement::ELEMENT])
+        if(false === isset($AvitoBoardPropertyMapper[PassengerTireSpikesElement::ELEMENT]) || null === $AvitoBoardPropertyMapper[PassengerTireSpikesElement::ELEMENT])
         {
             return null;
         }
 
-        $tireType = match ($data[self::ELEMENT])
+        $tireType = match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             TireSeasonEnum::WINTER->value => 'Зимние',
             TireSeasonEnum::SUMMER->value => 'Летние',
@@ -87,7 +90,7 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         }
 
         /** Если шина зимняя - проверяем, является ли она шипованная и конкатенируем */
-        $spikes = match ($data[PassengerTireSpikesElement::ELEMENT])
+        $spikes = match ($AvitoBoardPropertyMapper[PassengerTireSpikesElement::ELEMENT])
         {
             'true' => 'шипованные',
             'false' => 'нешипованные',

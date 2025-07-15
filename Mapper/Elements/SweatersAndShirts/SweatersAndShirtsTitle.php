@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -28,6 +29,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Название объявления — строка до 50 символов.
@@ -70,16 +72,11 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $search = $this->request->getModel($data['product_name']);
+        $search = $this->request->getModel($data->getProductName());
 
         if(true === empty($search))
-        {
-            return null;
-        }
-
-        if(false === json_validate($data['avito_board_mapper']))
         {
             return null;
         }
@@ -89,10 +86,10 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
 
         /**
          * @var object{
-         *     value: string,
-         *     element: string} $element
+         *     'value': string,
+         *     'element': string} $element
          */
-        foreach(json_decode($data['avito_board_mapper'], false, 512, JSON_THROW_ON_ERROR) as $element)
+        foreach($data->getAvitoBoardPropertyMapper() as $element)
         {
             if($element->element === SweatersAndShirtsGoodsSubType::ELEMENT)
             {
@@ -105,7 +102,6 @@ final readonly class SweatersAndShirtsTitle implements AvitoBoardElementInterfac
                 $size = 'Размер '.$element->value;
             }
         }
-
 
         return sprintf('%s %s %s', $type, $search['brand'], $size);
     }

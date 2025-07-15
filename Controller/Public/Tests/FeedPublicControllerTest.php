@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Controller\Public\Tests;
@@ -40,13 +41,21 @@ final class FeedPublicControllerTest extends WebTestCase
     /** Доступ по без роли */
     public function testGuestFiled(): void
     {
-        $url = sprintf(self::URL, UserProfileUid::TEST);
+        $profileUid = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
+
+        $url = sprintf(self::URL, $profileUid);
 
         self::ensureKernelShutdown();
         $client = static::createClient();
-        $client->request('GET', $url);
 
-        // Full authentication is required to access this resource
+        $start = hrtime(true);
+        $client->request('GET', $url);
+        $end = hrtime(true);
+
         self::assertResponseStatusCodeSame(200);
+
+        //        $durationMs = ($end - $start) / 1e+6;
+        //        $durationSec = $durationMs / 1000;     // секунды
+        //        dump("⏱ Время ответа: " . number_format($durationSec, 2) . " sec");
     }
 }

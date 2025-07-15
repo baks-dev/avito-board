@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -27,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Кастомный тег.
@@ -61,15 +63,16 @@ final class PassengerTireSpikesElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($data[self::ELEMENT]))
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        $match = match ($data[self::ELEMENT])
+        $match = match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             'true' => 'шипованные',
             'false' => 'не шипованные',

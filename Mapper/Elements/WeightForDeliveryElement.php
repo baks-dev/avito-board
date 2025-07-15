@@ -19,11 +19,14 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
+
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Вес товара (кг), может использоваться для доставки.
@@ -54,9 +57,9 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $weight = $data['product_weight_delivery'];
+        $weight = $data->getProductWeightDelivery();
 
         if(true === empty($weight))
         {
@@ -64,7 +67,6 @@ class WeightForDeliveryElement implements AvitoBoardElementInterface
         }
 
         return (string) $weight;
-
     }
 
     public function element(): string

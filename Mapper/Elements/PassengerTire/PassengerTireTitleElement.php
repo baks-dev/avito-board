@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
- *  
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *  
+ *
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *  
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -27,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Название объявления — строка до 50 символов.
@@ -58,38 +60,38 @@ final readonly class PassengerTireTitleElement implements AvitoBoardElementInter
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $name = 'Шины '.$data['product_name'];
+        $name = 'Шины '.$data->getProductName();
 
-        if($data['product_variation_value'])
+        if($data->getProductVariationValue())
         {
-            $name .= ' '.$data['product_variation_value'];
+            $name .= ' '.$data->getProductVariationValue();
         }
 
-        if($data['product_modification_value'])
+        if($data->getProductModificationValue())
         {
-            $name .= '/'.$data['product_modification_value'];
+            $name .= '/'.$data->getProductModificationValue();
         }
 
-        if($data['product_offer_value'])
+        if($data->getProductOfferValue())
         {
-            $name .= ' R'.$data['product_offer_value'];
+            $name .= ' R'.$data->getProductOfferValue();
         }
 
-        if($data['product_offer_postfix'])
+        if($data->getProductOfferPostfix())
         {
-            $name .= ' '.$data['product_offer_postfix'];
+            $name .= ' '.$data->getProductOfferPostfix();
         }
 
-        if($data['product_variation_postfix'])
+        if($data->getProductVariationPostfix())
         {
-            $name .= ' '.$data['product_variation_postfix'];
+            $name .= ' '.$data->getProductVariationPostfix();
         }
 
-        if($data['product_modification_postfix'])
+        if($data->getProductModificationPostfix())
         {
-            $name .= ' '.$data['product_modification_postfix'];
+            $name .= ' '.$data->getProductModificationPostfix();
         }
 
         return $name;

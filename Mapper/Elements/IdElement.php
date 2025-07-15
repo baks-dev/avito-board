@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
 
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
+
 /**
  * Это уникальный идентификатор, который вы присваиваете каждому объявлению в файле.
  *
@@ -69,15 +71,15 @@ class IdElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
-        $id = $data['product_article'];
-        $kit = $data['avito_kit_value'];
+        $id = $data->getProductArticle();
+        $kit = $data->getAvitoKitValue();
 
         /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, к артикулу добавляется значение avito_kit_value */
         if((false === empty($kit)) && $kit !== 1)
         {
-            $id = (sprintf('%s-KIT-%s', $data['product_article'], $kit));
+            $id = (sprintf('%s-KIT-%s', $id, $kit));
         }
 
         return $id;

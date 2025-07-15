@@ -19,11 +19,14 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
+
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * Ширина товара (см), может использоваться для доставки.
@@ -54,9 +57,9 @@ class WidthForDeliveryElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $width = $data['product_width_delivery'];
+        $width = $data->getProductWidthDelivery();
 
         if(true === empty($width))
         {

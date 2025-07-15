@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
 
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use BaksDev\Reference\Money\Type\Money;
 
 /**
@@ -59,29 +60,27 @@ class PriceElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): string|null
     {
-        $price = $data['product_price'];
-        $kit = $data['avito_kit_value'];
+        $price = $data->getProductPrice();
+        $kit = $data->getAvitoKitValue();
 
-        if(true === empty($price))
+        if(false === $price)
         {
             return 'По запросу';
         }
 
-        $money = new Money($price, true);
-
-        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
+        /**
+         * Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1
+         * - объявление дублируется, цена умножается на значение avito_kit_value
+         */
         if((false === empty($kit)) && $kit !== 1)
         {
-            $multiplePrice = $price * $kit;
-            $money = new Money($multiplePrice, true);
+            $priceWithKit = $price->getValue(true) * $kit;
+            $price = new Money($priceWithKit, true);
         }
 
-        /** Применяем скидку профиля для всех объявлений */
-        $money->applyString($data['avito_profile_percent']);
-
-        return (string) $money->getRoundValue();
+        return (string) $price->getRoundValue();
     }
 
     public function element(): string

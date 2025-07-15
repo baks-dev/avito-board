@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -26,6 +27,7 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  * RunFlat - наличие технологии RunFlat
@@ -34,7 +36,6 @@ use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
  * — Да
  * — Нет
  */
-// @TODO без реализации AvitoBoardElementInterface у нас шины с этим свойством
 class PassengerTireRunFlatElement
 {
     private const string ELEMENT = 'RunFlat';
@@ -61,14 +62,16 @@ class PassengerTireRunFlatElement
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        if(false === isset($data[self::ELEMENT]))
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
+
+        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        $match = match ($data[self::ELEMENT])
+        $match = match ($AvitoBoardPropertyMapper[self::ELEMENT])
         {
             'true' => 'Да',
             'false' => 'Нет',

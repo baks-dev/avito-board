@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
 
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use DateTimeImmutable;
 
 /**
@@ -65,19 +66,19 @@ class DateEndElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
         /** По умолчанию объявление будет добавлено в фид, НО НЕ ОПУБЛИКОВАННО - дата в будущем */
         $date = new DateTimeImmutable('+ 2 day');
 
-        $product_quantity = isset($data['product_quantity']) ? max($data['product_quantity'], 0) : 0;
+        $product_quantity = $data->getProductQuantity();
 
         /**
          * Публикуем объявление только при наличии и в наличии больше или равное параметру avito_kit_value
          * Срок, на который будет опубликовано объявление - 1 день
          * @see PassengerTireQuantityElement
          */
-        if($product_quantity > 0 and $product_quantity >= $data['avito_kit_value'])
+        if($product_quantity > 0 and $product_quantity >= $data->getAvitoKitValue())
         {
             $date = new DateTimeImmutable('+ 1 day');
         }

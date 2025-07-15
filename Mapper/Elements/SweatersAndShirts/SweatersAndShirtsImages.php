@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -27,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\UrlHelper;
 
@@ -56,9 +58,8 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
     private const string LABEL = 'Фотографии';
 
     public function __construct(
-        private UrlHelper $helper,
-        #[Autowire(env: 'CDN_HOST')]
-        private string $cdnHost,
+        #[Autowire(env: 'CDN_HOST')] private string $cdnHost,
+        #[Autowire(env: 'HOST')] private string $host,
     ) {}
 
     public function isMapping(): false
@@ -81,13 +82,13 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $avitoIMG = $this->transform($data['avito_product_images']);
+        $avitoIMG = $this->transform($data->getAvitoProductImages());
 
-        if(empty($avitoIMG))
+        if(true === empty($avitoIMG))
         {
-            return $this->transform($data['product_images']);
+            $avitoIMG = $this->transform($data->getProductImages());
         }
 
         return $avitoIMG;
@@ -109,14 +110,17 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
     }
 
     /** Формируем массив элементов с изображениями */
-    private function transform(string $images): ?string
+    private function transform(?array $images): ?string
     {
+        if(is_null($images))
+        {
+            return null;
+        }
+
         $render = null;
 
-        $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
-
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, function($f) {
+        usort($images, static function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 
@@ -127,22 +131,22 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
          *     img_ext: string,
          *     img_root: bool}|null $image
          */
-        foreach($array as $image)
+        foreach($images as $image)
         {
             // Если изображение не загружено - не рендерим
-            if(null === $image)
+            if(true === empty($image))
             {
-                return null;
+                continue;
             }
 
-            $imgHost = $image->img_cdn ? 'https://'.$this->cdnHost : '';
+            $imgHost = 'https://'.($image->img_cdn === true ? $this->cdnHost : $this->host);
             $imgDir = $image->img;
-            $imgFile = ($imgHost === '' ? '/image.' : '/large.').$image->img_ext;
-            $imgPath = $this->helper->getAbsoluteUrl($imgHost.$imgDir.$imgFile);
+            $imgFile = ($image->img_cdn === true ? '/large.' : '/image.').$image->img_ext;
+            $imgPath = $imgHost.$imgDir.$imgFile;
             $element = sprintf('<Image url="%s"/>%s', $imgPath, PHP_EOL);
             $render .= $element;
         }
 
-        return $render;
+        return $render ?: null;
     }
 }

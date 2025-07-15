@@ -1,17 +1,17 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
- *  
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *  
+ *
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *  
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -27,6 +28,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -114,16 +116,18 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $size = $data[self::ELEMENT];
+        $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
+
+        $size = $AvitoBoardPropertyMapper[self::ELEMENT];
 
         if(null === $size)
         {
             return null;
         }
 
-        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
+        if($AvitoBoardPropertyMapper[SweatersAndShirtsGoodsType::ELEMENT] === 'Мужской')
         {
             $men = $this->translator->trans($size, [], 'avito-board.mapper.size.men');
 
@@ -135,7 +139,7 @@ class SweatersAndShirtsSize implements AvitoBoardElementInterface
             return $men;
         }
 
-        if($data[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
+        if($AvitoBoardPropertyMapper[SweatersAndShirtsGoodsType::ELEMENT] === 'Женский')
         {
             $women = $this->translator->trans($size, [], 'avito-board.mapper.size.women');
 
