@@ -63,8 +63,7 @@ class LengthForDeliveryElement implements AvitoBoardElementInterface
 
     public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
-        //        $length = $data['product_length_delivery'];
-        $length = $data->getProductHeightDelivery();
+        $length = $data->getProductLengthDelivery();
 
         if(true === empty($length))
         {

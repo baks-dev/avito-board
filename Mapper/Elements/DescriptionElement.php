@@ -68,8 +68,7 @@ class DescriptionElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
         // Если есть шаблон для описания - форматируем
-        //        if(null !== $data['avito_product_description'])
-        if(null !== $data->getProductDescription())
+        if(false === is_null($data->getAvitoProductDescription()))
         {
             $search = [
                 '%PRODUCT_NAME%',
@@ -79,14 +78,6 @@ class DescriptionElement implements AvitoBoardElementInterface
                 '%PRODUCT_ADDRESS%'
             ];
 
-            //            $replace = [
-            //                $data['product_name'],
-            //                $data['product_offer_value'],
-            //                $data['product_variation_value'],
-            //                $data['product_modification_value'],
-            //                $data['avito_profile_address'],
-            //            ];
-
             $replace = [
                 $data->getProductName(),
                 $data->getProductOfferValue(),
@@ -95,18 +86,15 @@ class DescriptionElement implements AvitoBoardElementInterface
                 $data->getAvitoProfileAddress(),
             ];
 
-            $desc = str_replace($search, $replace, $data->getProductDescription());
-            //            $desc = str_replace($search, $replace, $data['avito_product_description']);
+            $desc = str_replace($search, $replace, $data->getAvitoProductDescription());
 
             return sprintf('<![CDATA[%s]]>', $desc);
         }
 
         // Если есть описания продукта - форматируем
-        if(null !== $data->getProductDescription())
-            //        if(null !== $data['product_description'])
+        if(false === is_null($data->getProductDescription()))
         {
             $desc = strip_tags($data->getProductDescription(), ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
-            //            $desc = strip_tags($data['product_description'], ['<p>', '<br>', '<strong>', '<em>', '<ul>', '<ol>', '<li>']);
 
             return sprintf('<![CDATA[%s]]>', $desc);
         }

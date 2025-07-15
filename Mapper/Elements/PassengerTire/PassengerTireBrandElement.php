@@ -68,7 +68,6 @@ final readonly class PassengerTireBrandElement implements AvitoBoardElementInter
 
     public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
-        //        $search = $this->request->getModel($data['product_name']);
         $search = $this->request->getModel($data->getProductName());
 
         if(true === empty($search))

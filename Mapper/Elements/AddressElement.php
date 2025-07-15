@@ -63,7 +63,6 @@ class AddressElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult|array $data): string
     {
         return $data->getAvitoProfileAddress();
-        //        return $data['avito_profile_address'];
     }
 
     public function element(): string

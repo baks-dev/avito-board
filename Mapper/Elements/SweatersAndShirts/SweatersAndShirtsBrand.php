@@ -19,6 +19,7 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 declare(strict_types=1);
@@ -28,6 +29,7 @@ namespace BaksDev\Avito\Board\Mapper\Elements\SweatersAndShirts;
 use BaksDev\Avito\Board\Api\ShirtModelRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\SweatersAndShirtsProduct;
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
 /**
  *  Бренд.
@@ -65,7 +67,7 @@ final readonly class SweatersAndShirtsBrand implements AvitoBoardElementInterfac
         return null;
     }
 
-    public function fetchData(array $data): ?string
+    public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
         $search = $this->request->getModel($data['product_name']);
 

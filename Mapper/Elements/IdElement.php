@@ -75,8 +75,6 @@ class IdElement implements AvitoBoardElementInterface
     {
         $id = $data->getProductArticle();
         $kit = $data->getAvitoKitValue();
-        //        $id = $data['product_article'];
-        //        $kit = $data['avito_kit_value'];
 
         /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, к артикулу добавляется значение avito_kit_value */
         if((false === empty($kit)) && $kit !== 1)

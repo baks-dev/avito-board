@@ -36,7 +36,7 @@ final class ProductTransformerExtension extends AbstractExtension
 {
     private ?string $avitoCategory = null;
 
-    private ?string $mapper = null;
+    private ?array $mapper = null;
 
     private ?string $product = null;
 
@@ -54,14 +54,8 @@ final class ProductTransformerExtension extends AbstractExtension
         ];
     }
 
-    public function productTransform(AllProductsWithMapperResult|array $product): ?array
+    public function productTransform(AllProductsWithMapperResult $product): ?array
     {
-
-        //        $this->avitoCategory = $product['avito_board_avito_category'];
-        //        $this->mapper = $product['avito_board_mapper'];
-        //        $this->product = $product['product_name'];
-        //        $this->article = $product['product_article'];
-
         $this->avitoCategory = $product->getAvitoBoardAvitoCategory();
         $this->mapper = $product->getAvitoBoardMapper();
         $this->product = $product->getProductName();
@@ -81,7 +75,6 @@ final class ProductTransformerExtension extends AbstractExtension
         /**
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
-
         $elements = null;
 
         foreach($unmappedElements as $element)
@@ -110,7 +103,6 @@ final class ProductTransformerExtension extends AbstractExtension
             {
                 $elements[$element->element()] = $data;
             }
-
         }
 
         /** Преобразуем строку маппера в массив элементов */
@@ -126,7 +118,22 @@ final class ProductTransformerExtension extends AbstractExtension
 
     private function getElements(): ?array
     {
-        $mapper = $this->mapperTransform();
+        $mapper = $this->mapper;
+
+        if(true === is_null($mapper))
+        {
+            $this->logger->critical(
+                sprintf(
+                    'Соотношение свойств не найдено! Название продукта: %s. Артикул продукта: %s',
+                    $this->product,
+                    $this->article,
+                ),
+                [self::class.':'.__LINE__],
+            );
+
+            return null;
+        }
+
         $require = false;
 
         /**
@@ -141,7 +148,6 @@ final class ProductTransformerExtension extends AbstractExtension
             /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
             if(null === $value && $instance->isRequired())
             {
-
                 $require = true;
 
                 $this->logger->warning(
@@ -164,24 +170,5 @@ final class ProductTransformerExtension extends AbstractExtension
         }
 
         return $mapper;
-    }
-
-    /**
-     * Преобразовываем маппер в массив элементов, где:
-     * - ключ - название элемента;
-     * - значение - значение из свойств маппера (значение из БД, без форматирования).
-     *
-     * @return array<string, string>
-     */
-    private function mapperTransform(): array
-    {
-        $transform = null;
-
-        foreach(json_decode($this->mapper, false, 512, JSON_THROW_ON_ERROR) as $element)
-        {
-            $transform[$element->element] = $element->value;
-        }
-
-        return $transform;
     }
 }

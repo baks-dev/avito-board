@@ -26,6 +26,19 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper;
 
+use BaksDev\Products\Category\Type\Id\CategoryProductUid;
+use BaksDev\Products\Category\Type\Offers\Id\CategoryProductOffersUid;
+use BaksDev\Products\Category\Type\Offers\Modification\CategoryProductModificationUid;
+use BaksDev\Products\Category\Type\Offers\Variation\CategoryProductVariationUid;
+use BaksDev\Products\Product\Type\Event\ProductEventUid;
+use BaksDev\Products\Product\Type\Id\ProductUid;
+use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
+use BaksDev\Products\Product\Type\Offers\Id\ProductOfferUid;
+use BaksDev\Products\Product\Type\Offers\Variation\ConstId\ProductVariationConst;
+use BaksDev\Products\Product\Type\Offers\Variation\Id\ProductVariationUid;
+use BaksDev\Products\Product\Type\Offers\Variation\Modification\Id\ProductModificationUid;
+use BaksDev\Reference\Currency\Type\Currency;
+use BaksDev\Reference\Money\Type\Money;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 /** @see AllProductsWithMapperRepository */
@@ -35,7 +48,7 @@ final readonly class AllProductsWithMapperResult
     public function __construct(
         private string $id,
         private string $event,
-        private int $avito_kit_value,
+        private ?int $avito_kit_value,
         private string $avito_profile_percent,
         private string $avito_profile_address,
         private string $avito_profile_manager,
@@ -43,36 +56,34 @@ final readonly class AllProductsWithMapperResult
         private string $product_date_begin,
         private ?string $product_date_over,
         private string $product_name,
-        private string $product_name_event,
         private string $product_description,
-        private string|null $product_offer_id,
-        private string|null $product_offer_const,
-        private string|null $product_offer_value,
+        private ?string $product_offer_id,
+        private ?string $product_offer_const,
+        private ?string $product_offer_value,
         private ?string $product_offer_postfix,
-        private string $offer_section_field_uid,
+        private ?string $offer_section_field_uid,
         private string $product_offer_reference,
-        private string|null $product_variation_id,
-        private string|null $product_variation_const,
-        private string|null $product_variation_value,
+        private ?string $product_variation_id,
+        private ?string $product_variation_const,
+        private ?string $product_variation_value,
         private ?string $product_variation_postfix,
-        private string|null $variation_section_field_uid,
-        private string|null $product_modification_id,
-        private string|null $product_modification_const,
-        private string|null $product_modification_value,
+        private ?string $variation_section_field_uid,
+        private ?string $product_modification_id,
+        private ?string $product_modification_const,
+        private ?string $product_modification_value,
         private ?string $product_modification_postfix,
-        private string|null $modification_section_field_uid,
+        private ?string $modification_section_field_uid,
         private string $product_article,
         private bool $category_active,
         private string $product_category,
-        private int|null $product_price,
-        private int $product_old_price,
-        private string|null $product_currency,
+        private ?int $product_price,
+        private ?string $product_currency,
         private int $product_quantity,
         private string $product_images,
-        private int|null $product_length_delivery,
-        private int|null $product_width_delivery,
-        private int|null $product_height_delivery,
-        private int|null $product_weight_delivery,
+        private ?int $product_length_delivery,
+        private ?int $product_width_delivery,
+        private ?int $product_height_delivery,
+        private ?int $product_weight_delivery,
         private string $avito_board_mapper_category_id,
         private string $avito_board_avito_category,
         private string $avito_board_mapper,
@@ -80,34 +91,14 @@ final readonly class AllProductsWithMapperResult
         private ?string $avito_product_images,
     ) {}
 
-    public function getId(): string
+    public function getProductId(): ProductUid
     {
-        return $this->id;
+        return new ProductUid($this->id);
     }
 
-    public function getEvent(): string
+    public function getProductEvent(): ProductEventUid
     {
-        return $this->event;
-    }
-
-    public function getAvitoKitValue(): int
-    {
-        return $this->avito_kit_value;
-    }
-
-    public function getAvitoProfilePercent(): string
-    {
-        return $this->avito_profile_percent;
-    }
-
-    public function getAvitoProfileAddress(): string
-    {
-        return $this->avito_profile_address;
-    }
-
-    public function getAvitoProfileManager(): string
-    {
-        return $this->avito_profile_manager;
+        return new ProductEventUid($this->event);
     }
 
     public function getAvitoProfilePhone(): string
@@ -130,24 +121,23 @@ final readonly class AllProductsWithMapperResult
         return $this->product_name;
     }
 
-    public function getProductNameEvent(): string
-    {
-        return $this->product_name_event;
-    }
-
-    public function getProductDescription(): string
+    public function getProductDescription(): ?string
     {
         return $this->product_description;
     }
 
-    public function getProductOfferId(): ?string
+    public function getProductOfferId(): ?ProductOfferUid
     {
-        return $this->product_offer_id;
+        return is_null($this->product_offer_id)
+            ? null
+            : new ProductOfferUid($this->product_offer_id);
     }
 
-    public function getProductOfferConst(): ?string
+    public function getProductOfferConst(): ?ProductOfferConst
     {
-        return $this->product_offer_const;
+        return is_null($this->product_offer_const)
+            ? null
+            : new ProductOfferConst($this->product_offer_const);
     }
 
     public function getProductOfferValue(): ?string
@@ -160,9 +150,11 @@ final readonly class AllProductsWithMapperResult
         return $this->product_offer_postfix;
     }
 
-    public function getOfferSectionFieldUid(): string
+    public function getOfferSectionFieldUid(): ?CategoryProductOffersUid
     {
-        return $this->offer_section_field_uid;
+        return is_null($this->offer_section_field_uid)
+            ? null
+            : new CategoryProductOffersUid($this->product_offer_const);
     }
 
     public function getProductOfferReference(): string
@@ -170,14 +162,18 @@ final readonly class AllProductsWithMapperResult
         return $this->product_offer_reference;
     }
 
-    public function getProductVariationId(): ?string
+    public function getProductVariationId(): ?ProductVariationUid
     {
-        return $this->product_variation_id;
+        return is_null($this->product_variation_id)
+            ? null
+            : new ProductVariationUid($this->product_variation_id);
     }
 
-    public function getProductVariationConst(): ?string
+    public function getProductVariationConst(): ?ProductVariationConst
     {
-        return $this->product_variation_const;
+        return is_null($this->product_variation_const)
+            ? null
+            : new ProductVariationConst($this->product_variation_const);
     }
 
     public function getProductVariationValue(): ?string
@@ -190,9 +186,11 @@ final readonly class AllProductsWithMapperResult
         return $this->product_variation_postfix;
     }
 
-    public function getVariationSectionFieldUid(): ?string
+    public function getVariationSectionFieldUid(): ?CategoryProductVariationUid
     {
-        return $this->variation_section_field_uid;
+        return is_null($this->variation_section_field_uid)
+            ? null
+            : new CategoryProductVariationUid($this->variation_section_field_uid);
     }
 
     public function getProductModificationId(): ?string
@@ -200,9 +198,11 @@ final readonly class AllProductsWithMapperResult
         return $this->product_modification_id;
     }
 
-    public function getProductModificationConst(): ?string
+    public function getProductModificationConst(): ?ProductModificationUid
     {
-        return $this->product_modification_const;
+        return is_null($this->product_modification_const)
+            ? null
+            : new ProductModificationUid($this->product_modification_const);
     }
 
     public function getProductModificationValue(): ?string
@@ -215,9 +215,11 @@ final readonly class AllProductsWithMapperResult
         return $this->product_modification_postfix;
     }
 
-    public function getModificationSectionFieldUid(): ?string
+    public function getModificationSectionFieldUid(): ?CategoryProductModificationUid
     {
-        return $this->modification_section_field_uid;
+        return is_null($this->modification_section_field_uid)
+            ? null
+            : new CategoryProductModificationUid($this->modification_section_field_uid);
     }
 
     public function getProductArticle(): string
@@ -235,29 +237,63 @@ final readonly class AllProductsWithMapperResult
         return $this->product_category;
     }
 
-    public function getProductPrice(): ?int
+    public function getProductPrice(): Money|false
     {
-        return $this->product_price;
+
+        if(empty($this->product_price))
+        {
+            return false;
+        }
+
+        $price = new Money($this->product_price, true);
+
+        /** Скидка магазина */
+        if(false === empty($this->project_discount))
+        {
+            $price->applyString($this->project_discount);
+        }
+
+        /** Скидка профиля магазина на Авито */
+        if(false === empty($this->avito_profile_percent))
+        {
+            $price->applyString($this->avito_profile_percent);
+        }
+
+        return $price;
     }
 
-    public function getProductOldPrice(): int
+    public function getProductCurrency(): Currency
     {
-        return $this->product_old_price;
-    }
-
-    public function getProductCurrency(): ?string
-    {
-        return $this->product_currency;
+        return new Currency($this->product_currency);
     }
 
     public function getProductQuantity(): int
     {
-        return $this->product_quantity;
+        $product_quantity = $this->product_quantity !== null ? max($this->product_quantity, 0) : 0;
+
+        return $product_quantity;
     }
 
-    public function getProductImages(): string
+    public function getProductImages(): array|null
     {
-        return $this->product_images;
+        if(is_null($this->product_images))
+        {
+            return null;
+        }
+
+        if(false === json_validate($this->product_images))
+        {
+            return null;
+        }
+
+        $images = json_decode($this->product_images, false, 512, JSON_THROW_ON_ERROR);
+
+        if(null === current($images))
+        {
+            return null;
+        }
+
+        return $images;
     }
 
     public function getProductLengthDelivery(): ?int
@@ -280,9 +316,9 @@ final readonly class AllProductsWithMapperResult
         return $this->product_weight_delivery;
     }
 
-    public function getAvitoBoardMapperCategoryId(): string
+    public function getAvitoBoardMapperCategoryId(): CategoryProductUid
     {
-        return $this->avito_board_mapper_category_id;
+        return new CategoryProductUid($this->avito_board_mapper_category_id);
     }
 
     public function getAvitoBoardAvitoCategory(): string
@@ -290,9 +326,31 @@ final readonly class AllProductsWithMapperResult
         return $this->avito_board_avito_category;
     }
 
-    public function getAvitoBoardMapper(): string
+    public function getAvitoBoardMapper(): ?array
     {
-        return $this->avito_board_mapper;
+        if(is_null($this->avito_board_mapper))
+        {
+            return null;
+        }
+
+        if(false === json_validate($this->avito_board_mapper))
+        {
+            return null;
+        }
+
+        /**
+         * @var array{'value': string, 'element': string } $data
+         */
+        $data = json_decode($this->avito_board_mapper, false, 512, JSON_THROW_ON_ERROR);
+
+        if(null === current($data))
+        {
+            return null;
+        }
+
+        $mapper = array_column($data, 'value', 'element');
+
+        return $mapper;
     }
 
     public function getAvitoProductDescription(): ?string
@@ -300,9 +358,45 @@ final readonly class AllProductsWithMapperResult
         return $this->avito_product_description;
     }
 
-    public function getAvitoProductImages(): ?string
+    public function getAvitoProductImages(): array|null
     {
-        return $this->avito_product_images;
+        if(is_null($this->avito_product_images))
+        {
+            return null;
+        }
+
+        if(false === json_validate($this->avito_product_images))
+        {
+            return null;
+        }
+
+        $images = json_decode($this->avito_product_images, false, 512, JSON_THROW_ON_ERROR);
+
+        if(null === current($images))
+        {
+            return null;
+        }
+
+        return $images;
     }
 
+    public function getAvitoKitValue(): ?int
+    {
+        return $this->avito_kit_value ?? 0;
+    }
+
+    public function getAvitoProfilePercent(): string
+    {
+        return $this->avito_profile_percent;
+    }
+
+    public function getAvitoProfileAddress(): string
+    {
+        return $this->avito_profile_address;
+    }
+
+    public function getAvitoProfileManager(): string
+    {
+        return $this->avito_profile_manager;
+    }
 }

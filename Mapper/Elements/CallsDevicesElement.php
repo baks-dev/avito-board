@@ -69,8 +69,7 @@ class CallsDevicesElement
 
     public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
-        return $data->getAvitoProfilePhone();
-        //        return $data['avito_token_phone_id'];
+        return null;
     }
 
     public function element(): string

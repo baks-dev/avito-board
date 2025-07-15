@@ -87,7 +87,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
 
         if(true === empty($avitoIMG))
         {
-            $this->transform($data->getProductImages());
+            $avitoIMG = $this->transform($data->getProductImages());
         }
 
         return $avitoIMG;
@@ -109,14 +109,17 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
     }
 
     /** Формируем массив элементов с изображениями */
-    private function transform(string $images): ?string
+    private function transform(?array $images): ?string
     {
+        if(is_null($images))
+        {
+            return null;
+        }
+
         $render = null;
 
-        $array = json_decode($images, false, 512, JSON_THROW_ON_ERROR);
-
         // Сортировка массива элементов с изображениями по root = true
-        usort($array, static function($f) {
+        usort($images, static function($f) {
             return $f->img_root === true ? -1 : 1;
         });
 
@@ -127,7 +130,7 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
          *     img_ext: string,
          *     img_root: bool}|null $image
          */
-        foreach($array as $image)
+        foreach($images as $image)
         {
             // Если изображение не загружено - не рендерим
             if(true === empty($image))

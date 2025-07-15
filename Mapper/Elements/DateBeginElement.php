@@ -81,8 +81,7 @@ class DateBeginElement implements AvitoBoardElementInterface
         /** По умолчанию объявление будет добавлено в фид, НО НЕ ОПУБЛИКОВАННО - дата в будущем */
         $date = new DateTimeImmutable('+ 1 day');
 
-        $product_quantity = $data->getProductQuantity() !== null ? max($data->getProductQuantity(), 0) : 0;
-        //        $product_quantity = isset($data['product_quantity']) ? max($data['product_quantity'], 0) : 0;
+        $product_quantity = $data->getProductQuantity();
 
         /**
          * Публикуем объявление только при наличии и в наличии больше или равное параметру avito_kit_value

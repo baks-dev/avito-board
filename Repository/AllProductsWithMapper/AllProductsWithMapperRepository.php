@@ -97,8 +97,10 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
     }
 
     /**
-     * Метод возвращает продукты по условию - старая цена продукта больше текущей цены
-     */
+     * Метод получает массив элементов продукции с соотношением свойств
+     *
+     * @return Generator<int, AllProductsWithMapperResult>|false
+     * */
     public function findAll(): Generator|false
     {
         $dbal = $this->builder();
@@ -245,7 +247,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         /** Получаем название с учетом настроек локализации */
         $dbal
             ->addSelect('product_trans.name AS product_name')
-            ->addSelect('product_trans.event AS product_name_event')
             ->leftJoin(
                 'product_event',
                 ProductTrans::class,
@@ -438,15 +439,15 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         /* Предыдущая стоимость продукта */
 
-        $dbal->addSelect("
-			COALESCE(
-                NULLIF(product_modification_price.old, 0),
-                NULLIF(product_variation_price.old, 0),
-                NULLIF(product_offer_price.old, 0),
-                NULLIF(product_price.old, 0),
-                0
-            ) AS product_old_price
-		");
+        //        $dbal->addSelect("
+        //			COALESCE(
+        //                NULLIF(product_modification_price.old, 0),
+        //                NULLIF(product_variation_price.old, 0),
+        //                NULLIF(product_offer_price.old, 0),
+        //                NULLIF(product_price.old, 0),
+        //                0
+        //            ) AS product_old_price
+        //		");
 
         /**
          * Валюта продукта
@@ -503,93 +504,68 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         /**
          * Наличие продукции
          */
+        if(true === class_exists(ProductStockTotal::class))
+        {
 
-        //        if(true === class_exists(ProductStockTotal::class))
-        //        {
-        //
-        //            $dbal->join(
-        //                'product_modification',
-        //                ProductStockTotal::class,
-        //                'product_stock_total',
-        //                '
-        //                    product_stock_total.profile = :profile
-        //
-        //                    AND product_stock_total.product = product.id
-        //
-        //                    AND (CASE
-        //                        WHEN product_offer.const IS NOT NULL
-        //                        THEN product_stock_total.offer = product_offer.const
-        //                        ELSE product_stock_total.offer IS NULL
-        //                    END)
-        //
-        //                    AND (CASE
-        //                        WHEN product_variation.const IS NOT NULL
-        //                        THEN product_stock_total.variation = product_variation.const
-        //                        ELSE product_stock_total.variation IS NULL
-        //                    END)
-        //
-        //                    AND (CASE
-        //                        WHEN product_modification.const IS NOT NULL
-        //                        THEN product_stock_total.modification = product_modification.const
-        //                        ELSE product_stock_total.modification IS NULL
-        //                    END)
-        //                '
-        //            )
-        //                ->setParameter(
-        //                    key: 'profile',
-        //                    value: $this->profile,
-        //                    type: UserProfileUid::TYPE
-        //                );
-        //
-        //            $dbal->addSelect(
-        //                '
-        //                    CASE
-        //                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
-        //                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
-        //                       ELSE 0
-        //                    END AS product_quantity
-        //                ');
-        //        }
-        //        else
-        //        {
-        //            $dbal->addSelect(
-        //                '
-        //                CASE
-        //                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve
-        //                   THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
-        //
-        //                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve
-        //                   THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
-        //
-        //                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve
-        //                   THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
-        //
-        //                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve
-        //                   THEN (product_price.quantity - product_price.reserve)
-        //
-        //                   ELSE 0
-        //                END AS product_quantity'
-        //            );
-        //        }
+            $dbal->join(
+                'product_modification',
+                ProductStockTotal::class,
+                'product_stock_total',
+                '
+                   product_stock_total.profile = :profile
+                   AND product_stock_total.product = product.id
+                   AND (CASE
+                       WHEN product_offer.const IS NOT NULL
+                       THEN product_stock_total.offer = product_offer.const
+                       ELSE product_stock_total.offer IS NULL
+                   END)
+                   AND (CASE
+                       WHEN product_variation.const IS NOT NULL
+                       THEN product_stock_total.variation = product_variation.const
+                       ELSE product_stock_total.variation IS NULL
+                   END)
+                   AND (CASE
+                       WHEN product_modification.const IS NOT NULL
+                       THEN product_stock_total.modification = product_modification.const
+                       ELSE product_stock_total.modification IS NULL
+                   END)
+               ')
+                ->setParameter(
+                    key: 'profile',
+                    value: $this->profile,
+                    type: UserProfileUid::TYPE
+                );
 
-        $dbal->addSelect(
-            '
+            $dbal->addSelect(
+                '
+                    CASE
+                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
+                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
+                       ELSE 0
+                    END AS product_quantity
+                ');
+        }
+        else
+        {
+            $dbal->addSelect(
+                '
                 CASE
-                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve 
+                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve
                    THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
-                
-                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve 
+
+                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve
                    THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
-                
-                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve 
+
+                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve
                    THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
-                  
-                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve 
+
+                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve
                    THEN (product_price.quantity - product_price.reserve)
-                 
+
                    ELSE 0
                 END AS product_quantity'
-        );
+            );
+        }
 
         /** Фото продукции*/
 

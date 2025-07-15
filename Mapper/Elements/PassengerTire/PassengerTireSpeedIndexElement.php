@@ -63,7 +63,6 @@ class PassengerTireSpeedIndexElement implements AvitoBoardElementInterface
 
     public function fetchData(AllProductsWithMapperResult|array $data): ?string
     {
-        //        if(null === $data['product_modification_postfix'])
         if(null === $data->getProductModificationPostfix())
         {
             return null;

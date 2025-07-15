@@ -57,7 +57,7 @@ class PassengerTireResidualTreadElement implements AvitoBoardElementInterface
         return true;
     }
 
-    // Т.к. не реализуем б/у, значение будет максимально возможное
+    /** Т.к. не реализуем б/у, значение будет максимально возможное */
     public function getDefault(): string
     {
         return '50';

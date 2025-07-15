@@ -77,12 +77,13 @@ class PassengerTireQuantityElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult|array $data): string
     {
         $kit = $data->getAvitoKitValue();
-        //        $kit = $data['avito_kit_value'];
 
         /** Если параметр Количество товаров в объявлении НЕ УСТАНОВЛЕН - значить в объявлении 1 товар */
         $quantity = $this->getDefault();
 
-        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - значит в объявлении количество товаров из avito_kit_value */
+        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1
+         * - значит в объявлении количество товаров из avito_kit_value
+         */
         if((false === empty($kit)) && $kit !== 1)
         {
             $quantity = sprintf('за %s шт.', (string) $kit);

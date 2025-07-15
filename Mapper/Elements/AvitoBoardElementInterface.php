@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -19,10 +19,12 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
+ *
  */
 
 namespace BaksDev\Avito\Board\Mapper\Elements;
 
+use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 #[AutoconfigureTag('baks.avito.board.mapper.elements')]
@@ -52,13 +54,12 @@ interface AvitoBoardElementInterface
     public function getHelp(): ?string;
 
     /**
-     * Извлекает данные из массива данных, форматирует их
+     * Извлекает данные из массива данных, форматирует их для тега согласно бизнес логике
      *
-     * @param array $data
-     * - свойства из продукта, если элемент НЕ УЧАСТВУЕТ в маппинге ($this->isMapping() === false)
-     * - свойства из результата маппера, если элемент УЧАСТВУЕТ в маппинге ($this->isMapping() === true)
+     * - @param AllProductsWithMapperResult $data - свойства из продукта, если элемент НЕ УЧАСТВУЕТ в маппинге ($this->isMapping() === false)
+     * - @param array $data - свойства из результата маппера, если элемент УЧАСТВУЕТ в маппинге ($this->isMapping() === true)
      */
-    public function fetchData(array $data): ?string;
+    public function fetchData(AllProductsWithMapperResult|array $data): ?string;
 
     /**
      * Получает название элемента из константы класса ELEMENT

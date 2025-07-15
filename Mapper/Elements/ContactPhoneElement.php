@@ -71,7 +71,6 @@ class ContactPhoneElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult|array $data): string
     {
         return $data->getAvitoProfilePhone();
-        //        return $data['avito_profile_phone'];
     }
 
     public function element(): string

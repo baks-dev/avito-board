@@ -38,12 +38,6 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 #[When(env: 'test')]
 class AvitoMapperTest extends KernelTestCase
 {
-    /** Статистика */
-    private static int $productsInFeed = 0;
-    private static int $productsOutFeed = 0;
-
-    private static ?float $mappingExecTime = null;
-
     private static \Generator|array|false $products = false;
 
     public static function setUpBeforeClass(): void
@@ -82,20 +76,17 @@ class AvitoMapperTest extends KernelTestCase
         $feed = null;
 
         // время маппинга
-        $start = microtime(true);
+        $start = hrtime(true);
         foreach($products as $product)
         {
-            self::$productsOutFeed++;
-
             $mappingProduct = $ProductTransformerExtension->productTransform($product);
 
             if(false === is_null($mappingProduct))
             {
-                self::$productsInFeed++;
-
                 $feed[] = $mappingProduct;
             }
         }
+        $end = hrtime(true);
 
         /** Если теги не смаппились и фид пустой */
         if(true === is_null($feed))
@@ -105,10 +96,11 @@ class AvitoMapperTest extends KernelTestCase
         }
 
         self::assertIsArray($feed);
-        self::$mappingExecTime = microtime(true) - $start;
 
-        dump('общее время маппинга - '.(string) self::$mappingExecTime.' sec');
-        dump('количество продуктов, добавленных в фид - '.self::$productsInFeed);
-        dump('количество продуктов, не добавленных в фид - '.self::$productsOutFeed);
+        //        $durationMs = ($end - $start) / 1e+6;
+        //        $durationSec = $durationMs / 1000;     // секунды
+        //        dump('====================');
+        //        dump('⏱ Общее время маппинга - '.number_format($durationSec, 2).' sec');
+        //        dump('количество продуктов, добавленных в фид - '.count($feed));
     }
 }

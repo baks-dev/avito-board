@@ -63,7 +63,6 @@ class ManagerNameElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult|array $data): string
     {
         return $data->getAvitoProfileManager();
-        //        return $data['avito_profile_manager'];
     }
 
     public function element(): string

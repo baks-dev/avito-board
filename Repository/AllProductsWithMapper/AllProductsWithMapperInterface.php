@@ -32,6 +32,10 @@ interface AllProductsWithMapperInterface
 {
     public function forProfile(UserProfile|UserProfileUid $profile): self;
 
-    /** Метод получает массив элементов продукции с соотношением свойств */
+    /**
+     * Метод получает массив элементов продукции с соотношением свойств
+     *
+     * @return Generator<int, AllProductsWithMapperResult>|false
+     * */
     public function findAll(): Generator|false;
 }
