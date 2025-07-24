@@ -37,6 +37,7 @@ use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
 use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
+use BaksDev\Avito\Products\Entity\Kit\AvitoProductKit;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
 use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
@@ -66,6 +67,7 @@ use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
+use BaksDev\Products\Stocks\BaksDevProductsStocksBundle;
 use BaksDev\Products\Stocks\Entity\Total\ProductStockTotal;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
@@ -472,101 +474,118 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 			END AS product_currency'
         );
 
-        /** Наличие продукта */
-        /**
-         * Наличие и резерв торгового предложения
-         */
-        $dbal->leftJoin(
-            'product_offer',
-            ProductOfferQuantity::class,
-            'product_offer_quantity',
-            'product_offer_quantity.offer = product_offer.id'
-        );
 
         /**
-         * Наличие и резерв множественного варианта
+         * Наличие продукции на складе
+         * Если подключен модуль складского учета и передан идентификатор профиля
          */
-        $dbal->leftJoin(
-            'product_variation',
-            ProductVariationQuantity::class,
-            'product_variation_quantity',
-            'product_variation_quantity.variation = product_variation.id'
-        );
 
-        $dbal->leftJoin(
-            'product_modification',
-            ProductModificationQuantity::class,
-            'product_modification_quantity',
-            'product_modification_quantity.modification = product_modification.id'
-        );
-
-        /**
-         * Наличие продукции
-         */
-        if(true === class_exists(ProductStockTotal::class))
+        if(true === ($this->profile instanceof UserProfileUid) && class_exists(BaksDevProductsStocksBundle::class))
         {
 
-            $dbal->join(
-                'product_modification',
-                ProductStockTotal::class,
-                'product_stock_total',
-                '
-                   product_stock_total.profile = :profile
-                   AND product_stock_total.product = product.id
-                   AND (CASE
-                       WHEN product_offer.const IS NOT NULL
-                       THEN product_stock_total.offer = product_offer.const
-                       ELSE product_stock_total.offer IS NULL
-                   END)
-                   AND (CASE
-                       WHEN product_variation.const IS NOT NULL
-                       THEN product_stock_total.variation = product_variation.const
-                       ELSE product_stock_total.variation IS NULL
-                   END)
-                   AND (CASE
-                       WHEN product_modification.const IS NOT NULL
-                       THEN product_stock_total.modification = product_modification.const
-                       ELSE product_stock_total.modification IS NULL
-                   END)
-               ')
+            $dbal
+                ->addSelect("JSON_AGG ( 
+                        DISTINCT JSONB_BUILD_OBJECT (
+                            'total', stock.total, 
+                            'reserve', stock.reserve 
+                        )) FILTER (WHERE stock.total > stock.reserve)
+            
+                        AS product_quantity",
+                )
+                ->leftJoin(
+                    'product_modification',
+                    ProductStockTotal::class,
+                    'stock',
+                    '
+                    stock.profile = :profile AND
+                    stock.product = product.id 
+                    
+                    AND
+                        
+                        CASE 
+                            WHEN product_offer.const IS NOT NULL 
+                            THEN stock.offer = product_offer.const
+                            ELSE stock.offer IS NULL
+                        END
+                            
+                    AND 
+                    
+                        CASE
+                            WHEN product_variation.const IS NOT NULL 
+                            THEN stock.variation = product_variation.const
+                            ELSE stock.variation IS NULL
+                        END
+                        
+                    AND
+                    
+                        CASE
+                            WHEN product_modification.const IS NOT NULL 
+                            THEN stock.modification = product_modification.const
+                            ELSE stock.modification IS NULL
+                        END
+                    
+                    
+                ',
+                )
                 ->setParameter(
-                    key: 'profile',
-                    value: $this->profile,
-                    type: UserProfileUid::TYPE
+                    'profile',
+                    $this->profile,
+                    UserProfileUid::TYPE,
                 );
 
-            $dbal->addSelect(
-                '
-                    CASE
-                       WHEN SUM(product_stock_total.total) > 0 AND SUM(product_stock_total.total) > SUM(product_stock_total.reserve)
-                       THEN (SUM(product_stock_total.total) - SUM(product_stock_total.reserve))
-                       ELSE 0
-                    END AS product_quantity
-                ');
         }
         else
         {
-            $dbal->addSelect(
-                '
-                CASE
-                   WHEN product_modification_quantity.quantity > 0 AND product_modification_quantity.quantity > product_modification_quantity.reserve
-                   THEN (product_modification_quantity.quantity - product_modification_quantity.reserve)
-
-                   WHEN product_variation_quantity.quantity > 0 AND product_variation_quantity.quantity > product_variation_quantity.reserve
-                   THEN (product_variation_quantity.quantity - product_variation_quantity.reserve)
-
-                   WHEN product_offer_quantity.quantity > 0 AND product_offer_quantity.quantity > product_offer_quantity.reserve
-                   THEN (product_offer_quantity.quantity - product_offer_quantity.reserve)
-
-                   WHEN product_price.quantity > 0 AND product_price.quantity > product_price.reserve
-                   THEN (product_price.quantity - product_price.reserve)
-
-                   ELSE 0
-                END AS product_quantity'
+            /* Наличие и резерв торгового предложения */
+            $dbal->leftJoin(
+                'product_offer',
+                ProductOfferQuantity::class,
+                'product_offer_quantity',
+                'product_offer_quantity.offer = product_offer.id',
             );
-        }
 
-        /** Фото продукции*/
+            /* Наличие и резерв множественного варианта */
+            $dbal->leftJoin(
+                'product_variation',
+                ProductVariationQuantity::class,
+                'product_variation_quantity',
+                'product_variation_quantity.variation = product_variation.id',
+            );
+
+            /* Наличие и резерв модификации множественного варианта */
+            $dbal->leftJoin(
+                'product_modification',
+                ProductModificationQuantity::class,
+                'product_modification_quantity',
+                'product_modification_quantity.modification = product_modification.id',
+            );
+
+            $dbal
+                ->addSelect("JSON_AGG (
+                        DISTINCT JSONB_BUILD_OBJECT (
+                            
+                            
+                            'total', COALESCE(
+                                            product_modification_quantity.quantity, 
+                                            product_variation_quantity.quantity, 
+                                            product_offer_quantity.quantity, 
+                                            product_price.quantity,
+                                            0
+                                        ), 
+                            
+                            
+                            'reserve', COALESCE(
+                                            product_modification_quantity.reserve, 
+                                            product_variation_quantity.reserve, 
+                                            product_offer_quantity.reserve, 
+                                            product_price.reserve,
+                                            0
+                                        )
+                        ) )
+            
+                        AS product_quantity",
+                );
+        }
 
         /**
          * Фото модификаций
@@ -649,6 +668,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         )
                     END) AS product_images"
         );
+
 
         /**  Вес продукта  */
         if(class_exists(BaksDevDeliveryTransportBundle::class))
@@ -807,13 +827,24 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             '
             );
 
+
         /** Изображения Авито */
         $dbal->leftJoin(
             'avito_product',
+            AvitoProductKit::class,
+            'avito_product_kit',
+            '
+                avito_product_kit.avito = avito_product.id 
+                AND avito_product_kit.value = avito_kit.value
+            ',
+        );
+
+        /** Изображения Авито */
+        $dbal->leftJoin(
+            'avito_product_kit',
             AvitoProductImage::class,
             'avito_product_images',
-            '
-                avito_product_images.avito = avito_product.id'
+            'avito_product_images.avito = avito_product_kit.avito',
         );
 
         $dbal->addSelect(
@@ -835,7 +866,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->allGroupByExclude();
 
-        $dbal->where('avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL');
+        $dbal->where('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
 
         /** Только заказы, у которых указана стоимость */
         $dbal->andWhere('
@@ -856,6 +887,13 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                    ELSE 0
                 END
             ) > 0
+        ');
+
+        /** Если комплект - выбираем только с подруженными кастомными изображениями */
+        $dbal->andWhere('
+            (avito_product_kit.value > 1 AND avito_product_images.id IS NOT NULL) 
+            OR 
+            (avito_kit.value = 1)   
         ');
 
         return $dbal;

@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 declare(strict_types=1);
@@ -59,7 +58,7 @@ final class AllProductsWithMapperResult
         private readonly string $product_date_begin,
         private readonly ?string $product_date_over,
         private readonly string $product_name,
-        private readonly string $product_description,
+        private readonly ?string $product_description,
         private readonly ?string $product_offer_id,
         private readonly ?string $product_offer_const,
         private readonly ?string $product_offer_value,
@@ -81,7 +80,7 @@ final class AllProductsWithMapperResult
         private readonly string $product_category,
         private readonly ?int $product_price,
         private readonly ?string $product_currency,
-        private readonly int $product_quantity,
+        private readonly ?string $product_quantity,
         private readonly string $product_images,
         private readonly ?int $product_length_delivery,
         private readonly ?int $product_width_delivery,
@@ -272,9 +271,28 @@ final class AllProductsWithMapperResult
 
     public function getProductQuantity(): int
     {
-        $product_quantity = $this->product_quantity !== null ? max($this->product_quantity, 0) : 0;
 
-        return $product_quantity;
+        if(empty($this->product_quantity))
+        {
+            return 0;
+        }
+
+        if(false === json_validate($this->product_quantity))
+        {
+            return 0;
+        }
+
+        $decode = json_decode($this->product_quantity, false, 512, JSON_THROW_ON_ERROR);
+
+        $quantity = 0;
+
+        foreach($decode as $item)
+        {
+            $quantity += $item->total;
+            $quantity -= $item->reserve;
+        }
+
+        return max($quantity, 0);
     }
 
     public function getProductImages(): array|null

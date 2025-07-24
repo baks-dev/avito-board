@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 declare(strict_types=1);
@@ -78,6 +77,7 @@ class PriceElement implements AvitoBoardElementInterface
         {
             $priceWithKit = $price->getValue(true) * $kit;
             $price = new Money($priceWithKit, true);
+            $price->applyString(($kit * -0.1).'%'); // Делаем скидку на комплект резины
         }
 
         return (string) $price->getRoundValue();
