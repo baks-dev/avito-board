@@ -8,7 +8,7 @@
         {% set tags = product_transform(product) %}
 
         {% if tags is not null %}
-            <Ad>
+        <Ad index='{{ loop.index }}'>
             {% for tag, data in tags %}
                 <{{ tag }}>
                 {{ data|raw }}
