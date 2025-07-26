@@ -376,7 +376,7 @@ final class AllProductsWithMapperResult
 
     public function getAvitoKitValue(): ?int
     {
-        return $this->avito_kit_value ?? 0;
+        return empty($this->avito_kit_value) ? 1 : $this->avito_kit_value;
     }
 
     public function getAvitoProfilePercent(): string
