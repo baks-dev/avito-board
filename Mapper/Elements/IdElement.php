@@ -73,12 +73,14 @@ class IdElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string|null
     {
         $id = $data->getProductArticle();
-        $kit = $data->getAvitoKitValue();
 
-        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, к артикулу добавляется значение avito_kit_value */
-        if((false === empty($kit)) && $kit !== 1)
+        /**
+         * Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется,
+         * к артикулу добавляется значение avito_kit_value
+         */
+        if($data->getAvitoKitValue() > 1)
         {
-            $id = (sprintf('%s-KIT%s', $data->getProductArticle(), $kit));
+            $id = (sprintf('%s-KIT%s', $data->getProductArticle(), $data->getAvitoKitValue()));
         }
 
         return $id;

@@ -1,4 +1,5 @@
 {# @var product \BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult #}
+
 <?xml version="1.0" encoding='UTF-8'?>
 
 <Ads formatVersion='3' target='Avito.ru'>
@@ -8,14 +9,13 @@
         {% set tags = product_transform(product) %}
 
         {% if tags is not null %}
-        <Ad index='{{ loop.index }}'>
+        <Ad index='{{ loop.index }}' identifier='{{ product.getAvitoProductId() }}'>
             {% for tag, data in tags %}
                 <{{ tag }}>
                 {{ data|raw }}
                 </{{ tag }}>
             {% endfor %}
             </Ad>
-
         {% endif %}
 
     {% endfor %}

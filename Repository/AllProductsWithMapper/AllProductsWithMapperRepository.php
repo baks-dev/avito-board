@@ -37,6 +37,7 @@ use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
 use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
+use BaksDev\Avito\Products\Entity\Kit\AvitoProductKit;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
 use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
@@ -711,7 +712,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          */
         $dbal
             ->addSelect('avito_board.id AS avito_board_mapper_category_id')
-            ->join(
+            ->leftJoin(
                 'product_category',
                 AvitoBoard::class,
                 'avito_board',
@@ -811,51 +812,40 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 			AS avito_board_mapper"
         );
 
-
         /** Продукт Авито */
         $dbal
+            ->addSelect('avito_product.id as avito_product_id')
             ->addSelect('avito_product.description as avito_product_description')
             ->leftJoin(
                 'product_modification',
                 AvitoProduct::class,
                 'avito_product',
                 '
-                
-                avito_product.product = product.id 
-
-                AND
-                        
-                    CASE 
-                        WHEN product_offer.const IS NOT NULL 
-                        THEN avito_product.offer = product_offer.const
-                        ELSE avito_product.offer IS NULL
-                    END
-                        
-                AND 
-                
-                    CASE
-                        WHEN product_variation.const IS NOT NULL 
-                        THEN avito_product.variation = product_variation.const
-                        ELSE avito_product.variation IS NULL
-                    END
-                    
-                AND
-                
-                    CASE
-                        WHEN product_modification.const IS NOT NULL 
-                        THEN avito_product.modification = product_modification.const
-                        ELSE avito_product.modification IS NULL
-                    END
-            ');
-
+                avito_product.product = product.id AND 
+                (avito_product.offer IS NULL OR avito_product.offer = product_offer.const) AND 
+                (avito_product.variation IS NULL OR avito_product.variation = product_variation.const) AND 
+                (avito_product.modification IS NULL OR avito_product.modification = product_modification.const)
+            '
+            );
 
 
         /** Изображения Авито */
-        $dbal->leftJoin(
+        $dbal->join(
             'avito_product',
+            AvitoProductKit::class,
+            'avito_product_kit',
+            '
+                avito_product_kit.avito = avito_product.id 
+                AND avito_product_kit.value = avito_kit.value
+            ',
+        );
+
+        /** Изображения Авито */
+        $dbal->leftJoin(
+            'avito_product_kit',
             AvitoProductImage::class,
             'avito_product_images',
-            'avito_product_images.avito = avito_product.id',
+            'avito_product_images.avito = avito_product_kit.avito',
         );
 
         $dbal->addSelect(
@@ -877,8 +867,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->allGroupByExclude();
 
-        //$dbal->where('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
-        //$dbal->where('(avito_board_event.category IS NOT NULL)');
+        $dbal->where('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
 
         /** Только заказы, у которых указана стоимость */
         $dbal->andWhere('
@@ -901,6 +890,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ) > 0
         ');
 
+        /** Если комплект - выбираем только с подруженными кастомными изображениями во избежания блокировки */
+        $dbal->andWhere('
+            (avito_product_kit.value > 1 AND avito_product_images.id IS NOT NULL) 
+            OR 
+            (avito_kit.value = 1)   
+        ');
 
         return $dbal;
     }

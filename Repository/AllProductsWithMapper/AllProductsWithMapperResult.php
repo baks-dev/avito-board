@@ -52,6 +52,7 @@ final class AllProductsWithMapperResult
         private readonly string $event,
         private readonly ?int $avito_kit_value,
         private readonly string $avito_profile_percent,
+        private readonly string $avito_product_id,
         private readonly string $avito_profile_address,
         private readonly string $avito_profile_manager,
         private readonly string $avito_profile_phone,
@@ -101,6 +102,11 @@ final class AllProductsWithMapperResult
     public function getProductEvent(): ProductEventUid
     {
         return new ProductEventUid($this->event);
+    }
+
+    public function getAvitoProductId(): string
+    {
+        return $this->avito_product_id;
     }
 
     public function getAvitoProfilePhone(): string
@@ -376,7 +382,7 @@ final class AllProductsWithMapperResult
 
     public function getAvitoKitValue(): ?int
     {
-        return empty($this->avito_kit_value) ? 1 : $this->avito_kit_value;
+        return $this->avito_kit_value ?? 0;
     }
 
     public function getAvitoProfilePercent(): string

@@ -62,7 +62,6 @@ class PriceElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string|null
     {
         $price = $data->getProductPrice();
-        $kit = $data->getAvitoKitValue();
 
         if(false === $price)
         {
@@ -73,14 +72,15 @@ class PriceElement implements AvitoBoardElementInterface
          * Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1
          * - объявление дублируется, цена умножается на значение avito_kit_value
          */
-        if((false === empty($kit)) && $kit !== 1)
+
+        if($data->getAvitoKitValue() > 1)
         {
-            $priceWithKit = $price->getValue(true) * $kit;
+            $priceWithKit = $price->getValue(true) * $data->getAvitoKitValue();
             $price = new Money($priceWithKit, true);
-            $price->applyString(($kit * -0.1).'%'); // Делаем скидку на комплект резины
+            $price->applyString(($data->getAvitoKitValue() * -0.1).'%'); // Делаем скидку на комплект резины
         }
 
-        return (string) $price->getRoundValue();
+        return (string) $price->getRoundValue(10);
     }
 
     public function element(): string
