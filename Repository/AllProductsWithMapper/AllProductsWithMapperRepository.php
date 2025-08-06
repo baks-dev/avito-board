@@ -224,6 +224,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
 
+
         /** Получаем только на активные продукты */
         $dbal
             ->addSelect('product_active.active_from AS product_date_begin')
@@ -451,6 +452,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         //            ) AS product_old_price
         //		");
 
+
         /**
          * Валюта продукта
          */
@@ -588,69 +590,70 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 );
         }
 
-        /**
-         * Фото модификаций
-         */
-        $dbal->leftJoin(
-            'product_modification',
-            ProductModificationImage::class,
-            'product_modification_image',
-            'product_modification_image.modification = product_modification.id'
-        );
 
-        /**
-         * Фото вариантов
-         */
-        $dbal->leftJoin(
-            'product_offer',
-            ProductVariationImage::class,
-            'product_variation_image',
-            'product_variation_image.variation = product_variation.id'
-        );
+        //        /**
+        //         * Фото модификаций
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_modification',
+        //            ProductModificationImage::class,
+        //            'product_modification_image',
+        //            'product_modification_image.modification = product_modification.id'
+        //        );
+        //
+        //        /**
+        //         * Фото вариантов
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_offer',
+        //            ProductVariationImage::class,
+        //            'product_variation_image',
+        //            'product_variation_image.variation = product_variation.id'
+        //        );
+        //
+        //        /**
+        //         * Фото торговых предложений
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_offer',
+        //            ProductOfferImage::class,
+        //            'product_offer_images',
+        //            'product_offer_images.offer = product_offer.id'
+        //        );
+        //
+        //        /**
+        //         * Фото продукта
+        //         */
+        //        $dbal->leftJoin(
+        //            'product',
+        //            ProductPhoto::class,
+        //            'product_photo',
+        //            'product_photo.event = product.event'
+        //        );
 
-        /**
-         * Фото торговых предложений
-         */
-        $dbal->leftJoin(
-            'product_offer',
-            ProductOfferImage::class,
-            'product_offer_images',
-            'product_offer_images.offer = product_offer.id'
-        );
-
-        /**
-         * Фото продукта
-         */
-        $dbal->leftJoin(
-            'product',
-            ProductPhoto::class,
-            'product_photo',
-            'product_photo.event = product.event'
-        );
-
-        $dbal->addSelect(
-            "JSON_AGG 
+        /*$dbal->addSelect(
+            "JSON_AGG
             (DISTINCT
-				CASE 
-                    WHEN product_offer_images.ext IS NOT NULL 
+				CASE
+                    WHEN product_offer_images.ext IS NOT NULL
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_offer_images.root,
                             'img', CONCAT ( '/upload/".$dbal->table(ProductOfferImage::class)."' , '/', product_offer_images.name),
                             'img_ext', product_offer_images.ext,
                             'img_cdn', product_offer_images.cdn
-                        ) 
-                    
-                    WHEN product_variation_image.ext IS NOT NULL 
+                        )
+
+                    WHEN product_variation_image.ext IS NOT NULL
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_variation_image.root,
                             'img', CONCAT ( '/upload/".$dbal->table(ProductVariationImage::class)."' , '/', product_variation_image.name),
                             'img_ext', product_variation_image.ext,
                             'img_cdn', product_variation_image.cdn
-                        )	
-                    
-                    WHEN product_modification_image.ext IS NOT NULL 
+                        )
+
+                    WHEN product_modification_image.ext IS NOT NULL
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_modification_image.root,
@@ -658,8 +661,8 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_ext', product_modification_image.ext,
                             'img_cdn', product_modification_image.cdn
                         )
-                    
-                    WHEN product_photo.ext IS NOT NULL 
+
+                    WHEN product_photo.ext IS NOT NULL
                     THEN JSONB_BUILD_OBJECT
                         (
                             'img_root', product_photo.root,
@@ -668,8 +671,10 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_cdn', product_photo.cdn
                         )
                     END) AS product_images"
-        );
+        );*/
 
+
+        $dbal->addSelect('NULL AS product_images');
 
         /**  Вес продукта  */
         if(class_exists(BaksDevDeliveryTransportBundle::class))
@@ -814,16 +819,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
 
-        /** Продукт Авито по профилю бизнес-пользователя */
-
-        $dbal
-            ->leftJoin(
-                'product',
-                AvitoProductProfile::class,
-                'avito_product_profile',
-                'avito_product_profile.value = :profile',
-            );
-
         /** Продукт Авито */
         $dbal
             ->addSelect('avito_product.id as avito_product_id')
@@ -834,8 +829,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_product',
                 '
                 
-                avito_product.id = avito_product_profile.avito 
-                AND avito_product.product = product.id 
+                avito_product.product = product.id 
 
                 AND
                         
@@ -862,10 +856,17 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     END
             ');
 
+        /** Продукт Авито по профилю бизнес-пользователя */
 
-        //
-        //        $dbal
-        //            ->andWhere('(avito_product_profile.value = avito_token_event.profile OR avito_product_profile.value IS NULL)');
+        $dbal
+            ->join(
+                'avito_product',
+                AvitoProductProfile::class,
+                'avito_product_profile',
+                '
+                avito_product_profile.avito = avito_product.id
+                AND avito_product_profile.value = :profile',
+            );
 
         /** Изображения Авито */
         $dbal->leftJoin(
@@ -879,7 +880,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         );
 
         /** Изображения Авито */
-        $dbal->leftJoin(
+        $dbal->join(
             'avito_product_kit',
             AvitoProductImage::class,
             'avito_product_images',
@@ -905,7 +906,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->allGroupByExclude();
 
-        $dbal->where('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
+        $dbal->andWhere('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
 
         /** Только заказы, у которых указана стоимость */
         $dbal->andWhere('
@@ -928,12 +929,15 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ) > 0
         ');
 
+        //$dbal->allGroupByExclude();
+        //dd($dbal->fetchAllAssociative()); /* TODO: удалить !!! */
+
         /** Если комплект - выбираем только с подруженными кастомными изображениями во избежания блокировки */
-        $dbal->andWhere('
-            (avito_product_kit.value > 1 AND avito_product_images.id IS NOT NULL) 
-            OR 
-            (avito_kit.value = 1)   
-        ');
+        //        $dbal->andWhere('
+        //            (avito_product_kit.value > 1 AND avito_product_images.id IS NOT NULL)
+        //            OR
+        //            (avito_kit.value = 1)
+        //        ');
 
         return $dbal;
     }
