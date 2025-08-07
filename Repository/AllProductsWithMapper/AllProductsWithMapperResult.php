@@ -82,7 +82,7 @@ final class AllProductsWithMapperResult
         private readonly ?int $product_price,
         private readonly ?string $product_currency,
         private readonly ?string $product_quantity,
-        private readonly string $product_images,
+        private readonly ?string $product_images,
         private readonly ?int $product_length_delivery,
         private readonly ?int $product_width_delivery,
         private readonly ?int $product_height_delivery,
