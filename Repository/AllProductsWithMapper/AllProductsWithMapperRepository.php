@@ -70,6 +70,7 @@ use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
 use BaksDev\Products\Stocks\BaksDevProductsStocksBundle;
 use BaksDev\Products\Stocks\Entity\Total\ProductStockTotal;
+use BaksDev\Users\Profile\UserProfile\Entity\Event\Discount\UserProfileDiscount;
 use BaksDev\Users\Profile\UserProfile\Entity\Event\Info\UserProfileInfo;
 use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
@@ -709,6 +710,30 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                    END)
                    
                 ');
+        }
+
+        /** Общая скидка (наценка) из профиля магазина */
+        if(true === $dbal->bindProjectProfile())
+        {
+
+            $dbal
+                ->join(
+                    'product',
+                    UserProfile::class,
+                    'project_profile',
+                    '
+                        project_profile.id = :'.$dbal::PROJECT_PROFILE_KEY,
+                );
+
+            $dbal
+                ->addSelect('project_profile_discount.value AS project_discount')
+                ->leftJoin(
+                    'project_profile',
+                    UserProfileDiscount::class,
+                    'project_profile_discount',
+                    '
+                        project_profile_discount.event = project_profile.event',
+                );
         }
 
         /** Avito mapper */

@@ -92,6 +92,7 @@ final class AllProductsWithMapperResult
         private readonly string $avito_board_mapper,
         private readonly ?string $avito_product_description,
         private readonly ?string $avito_product_images,
+        private readonly ?string $project_discount = null,
     ) {}
 
     public function getProductId(): ProductUid
