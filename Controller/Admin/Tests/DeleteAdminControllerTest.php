@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
@@ -30,23 +29,20 @@ use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-controller
- * @group avito-board-controller-delete
- *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\EditAdminControllerTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class DeleteAdminControllerTest extends WebTestCase
 {
     private const string ROLE = 'ROLE_AVITO_BOARD_DELETE';
 
     private static string $url = '/admin/avito-board/mapper/delete/%s';
 
+    #[DependsOnClass(EditAdminControllerTest::class)]
     public static function setUpBeforeClass(): void
     {
         /** @var EntityManagerInterface $em */
@@ -76,6 +72,7 @@ final class DeleteAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли */
+    #[DependsOnClass(EditAdminControllerTest::class)]
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -95,6 +92,7 @@ final class DeleteAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_ADMIN */
+    #[DependsOnClass(EditAdminControllerTest::class)]
     public function testRoleAdminSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -114,6 +112,7 @@ final class DeleteAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_USER */
+    #[DependsOnClass(EditAdminControllerTest::class)]
     public function testRoleUserDeny(): void
     {
         self::ensureKernelShutdown();
@@ -132,6 +131,7 @@ final class DeleteAdminControllerTest extends WebTestCase
     }
 
     /** Доступ без роли */
+    #[DependsOnClass(EditAdminControllerTest::class)]
     public function testGuestFiled(): void
     {
         self::ensureKernelShutdown();

@@ -19,7 +19,6 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 declare(strict_types=1);
@@ -29,18 +28,19 @@ namespace BaksDev\Avito\Board\Mapper\Tests;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
 use BaksDev\Avito\Board\Twig\ProductTransformerExtension;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use Generator;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 class AvitoMapperTest extends KernelTestCase
 {
     private static array|null $feed = null;
 
-    private static \Generator|false $products = false;
+    private static Generator|false $products = false;
 
     public static function setUpBeforeClass(): void
     {

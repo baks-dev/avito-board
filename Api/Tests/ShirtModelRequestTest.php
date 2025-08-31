@@ -26,13 +26,13 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Api\Tests;
 
 use BaksDev\Avito\Board\Api\ShirtModelRequest;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board-model-shirt
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class ShirtModelRequestTest extends KernelTestCase
 {
     public static array $productNames;

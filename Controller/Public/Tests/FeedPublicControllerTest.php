@@ -19,21 +19,18 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\Controller\Public\Tests;
 
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-controller-feed
- *
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class FeedPublicControllerTest extends WebTestCase
 {
     private const string URL = '/avito-board/%s/feed.xml';

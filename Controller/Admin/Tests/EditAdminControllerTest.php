@@ -25,25 +25,24 @@ namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
+use BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-controller
- * @group avito-board-controller-edit
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class EditAdminControllerTest extends WebTestCase
 {
     private const string ROLE = 'ROLE_AVITO_BOARD_EDIT';
 
     private static string $url = '/admin/avito-board/mapper/edit/%s';
 
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public static function setUpBeforeClass(): void
     {
         /** @var EntityManagerInterface $em */
@@ -74,6 +73,7 @@ final class EditAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли */
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -93,6 +93,7 @@ final class EditAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_ADMIN */
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public function testRoleAdminSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -129,6 +130,7 @@ final class EditAdminControllerTest extends WebTestCase
     }
 
     /** Доступ без роли */
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public function testGuestFiled(): void
     {
         self::ensureKernelShutdown();

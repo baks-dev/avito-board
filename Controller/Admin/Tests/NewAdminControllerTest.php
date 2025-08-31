@@ -23,22 +23,19 @@
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
+use BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest;
 use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\UseCase\Admin\NewEdit\Tests\CategoryProductNewTest;
 use BaksDev\Users\User\Tests\TestUserAccount;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-controller
- * @group avito-board-controller-new
- *
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperNewTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class NewAdminControllerTest extends WebTestCase
 {
     private const string ROLE = 'ROLE_AVITO_BOARD_NEW';
@@ -47,7 +44,7 @@ final class NewAdminControllerTest extends WebTestCase
 
     public static function setUpBeforeClass(): void
     {
-        $testCategory = new CategoryProductNewTest();
+        $testCategory = new CategoryProductNewTest('avito-board');
         $testCategory::setUpBeforeClass();
         $testCategory->testUseCase();
 
@@ -64,6 +61,7 @@ final class NewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли */
+    #[DependsOnClass(AvitoBoardMapperNewTest::class)]
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -84,6 +82,7 @@ final class NewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_ADMIN */
+    #[DependsOnClass(AvitoBoardMapperNewTest::class)]
     public function testRoleAdminSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -105,6 +104,7 @@ final class NewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_USER */
+    #[DependsOnClass(AvitoBoardMapperNewTest::class)]
     public function testRoleUserFiled(): void
     {
         self::ensureKernelShutdown();
@@ -125,6 +125,7 @@ final class NewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ без роли */
+    #[DependsOnClass(AvitoBoardMapperNewTest::class)]
     public function testGuestFiled(): void
     {
         self::ensureKernelShutdown();

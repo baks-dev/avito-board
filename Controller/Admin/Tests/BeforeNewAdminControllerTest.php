@@ -19,23 +19,18 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\Controller\Admin\Tests;
 
 use BaksDev\Users\User\Tests\TestUserAccount;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-controller
- * @group avito-board-controller-before-new
- *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\IndexAdminControllerTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class BeforeNewAdminControllerTest extends WebTestCase
 {
     private const string URL = '/admin/avito-board/mapper/before_new';
@@ -43,6 +38,7 @@ final class BeforeNewAdminControllerTest extends WebTestCase
     private const string ROLE = 'ROLE_AVITO_BOARD_BEFORE_NEW';
 
     /** Доступ по роли  */
+    #[DependsOnClass(IndexAdminControllerTest::class)]
     public function testRoleSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -64,6 +60,7 @@ final class BeforeNewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_ADMIN */
+    #[DependsOnClass(IndexAdminControllerTest::class)]
     public function testRoleAdminSuccessful(): void
     {
         self::ensureKernelShutdown();
@@ -85,6 +82,7 @@ final class BeforeNewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ по роли ROLE_USER */
+    #[DependsOnClass(IndexAdminControllerTest::class)]
     public function testRoleUserFiled(): void
     {
         self::ensureKernelShutdown();
@@ -105,6 +103,7 @@ final class BeforeNewAdminControllerTest extends WebTestCase
     }
 
     /** Доступ без роли */
+    #[DependsOnClass(IndexAdminControllerTest::class)]
     public function testGuestFiled(): void
     {
         self::ensureKernelShutdown();

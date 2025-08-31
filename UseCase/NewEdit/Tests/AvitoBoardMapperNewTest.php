@@ -19,11 +19,11 @@
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
- *
  */
 
 namespace BaksDev\Avito\Board\UseCase\NewEdit\Tests;
 
+use BaksDev\Avito\Board\Controller\Admin\Tests\BeforeNewAdminControllerTest;
 use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Entity\Modify\AvitoBoardModify;
@@ -34,16 +34,13 @@ use BaksDev\Core\Type\Modify\Modify\ModifyActionNew;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-usecase
- *
- * @depends BaksDev\Avito\Board\Controller\Admin\Tests\BeforeNewAdminControllerTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 class AvitoBoardMapperNewTest extends KernelTestCase
 {
     public static function setUpBeforeClass(): void
@@ -71,6 +68,7 @@ class AvitoBoardMapperNewTest extends KernelTestCase
         $em->clear();
     }
 
+    #[DependsOnClass(BeforeNewAdminControllerTest::class)]
     public function testNew(): void
     {
         $newDTO = new AvitoBoardMapperDTO();

@@ -31,23 +31,22 @@ use BaksDev\Avito\Board\UseCase\Delete\AvitoBoardDeleteMapperDTO;
 use BaksDev\Avito\Board\UseCase\Delete\AvitoBoardDeleteMapperHandler;
 use BaksDev\Avito\Board\UseCase\NewEdit\AvitoBoardMapperDTO;
 use BaksDev\Avito\Board\UseCase\NewEdit\Elements\AvitoBoardMapperElementDTO;
+use BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use BaksDev\Products\Category\UseCase\Admin\Delete\Tests\CategoryProductDeleteTest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board
- * @group avito-board-usecase
- *
- * @depends BaksDev\Avito\Board\UseCase\NewEdit\Tests\AvitoBoardMapperEditTest::class
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class AvitoBoardMapperDeleteTest extends KernelTestCase
 {
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public function testDelete(): void
     {
         $container = self::getContainer();
@@ -99,6 +98,7 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
         self::assertTrue($deleteAvitoBoard instanceof AvitoBoard);
     }
 
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public static function tearDownAfterClass(): void
     {
         /** @var EntityManagerInterface $em */

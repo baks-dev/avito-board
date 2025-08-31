@@ -28,13 +28,13 @@ namespace BaksDev\Avito\Board\Api\Tests;
 use BaksDev\Avito\Board\Api\GetIdByArticleRequest;
 use BaksDev\Avito\Type\Authorization\AvitoTokenAuthorization;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-promotion
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 class GetIdByArticleRequestTest extends KernelTestCase
 {
     private static AvitoTokenAuthorization $authorization;

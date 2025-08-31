@@ -27,13 +27,13 @@ namespace BaksDev\Avito\Board\Api\Tests;
 
 use BaksDev\Avito\Board\Api\TireModelRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Attribute\When;
 
-/**
- * @group avito-board-model-tire
- */
 #[When(env: 'test')]
+#[Group('avito-board')]
 final class TireModelRequestTest extends KernelTestCase
 {
     public static function modelProvider(): array
