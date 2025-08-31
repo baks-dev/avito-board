@@ -46,7 +46,7 @@ class GetIdByArticleRequestTest extends KernelTestCase
             client: $_SERVER['TEST_AVITO_CLIENT'],
             secret: $_SERVER['TEST_AVITO_SECRET'],
             user: $_SERVER['TEST_AVITO_USER'],
-            percent: '0',
+            percent: $_SERVER['TEST_AVITO_PERCENT'] ?? '0',
         );
     }
 
