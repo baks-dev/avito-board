@@ -154,15 +154,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_kit.event = avito_token.event'
             );
 
-        $dbal
-            ->join(
-                'avito_token',
-                AvitoTokenActive::class,
-                'avito_token_active',
-                '
-                    avito_token_active.event = avito_token.event AND
-                    avito_token_active.value IS TRUE
-                ');
 
         $dbal->join(
             'avito_token',
