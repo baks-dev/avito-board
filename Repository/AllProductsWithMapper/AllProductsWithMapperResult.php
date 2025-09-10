@@ -29,6 +29,7 @@ use BaksDev\Products\Category\Type\Id\CategoryProductUid;
 use BaksDev\Products\Category\Type\Offers\Id\CategoryProductOffersUid;
 use BaksDev\Products\Category\Type\Offers\Modification\CategoryProductModificationUid;
 use BaksDev\Products\Category\Type\Offers\Variation\CategoryProductVariationUid;
+use BaksDev\Products\Product\Repository\ProductPriceResultInterface;
 use BaksDev\Products\Product\Type\Event\ProductEventUid;
 use BaksDev\Products\Product\Type\Id\ProductUid;
 use BaksDev\Products\Product\Type\Offers\ConstId\ProductOfferConst;
@@ -42,7 +43,7 @@ use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 /** @see AllProductsWithMapperRepository */
 #[Exclude]
-final class AllProductsWithMapperResult
+final class AllProductsWithMapperResult implements ProductPriceResultInterface
 {
 
     private ?array $avito_board_mapper_decode = null;
@@ -92,7 +93,11 @@ final class AllProductsWithMapperResult
         private readonly string $avito_board_mapper,
         private readonly ?string $avito_product_description,
         private readonly ?string $avito_product_images,
+
         private readonly ?string $project_discount = null,
+
+        private ?bool $promotion_active = null,
+        private string|int|null $promotion_price = null,
     ) {}
 
     public function getProductId(): ProductUid
@@ -256,13 +261,19 @@ final class AllProductsWithMapperResult
 
         $price = new Money($this->product_price, true);
 
-        /** Скидка магазина */
+        /** Акция/наценка магазина (promotion) */
+        if(false === empty($this->promotion_price) && true === $this->promotion_active)
+        {
+            $price->applyString($this->promotion_price);
+        }
+
+        /** Торговая наценка/скидка профиля магазина */
         if(false === empty($this->project_discount))
         {
             $price->applyString($this->project_discount);
         }
 
-        /** Скидка профиля магазина на Авито */
+        /** Наценка/скидка токена профиля магазина */
         if(false === empty($this->avito_profile_percent))
         {
             $price->applyString($this->avito_profile_percent);
@@ -430,5 +441,10 @@ final class AllProductsWithMapperResult
         }
 
         return $this->avito_board_mapper_decode;
+    }
+
+    public function getProductOldPrice(): Money|false
+    {
+        return false;
     }
 }
