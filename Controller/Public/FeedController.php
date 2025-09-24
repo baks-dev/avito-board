@@ -36,6 +36,9 @@ use Symfony\Contracts\Cache\ItemInterface;
 #[AsController]
 final class FeedController extends AbstractController
 {
+    /**
+     * @see https://www.avito.ru/autoload/documentation/templates/67016?onlyRequiredFields=false
+     */
     #[Route('/avito-board/{profile}/feed.xml', name: 'public.export.feed', methods: ['GET'])]
     public function feed(
         AppCacheInterface $appCache,
