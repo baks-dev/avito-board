@@ -94,10 +94,10 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         private readonly ?string $avito_product_description,
         private readonly ?string $avito_product_images,
 
-        private readonly ?string $project_discount = null,
+        private readonly string|null $project_discount = null,
 
         private ?bool $promotion_active = null,
-        private string|int|null $promotion_price = null,
+        private string|null $promotion_price = null,
     ) {}
 
     public function getProductId(): ProductUid
