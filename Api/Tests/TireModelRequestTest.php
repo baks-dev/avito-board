@@ -39,6 +39,7 @@ final class TireModelRequestTest extends KernelTestCase
     public static function modelProvider(): array
     {
         return [
+            ["Kumho WinterCraft Ice WI32"],
             ["Triangle Sportex XL TH201"],
             ["Sport SA-37 Westlake"],
             ["Westlake MUD LEGEND SL366"],
