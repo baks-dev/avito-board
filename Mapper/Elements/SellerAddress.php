@@ -33,11 +33,11 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
  *
  * Элемент обязательный для всех продуктов Авито
  */
-class AddressElement implements AvitoBoardElementInterface
+class SellerAddress implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'Address';
+    private const string ELEMENT = 'SellerAddressID';
 
-    private const string LABEL = 'Адрес для объявления';
+    private const string LABEL = 'Идентификатор адреса (Профиль и настройки -> Адреса -> Адреса для объявлений)';
 
     public function isMapping(): false
     {
@@ -59,9 +59,9 @@ class AddressElement implements AvitoBoardElementInterface
         return null;
     }
 
-    public function fetchData(AllProductsWithMapperResult $data): string|null
+    public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        return $data->getAvitoProfileAddress();
+        return $data->getAvitoSellerAddressId();
     }
 
     public function element(): string

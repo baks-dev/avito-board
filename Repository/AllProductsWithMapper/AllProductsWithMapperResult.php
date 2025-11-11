@@ -54,7 +54,8 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         private readonly ?int $avito_kit_value,
         private readonly string $avito_profile_percent,
         private readonly ?string $avito_product_id,
-        private readonly string $avito_profile_address,
+        private readonly ?string $avito_profile_address_id,
+        private readonly ?string $avito_profile_address,
         private readonly string $avito_profile_manager,
         private readonly string $avito_profile_phone,
         private readonly string $product_date_begin,
@@ -402,10 +403,16 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         return $this->avito_profile_percent;
     }
 
-    public function getAvitoProfileAddress(): string
+    public function getAvitoProfileAddress(): ?string
     {
         return $this->avito_profile_address;
     }
+
+    public function getAvitoSellerAddressId(): ?string
+    {
+        return $this->avito_profile_address_id;
+    }
+
 
     public function getAvitoProfileManager(): string
     {

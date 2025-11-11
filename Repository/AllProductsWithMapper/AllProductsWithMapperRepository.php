@@ -176,6 +176,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
         $dbal
+            ->addSelect('avito_token_address.id AS avito_profile_address_id')
             ->addSelect('avito_token_address.value AS avito_profile_address')
             ->leftJoin(
                 'avito_token',
