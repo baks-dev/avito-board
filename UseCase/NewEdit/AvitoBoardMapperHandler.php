@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2024.  Baks.dev <admin@baks.dev>
+ *  Copyright 2025.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -29,26 +29,14 @@ use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Board\Messenger\AvitoBoardMessage;
 use BaksDev\Core\Entity\AbstractHandler;
-use DomainException;
 
 final class AvitoBoardMapperHandler extends AbstractHandler
 {
     public function handle(AvitoBoardMapperDTO $command): AvitoBoard|string
     {
-        /** Валидация DTO  */
-        $this->validatorCollection->add($command);
-
-        $this->main = new AvitoBoard($command->getCategory());
-        $this->event = new AvitoBoardEvent();
-
-        try
-        {
-            $command->getEvent() ? $this->preUpdate($command, true) : $this->prePersist($command);
-        }
-        catch(DomainException $errorUniqid)
-        {
-            return $errorUniqid->getMessage();
-        }
+        $this
+            ->setCommand($command)
+            ->preEventPersistOrUpdate(new AvitoBoard($command->getCategory()), AvitoBoardEvent::class);
 
         /** Валидация всех объектов */
         if($this->validatorCollection->isInvalid())
@@ -56,12 +44,12 @@ final class AvitoBoardMapperHandler extends AbstractHandler
             return $this->validatorCollection->getErrorUniqid();
         }
 
-        $this->entityManager->flush();
+        $this->flush();
 
         /** Отправляем сообщение в шину */
         $this->messageDispatch->dispatch(
             message: new AvitoBoardMessage($this->main->getId(), $this->main->getEvent(), $command->getEvent()),
-            transport: 'avito-board'
+            transport: 'avito-board',
         );
 
         return $this->main;
