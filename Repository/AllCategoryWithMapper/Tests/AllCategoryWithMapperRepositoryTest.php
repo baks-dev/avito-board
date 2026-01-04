@@ -21,24 +21,41 @@
  *  THE SOFTWARE.
  */
 
-namespace BaksDev\Avito\Board\Repository\AllCategoryWithMapper;
+declare(strict_types=1);
 
-use BaksDev\Products\Category\Entity\CategoryProduct;
+namespace BaksDev\Avito\Board\Repository\AllCategoryWithMapper\Tests;
+
+use BaksDev\Avito\Board\Repository\AllCategoryWithMapper\AllCategoryWithMapperInterface;
 use BaksDev\Products\Category\Type\Id\CategoryProductUid;
-use Generator;
+use PHPUnit\Framework\Attributes\DependsOnClass;
+use PHPUnit\Framework\Attributes\Group;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\DependencyInjection\Attribute\When;
 
-interface AllCategoryWithMapperInterface
+
+#[Group('avito-board')]
+#[When(env: 'test')]
+class AllCategoryWithMapperRepositoryTest extends KernelTestCase
 {
-    /** Соответствие по активной категории */
-    public function onlyActive(): self;
+    public function testAllCategoryWithMapperRepository(): void
+    {
+        self::assertTrue(true);
 
-    /** Соответствие по категории */
-    public function forCategory(CategoryProduct|CategoryProductUid $category): self;
+        /** @var AllCategoryWithMapperInterface $AllCategoryWithMapperRepository */
+        $AllCategoryWithMapperRepository = self::getContainer()->get(AllCategoryWithMapperInterface::class);
 
-    /**
-     * Получаем коллекцию категорий, для которых не найдено совпадений с категорией из маппера
-     *
-     * @return Generator<CategoryProductUid>
-     */
-    public function findAll(): Generator;
+        $result = $AllCategoryWithMapperRepository
+            ->onlyActive()
+            ->findAll();
+
+        if(false === $result || false === $result->valid())
+        {
+            return;
+        }
+
+        foreach($result as $CategoryProductUid)
+        {
+            self::assertInstanceOf(CategoryProductUid::class, $CategoryProductUid);
+        }
+    }
 }

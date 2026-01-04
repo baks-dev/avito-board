@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -61,7 +61,11 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
         return $this;
     }
 
-    /** Получаем коллекцию категорий, для которых не найдено совпадений с категорией из маппера */
+    /**
+     * Получаем коллекцию категорий, для которых не найдено совпадений с категорией из маппера
+     *
+     * @return Generator<CategoryProductUid>
+     */
     public function findAll(): Generator
     {
         $dbal = $this->DBALQueryBuilder

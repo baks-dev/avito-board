@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -59,6 +59,9 @@ final class TireModelRequestTest extends KernelTestCase
     public function testRequest(string $productName): void
     {
         self::bootKernel();
+
+        self::assertTrue(true);
+
         $container = static::getContainer();
 
         /** @var TireModelRequest $request */
@@ -68,8 +71,10 @@ final class TireModelRequestTest extends KernelTestCase
 
         if(false === isset($result['models']))
         {
-            echo PHP_EOL.sprintf('avito-board: Модель продукта %s не найдена, присвоено значение %s', $productName, $result['model']).PHP_EOL;
-            self::assertTrue(true);
+            echo PHP_EOL.sprintf(
+                    'avito-board: Модель продукта %s не найдена, присвоено значение %s ', $productName, $result['model'],
+                ).self::class.':'.__LINE__.PHP_EOL;
+
             return;
         }
 
