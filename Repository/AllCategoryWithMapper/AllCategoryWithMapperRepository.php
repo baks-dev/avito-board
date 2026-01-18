@@ -109,7 +109,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
                 'info',
                 '
                 info.event = category.event AND 
-                info.active = true',
+                info.active IS TRUE',
             );
         }
 
