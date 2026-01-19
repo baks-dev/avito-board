@@ -107,9 +107,7 @@ final class AllCategoryWithMapperRepository implements AllCategoryWithMapperInte
                 'category',
                 CategoryProductInfo::class,
                 'info',
-                '
-                info.event = category.event AND 
-                info.active IS TRUE',
+                'info.event = category.event',
             );
         }
 
