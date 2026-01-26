@@ -98,6 +98,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         private readonly DBALQueryBuilder $DBALQueryBuilder,
     ) {}
 
+    /** @depricated */
     public function forProfile(UserProfile|UserProfileUid $profile): self
     {
         if($profile instanceof UserProfile)

@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ namespace BaksDev\Avito\Board\Mapper\Tests;
 
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperInterface;
 use BaksDev\Avito\Board\Twig\ProductTransformerExtension;
+use BaksDev\Avito\Type\Id\AvitoTokenUid;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use Generator;
 use PHPUnit\Framework\Attributes\DependsOnClass;
@@ -47,10 +48,11 @@ class AvitoMapperTest extends KernelTestCase
         /** @var AllProductsWithMapperInterface $AllProductsWithMapper */
         $AllProductsWithMapper = self::getContainer()->get(AllProductsWithMapperInterface::class);
 
-        $profileUid = $_SERVER['TEST_PROFILE'] ?? UserProfileUid::TEST;
+        $AvitoTokenUid = $_SERVER['TEST_PROFILE'] ?? AvitoTokenUid::TEST;
 
         $products = $AllProductsWithMapper
-            ->forProfile(new UserProfileUid($profileUid))
+            //->forProfile(new UserProfileUid($profileUid))
+            ->forAvitoToken(new AvitoTokenUid($AvitoTokenUid))
             ->findAll();
 
         if(false === $products)
