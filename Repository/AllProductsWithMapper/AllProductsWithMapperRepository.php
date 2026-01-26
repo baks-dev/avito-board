@@ -35,10 +35,13 @@ use BaksDev\Avito\Entity\Event\Kit\AvitoTokenKit;
 use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
 use BaksDev\Avito\Entity\Event\Percent\AvitoTokenPercent;
 use BaksDev\Avito\Entity\Event\Phone\AvitoTokenPhone;
+use BaksDev\Avito\Entity\Event\Profile\AvitoTokenProfile;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
 use BaksDev\Avito\Products\Entity\Kit\AvitoProductKit;
 use BaksDev\Avito\Products\Entity\Profile\AvitoProductProfile;
+use BaksDev\Avito\Products\Entity\Token\AvitoProductToken;
+use BaksDev\Avito\Type\Id\AvitoTokenUid;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
 use BaksDev\DeliveryTransport\BaksDevDeliveryTransportBundle;
 use BaksDev\DeliveryTransport\Entity\ProductParameter\DeliveryPackageProductParameter;
@@ -87,6 +90,8 @@ use InvalidArgumentException;
 
 final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
 {
+    private AvitoTokenUid|false $token = false;
+
     private UserProfileUid|false $profile = false;
 
     public function __construct(
@@ -105,6 +110,13 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         return $this;
     }
 
+    public function forAvitoToken(AvitoTokenUid $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
     /**
      * Метод получает массив элементов продукции с соотношением свойств
      *
@@ -112,8 +124,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
      * */
     public function findAll(): Generator|false
     {
-
-        if($this->profile === false)
+        if(false === ($this->token instanceof AvitoTokenUid))
         {
             throw new InvalidArgumentException('Invalid Argument profile');
         }
@@ -133,13 +144,21 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'product',
                 AvitoToken::class,
                 'avito_token',
-                'avito_token.id = :profile',
+                'avito_token.id = :token',
             )
             ->setParameter(
-                key: 'profile',
-                value: $this->profile,
-                type: UserProfileUid::TYPE,
+                key: 'token',
+                value: $this->token,
+                type: AvitoTokenUid::TYPE,
             );
+
+        $dbal->join(
+            'product',
+            AvitoTokenProfile::class,
+            'avito_token_profile',
+            'avito_token_profile.event = avito_token.event',
+        );
+
 
         $dbal
             ->addSelect('avito_kit.value AS avito_kit_value')
@@ -152,11 +171,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
 
         $dbal->join(
-            'avito_token',
+            'avito_token_profile',
             UserProfileInfo::class,
             'info',
             '
-                info.profile = avito_token.id AND
+                info.profile = avito_token_profile.value AND
                 info.status = :status',
         )
             ->setParameter(
@@ -469,7 +488,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          * Если подключен модуль складского учета и передан идентификатор профиля
          */
 
-        if(true === ($this->profile instanceof UserProfileUid) && class_exists(BaksDevProductsStocksBundle::class))
+        if(class_exists(BaksDevProductsStocksBundle::class))
         {
 
             $dbal
@@ -486,7 +505,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     ProductStockTotal::class,
                     'stock',
                     '
-                    stock.profile = :profile AND
+                    stock.profile = avito_token_profile.value AND
                     stock.product = product.id 
                     
                     AND
@@ -514,13 +533,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         END
                     
                     
-                ',
-                )
-                ->setParameter(
-                    'profile',
-                    $this->profile,
-                    UserProfileUid::TYPE,
-                );
+                ');
 
         }
         else
@@ -952,25 +965,25 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     END
             ');
 
-        /** Продукт Авито по профилю бизнес-пользователя */
+        /** Продукт Авито по токену бизнес-пользователя */
 
         $dbal
             ->join(
                 'avito_product',
-                AvitoProductProfile::class,
-                'avito_product_profile',
+                AvitoProductToken::class,
+                'avito_product_token',
                 '
-                avito_product_profile.avito = avito_product.id
-                AND avito_product_profile.value = :profile',
+                avito_product_token.avito = avito_product.id
+                AND avito_product_token.value = avito_token.id',
             );
 
         /** Изображения Авито */
         $dbal->leftJoin(
-            'avito_product',
+            'avito_product_token',
             AvitoProductKit::class,
             'avito_product_kit',
             '
-                avito_product_kit.avito = avito_product_profile.avito
+                avito_product_kit.avito = avito_product_token.avito
                 AND avito_product_kit.value = avito_kit.value
             ',
         );
