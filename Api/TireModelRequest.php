@@ -1,6 +1,6 @@
 <?php
 /*
- *  Copyright 2025.  Baks.dev <admin@baks.dev>
+ *  Copyright 2026.  Baks.dev <admin@baks.dev>
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -52,23 +52,45 @@ final readonly class TireModelRequest
 
             $item->expiresAfter(DateInterval::createFromDateString('1 day'));
 
-            $UserAgentGenerator = new UserAgentGenerator();
-            $userAgent = $UserAgentGenerator->genDesktop();
+            $array = $this->cache
+                ->init('avito-board')
+                ->get('avito-board-tires', function(ItemInterface $item): array|false {
 
-            $httpClient = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
-                ->withOptions(['base_uri' => 'https://autoload.avito.ru']);
+                    $item->expiresAfter(DateInterval::createFromDateString('10 second'));
 
-            $request = $httpClient->request('GET', 'format/tyres_make.xml');
+                    $UserAgentGenerator = new UserAgentGenerator();
+                    $userAgent = $UserAgentGenerator->genDesktop();
 
-            $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
+                    $httpClient = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
+                        ->withOptions(['base_uri' => 'https://autoload.avito.ru']);
 
-            $json = json_encode($xml);
-            $array = json_decode($json, true);
+                    $request = $httpClient->request('GET', 'format/tyres_make.xml');
+
+                    if($request->getStatusCode() !== 200)
+                    {
+                        return false;
+                    }
+
+                    $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+
+                    $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
+
+                    $json = json_encode($xml);
+
+                    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+                });
 
             // Форматированная строка модели без найденного бренда
 
             $formatModel['brand'] = $nameInfo;
             $formatModel['model'] = $nameInfo;
+
+            if(empty($array))
+            {
+                return $formatModel;
+            }
+
 
             $string = mb_strtolower($nameInfo);
             $searchArray = explode(" ", $string);
@@ -188,12 +210,67 @@ final readonly class TireModelRequest
             // если модель не найдена - возвращаем результат отформатированной строки
             if(empty($result))
             {
-                $this->logger->critical(
-                    sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
-                    [self::class.':'.__LINE__, $formatModel],
-                );
+                $cacheHttpClientSpec = $this->cache->init('avito-board');
 
-                $result = $formatModel;
+                $arraySpec = $cacheHttpClientSpec->get('avito-board-spec', function(ItemInterface $item): array|false {
+
+                    $item->expiresAfter(DateInterval::createFromDateString('10 second'));
+
+                    $UserAgentGenerator = new UserAgentGenerator();
+                    $userAgent = $UserAgentGenerator->genDesktop();
+
+                    $httpClientSpec = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
+                        ->withOptions(['base_uri' => 'https://avito.ru']);
+
+                    $requestSpec = $httpClientSpec
+                        ->request('GET', '/web/1/autoload/user-docs/category/67021/field/121740/values-xml');
+
+                    if($requestSpec->getStatusCode() !== 200)
+                    {
+                        return false;
+                    }
+
+                    $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+
+                    $xml = simplexml_load_string($requestSpec->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
+
+                    $json = json_encode($xml);
+
+                    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+
+                });
+
+                if(empty($arraySpec))
+                {
+                    return $formatModel;
+                }
+
+
+                /**
+                 * Пробуем найти по моделям спец-техники
+                 *
+                 * @see https://www.avito.ru/web/1/autoload/user-docs/category/67021/field/121740/values-xml
+                 */
+
+                $models = array_filter($arraySpec['Model'], static function($element) use ($formatModel) {
+                    return mb_strtolower($element) === mb_strtolower($formatModel['model']);
+                });
+
+                if(true === empty($models))
+                {
+                    $this->logger->critical(
+                        sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
+                        [self::class.':'.__LINE__, $formatModel],
+                    );
+
+                    return $formatModel;
+                }
+
+                return [
+                    'models' => [current($models)],
+                    'brand' => $formatModel['brand'],
+                    'model' => $formatModel['model'],
+                ];
             }
 
             return $result;

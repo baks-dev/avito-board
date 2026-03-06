@@ -53,6 +53,7 @@ final class TireModelRequestTest extends KernelTestCase
             ["Sailun Atrezzo ECO"],
             ["Taganca МШЗ М-233"],
             ["Triangle TRY88"],
+            // ["Triangle seasonx van ta702"],
         ];
     }
 
