@@ -56,9 +56,9 @@ final class DeleteController extends AbstractController
             'action' => $this->generateUrl(
                 'avito-board:admin.mapper.delete',
                 [
-                    'id' => $deleteMapperDTO->getEvent()
-                ]
-            )
+                    'id' => $deleteMapperDTO->getEvent(),
+                ],
+            ),
         ]);
 
         $form->handleRequest($request);

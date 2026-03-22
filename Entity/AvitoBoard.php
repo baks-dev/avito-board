@@ -56,23 +56,23 @@ class AvitoBoard
         $this->id = $categoryProduct instanceof CategoryProduct ? $categoryProduct->getId() : $categoryProduct;
     }
 
-    public function __toString(): string
-    {
-        return (string) $this->id;
-    }
-
     public function getId(): CategoryProductUid
     {
         return $this->id;
     }
 
-    public function setEvent(AvitoBoardEvent|AvitoBoardEventUid $event): void
+    public function __toString(): string
     {
-        $this->event = $event instanceof AvitoBoardEvent ? $event->getId() : $event;
+        return (string) $this->id;
     }
 
     public function getEvent(): ?AvitoBoardEventUid
     {
         return $this->event;
+    }
+
+    public function setEvent(AvitoBoardEvent|AvitoBoardEventUid $event): void
+    {
+        $this->event = $event instanceof AvitoBoardEvent ? $event->getId() : $event;
     }
 }

@@ -50,11 +50,6 @@ class AdTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Товар приобретен на продажу';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -63,6 +58,11 @@ class AdTypeElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Товар приобретен на продажу';
     }
 
     public function element(): string

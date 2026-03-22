@@ -50,11 +50,6 @@ class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): null
-    {
-        return null;
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -70,6 +65,11 @@ class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
         }
 
         return $AvitoBoardPropertyMapper[self::ELEMENT] ?? null;
+    }
+
+    public function getDefault(): null
+    {
+        return null;
     }
 
     public function element(): string

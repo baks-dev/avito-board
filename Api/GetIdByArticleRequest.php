@@ -34,8 +34,8 @@ use Symfony\Contracts\Cache\ItemInterface;
 final class GetIdByArticleRequest extends AvitoApi
 {
     /**
-     * Метод позволяет получить идентификаторы (ID) объявлений на Авито по идентификаторам объявлений из файла автозагрузки.
-     * Возвращает FALSE - в случае если идентификатор объявления Авито по артикулу не найден
+     * Метод позволяет получить идентификаторы (ID) объявлений на Авито по идентификаторам объявлений из файла
+     * автозагрузки. Возвращает FALSE - в случае если идентификатор объявления Авито по артикулу не найден
      *
      * @see https://developers.avito.ru/api-catalog/autoload/documentation#operation/getAvitoIdsByAdIds
      */
@@ -54,7 +54,7 @@ final class GetIdByArticleRequest extends AvitoApi
             $request = $this->tokenHttpClient()->request(
                 'GET',
                 '/autoload/v2/items/avito_ids',
-                ['query' => ['query' => $article]]
+                ['query' => ['query' => $article]],
             );
 
             if($request->getStatusCode() !== 200)

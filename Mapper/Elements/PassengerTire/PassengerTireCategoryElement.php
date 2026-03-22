@@ -51,11 +51,6 @@ class PassengerTireCategoryElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Запчасти и аксессуары';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -64,6 +59,11 @@ class PassengerTireCategoryElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Запчасти и аксессуары';
     }
 
     public function element(): string

@@ -60,11 +60,6 @@ class SweatersAndShirtsGoodsSubType implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Футболка';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -85,6 +80,11 @@ class SweatersAndShirtsGoodsSubType implements AvitoBoardElementInterface
         }
 
         return $AvitoBoardPropertyMapper[self::ELEMENT];
+    }
+
+    public function getDefault(): string
+    {
+        return 'Футболка';
     }
 
     public function element(): string

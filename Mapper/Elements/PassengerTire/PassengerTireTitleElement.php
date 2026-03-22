@@ -31,7 +31,8 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
 
 /**
  * Название объявления — строка до 50 символов.
- * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте слово «продам».
+ * Примечание: не пишите в название цену и контактную информацию — для этого есть отдельные поля — и не используйте
+ * слово «продам».
  */
 final readonly class PassengerTireTitleElement implements AvitoBoardElementInterface
 {

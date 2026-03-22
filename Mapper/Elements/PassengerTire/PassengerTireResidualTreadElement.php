@@ -57,12 +57,6 @@ class PassengerTireResidualTreadElement implements AvitoBoardElementInterface
         return true;
     }
 
-    /** Т.к. не реализуем б/у, значение будет максимально возможное */
-    public function getDefault(): string
-    {
-        return '50';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -71,6 +65,12 @@ class PassengerTireResidualTreadElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    /** Т.к. не реализуем б/у, значение будет максимально возможное */
+    public function getDefault(): string
+    {
+        return '50';
     }
 
     public function element(): string

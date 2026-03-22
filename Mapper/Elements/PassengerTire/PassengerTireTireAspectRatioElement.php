@@ -46,11 +46,6 @@ class PassengerTireTireAspectRatioElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): null
-    {
-        return null;
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -71,6 +66,11 @@ class PassengerTireTireAspectRatioElement implements AvitoBoardElementInterface
         }
 
         return preg_replace('/\D\./', '', $AvitoBoardPropertyMapper[self::ELEMENT]);
+    }
+
+    public function getDefault(): null
+    {
+        return null;
     }
 
     public function element(): string

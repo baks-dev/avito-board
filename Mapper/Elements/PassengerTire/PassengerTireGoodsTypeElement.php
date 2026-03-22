@@ -52,11 +52,6 @@ class PassengerTireGoodsTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Шины, диски и колёса';
-    }
-
     public function getHelp(): ?string
     {
         return null;
@@ -65,6 +60,11 @@ class PassengerTireGoodsTypeElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Шины, диски и колёса';
     }
 
     public function element(): string

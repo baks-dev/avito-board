@@ -62,23 +62,23 @@ final class ShirtModelRequestTest extends KernelTestCase
                 [
                     [
                         'productName' => "Nike",
-                        'brand' => "Nike"
+                        'brand' => "Nike",
                     ],
                     [
                         'productName' => "Nike Air",
-                        'brand' => "Nike"
+                        'brand' => "Nike",
                     ],
                     [
                         'productName' => "Adidas",
-                        'brand' => "Adidas"
+                        'brand' => "Adidas",
                     ],
                     [
                         'productName' => "Adidas Original",
-                        'brand' => "Adidas"
+                        'brand' => "Adidas",
                     ],
                     [
                         'productName' => "Adidas Yeezy Stone",
-                        'brand' => "Adidas"
+                        'brand' => "Adidas",
                     ],
                 ],
             'brandHasNoModels' =>
@@ -112,6 +112,13 @@ final class ShirtModelRequestTest extends KernelTestCase
             $result = self::$request->getModel($random);
             self::assertNotNull($result);
         }
+    }
+
+    private function random(string $productName): string
+    {
+        $part = explode(' ', $productName);
+        natcasesort($part);
+        return implode(' ', $part);
     }
 
     public function testBrandHasModelsAndModelNotExist(): void
@@ -168,12 +175,5 @@ final class ShirtModelRequestTest extends KernelTestCase
             $result = self::$request->getModel($random);
             self::assertNull($result);
         }
-    }
-
-    private function random(string $productName): string
-    {
-        $part = explode(' ', $productName);
-        natcasesort($part);
-        return implode(' ', $part);
     }
 }

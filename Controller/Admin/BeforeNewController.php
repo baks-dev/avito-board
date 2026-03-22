@@ -59,7 +59,7 @@ final class BeforeNewController extends AbstractController
                 [
                     'localCategory' => $categoryMapperDTO->localCategory,
                     'avitoCategory' => $categoryMapperDTO->avitoCategory->getProductCategory(),
-                ]
+                ],
             );
         }
 

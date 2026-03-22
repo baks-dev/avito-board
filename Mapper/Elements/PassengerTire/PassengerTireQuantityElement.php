@@ -63,11 +63,6 @@ class PassengerTireQuantityElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'за 1 шт.';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -88,6 +83,11 @@ class PassengerTireQuantityElement implements AvitoBoardElementInterface
         }
 
         return $quantity;
+    }
+
+    public function getDefault(): string
+    {
+        return 'за 1 шт.';
     }
 
     public function element(): string

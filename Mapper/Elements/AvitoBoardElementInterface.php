@@ -72,6 +72,7 @@ interface AvitoBoardElementInterface
 
     /**
      * Возвращает название класса реализации @return class-string|null
+     *
      * @see AvitoBoardProductInterface
      */
     public function getProduct(): ?string;

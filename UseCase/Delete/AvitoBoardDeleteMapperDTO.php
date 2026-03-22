@@ -27,6 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Маппим необходимые поля из сущности
+ *
  * @see AvitoBoardEvent
  */
 final class AvitoBoardDeleteMapperDTO implements AvitoBoardEventInterface

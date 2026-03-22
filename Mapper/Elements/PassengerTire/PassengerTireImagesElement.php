@@ -93,21 +93,6 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         return $avitoIMG;
     }
 
-    public function element(): string
-    {
-        return self::ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function getProduct(): string
-    {
-        return PassengerTireProduct::class;
-    }
-
     /** Формируем массив элементов с изображениями */
     private function transform(?array $images): ?string
     {
@@ -147,5 +132,20 @@ final readonly class PassengerTireImagesElement implements AvitoBoardElementInte
         }
 
         return $render ?: null;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return PassengerTireProduct::class;
     }
 }

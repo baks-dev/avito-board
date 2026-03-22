@@ -121,17 +121,17 @@ class AvitoBoardEvent extends EntityEvent
         throw new InvalidArgumentException(sprintf('Class %s interface error', $dto::class));
     }
 
-    public function getId(): AvitoBoardEventUid
-    {
-        return $this->id;
-    }
-
     /**
      * Сеттер для корневой сущности, к которой относится данное событие
      */
     public function setMain(AvitoBoard|CategoryProductUid $main): void
     {
         $this->category = $main instanceof AvitoBoard ? $main->getId() : $main;
+    }
+
+    public function getId(): AvitoBoardEventUid
+    {
+        return $this->id;
     }
 
     public function getCategory(): CategoryProductUid

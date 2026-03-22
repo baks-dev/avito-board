@@ -52,11 +52,6 @@ class PassengerTireRunFlatElement
         return false;
     }
 
-    public function getDefault(): string
-    {
-        return 'Нет';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -79,6 +74,11 @@ class PassengerTireRunFlatElement
         };
 
         return $match;
+    }
+
+    public function getDefault(): string
+    {
+        return 'Нет';
     }
 
     public function element(): string

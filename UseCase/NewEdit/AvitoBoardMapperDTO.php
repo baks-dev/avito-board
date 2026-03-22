@@ -28,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Маппим необходимые поля из сущности
+ *
  * @see AvitoBoardEvent
  */
 final class AvitoBoardMapperDTO implements AvitoBoardEventInterface
@@ -72,24 +73,24 @@ final class AvitoBoardMapperDTO implements AvitoBoardEventInterface
         return $this->id;
     }
 
-    public function setCategory(CategoryProductUid|CategoryProduct $category): void
-    {
-        $this->category = $category instanceof CategoryProduct ? $category->getId() : $category;
-    }
-
     public function getCategory(): CategoryProductUid
     {
         return $this->category;
     }
 
-    public function setAvito(string $avito): void
+    public function setCategory(CategoryProductUid|CategoryProduct $category): void
     {
-        $this->avito = $avito;
+        $this->category = $category instanceof CategoryProduct ? $category->getId() : $category;
     }
 
     public function getAvito(): string
     {
         return $this->avito;
+    }
+
+    public function setAvito(string $avito): void
+    {
+        $this->avito = $avito;
     }
 
     /**

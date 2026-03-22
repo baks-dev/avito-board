@@ -30,7 +30,8 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
 use DateTimeImmutable;
 
 /**
- * Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из форматов:
+ * Это дата и время окончания размещения. Чтобы объявление закрылось в конце дня по Москве, укажите дату в одном из
+ * форматов:
  * — dd.MM.yyyy
  * — dd.MM.yy
  * — yyyy-MM-dd
@@ -76,6 +77,7 @@ class DateEndElement implements AvitoBoardElementInterface
         /**
          * Публикуем объявление только при наличии и в наличии больше или равное параметру avito_kit_value
          * Срок, на который будет опубликовано объявление - 1 день
+         *
          * @see PassengerTireQuantityElement
          */
         if($product_quantity > 0 and $product_quantity >= $data->getAvitoKitValue())

@@ -39,6 +39,7 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
  *
  *  -- не используем, так как не реализуем разноширокие комплекты --
  *  -- если элемент обязательный, то значение будем брать такое же, как и в элементе TireAspectRatioElement --
+ *
  * @see PassengerTireTireAspectRatioElement
  */
 class PassengerTireBackTireSectionWidthElement
@@ -55,11 +56,6 @@ class PassengerTireBackTireSectionWidthElement
     public function isRequired(): false
     {
         return false;
-    }
-
-    public function getDefault(): null
-    {
-        return null;
     }
 
     public function getHelp(): null
@@ -82,6 +78,11 @@ class PassengerTireBackTireSectionWidthElement
         }
 
         return preg_replace('/\D/', '', $AvitoBoardPropertyMapper[self::ELEMENT]);
+    }
+
+    public function getDefault(): null
+    {
+        return null;
     }
 
     public function element(): string

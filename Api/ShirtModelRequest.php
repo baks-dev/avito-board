@@ -216,7 +216,7 @@ final class ShirtModelRequest
         {
             $this->logger->critical(
                 'Не найдено совпадений бренда или модели для продукта '.$productName,
-                [__FILE__.':'.__LINE__]
+                [__FILE__.':'.__LINE__],
             );
 
             return null;

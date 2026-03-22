@@ -49,11 +49,6 @@ class PassengerTireConditionElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Новое';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -62,6 +57,11 @@ class PassengerTireConditionElement implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Новое';
     }
 
     public function element(): string

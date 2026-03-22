@@ -38,6 +38,7 @@ final readonly class AvitoBoardMapperProvider
 
     /**
      * Возвращает генератор для категорий продуктов, который был теггирован symfony tag
+     *
      * @return Traversable<AvitoBoardProductInterface>
      * @see SweatersAndShirtsProductInterface
      *
@@ -71,6 +72,7 @@ final readonly class AvitoBoardMapperProvider
      * фильтрованные по название категории от Авито
      *
      * @param string $productCategory - название категории от Авито
+     *
      * @return list<AvitoBoardElementInterface>
      */
     public function filterElements(string $productCategory): array

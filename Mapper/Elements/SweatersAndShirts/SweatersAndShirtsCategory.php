@@ -51,11 +51,6 @@ class SweatersAndShirtsCategory implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Одежда, обувь, аксессуары';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -64,6 +59,11 @@ class SweatersAndShirtsCategory implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Одежда, обувь, аксессуары';
     }
 
     public function element(): string

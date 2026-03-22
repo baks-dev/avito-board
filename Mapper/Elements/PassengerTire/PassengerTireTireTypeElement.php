@@ -47,11 +47,6 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): null
-    {
-        return null;
-    }
-
     public function getHelp(): ?string
     {
         return null;
@@ -97,6 +92,11 @@ final class PassengerTireTireTypeElement implements AvitoBoardElementInterface
         };
 
         return sprintf('%s %s', $tireType, $spikes);
+    }
+
+    public function getDefault(): null
+    {
+        return null;
     }
 
     public function element(): string

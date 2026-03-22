@@ -47,6 +47,27 @@ use Symfony\Component\DependencyInjection\Attribute\When;
 final class AvitoBoardMapperDeleteTest extends KernelTestCase
 {
     #[DependsOnClass(AvitoBoardMapperEditTest::class)]
+    public static function tearDownAfterClass(): void
+    {
+        /** @var EntityManagerInterface $em */
+        $em = self::getContainer()->get(EntityManagerInterface::class);
+
+        $events = $em->getRepository(AvitoBoardEvent::class)
+            ->findBy(['category' => CategoryProductUid::TEST]);
+
+        foreach($events as $event)
+        {
+            $em->remove($event);
+        }
+
+        $em->flush();
+        $em->clear();
+
+        /** Удаляем тестовую категорию */
+        CategoryProductDeleteTest::tearDownAfterClass();
+    }
+
+    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
     public function testDelete(): void
     {
         $container = self::getContainer();
@@ -96,26 +117,5 @@ final class AvitoBoardMapperDeleteTest extends KernelTestCase
         $handler = $container->get(AvitoBoardDeleteMapperHandler::class);
         $deleteAvitoBoard = $handler->handle($deleteMapperDTO);
         self::assertTrue($deleteAvitoBoard instanceof AvitoBoard);
-    }
-
-    #[DependsOnClass(AvitoBoardMapperEditTest::class)]
-    public static function tearDownAfterClass(): void
-    {
-        /** @var EntityManagerInterface $em */
-        $em = self::getContainer()->get(EntityManagerInterface::class);
-
-        $events = $em->getRepository(AvitoBoardEvent::class)
-            ->findBy(['category' => CategoryProductUid::TEST]);
-
-        foreach($events as $event)
-        {
-            $em->remove($event);
-        }
-
-        $em->flush();
-        $em->clear();
-
-        /** Удаляем тестовую категорию */
-        CategoryProductDeleteTest::tearDownAfterClass();
     }
 }

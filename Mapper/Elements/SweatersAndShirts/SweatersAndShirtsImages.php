@@ -94,21 +94,6 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         return $avitoIMG;
     }
 
-    public function element(): string
-    {
-        return self::ELEMENT;
-    }
-
-    public function label(): string
-    {
-        return self::LABEL;
-    }
-
-    public function getProduct(): string
-    {
-        return SweatersAndShirtsProduct::class;
-    }
-
     /** Формируем массив элементов с изображениями */
     private function transform(?array $images): ?string
     {
@@ -148,5 +133,20 @@ final readonly class SweatersAndShirtsImages implements AvitoBoardElementInterfa
         }
 
         return $render ?: null;
+    }
+
+    public function element(): string
+    {
+        return self::ELEMENT;
+    }
+
+    public function label(): string
+    {
+        return self::LABEL;
+    }
+
+    public function getProduct(): string
+    {
+        return SweatersAndShirtsProduct::class;
     }
 }

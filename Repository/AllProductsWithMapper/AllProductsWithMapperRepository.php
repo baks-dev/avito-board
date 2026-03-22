@@ -1039,16 +1039,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ) > 0
         ');
 
-        //$dbal->allGroupByExclude();
-        //dd($dbal->fetchAllAssociative()); /* TODO: удалить !!! */
-
-        /** Если комплект - выбираем только с подруженными кастомными изображениями во избежания блокировки */
-        //        $dbal->andWhere('
-        //            (avito_product_kit.value > 1 AND avito_product_images.id IS NOT NULL)
-        //            OR
-        //            (avito_kit.value = 1)
-        //        ');
-
         $dbal->enableCache('avito-board', '1 day');
 
         $result = $dbal->fetchAllHydrate(AllProductsWithMapperResult::class);

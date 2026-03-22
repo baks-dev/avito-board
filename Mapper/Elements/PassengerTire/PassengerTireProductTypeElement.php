@@ -50,11 +50,6 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string|null
-    {
-        return 'Легковые шины';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -77,6 +72,11 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
         };
 
         return $match;
+    }
+
+    public function getDefault(): string|null
+    {
+        return 'Легковые шины';
     }
 
     public function element(): string

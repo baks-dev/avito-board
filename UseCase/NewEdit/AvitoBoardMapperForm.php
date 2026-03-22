@@ -73,6 +73,7 @@ final class AvitoBoardMapperForm extends AbstractType
 
             /**
              * Фильтрация элементов (тегов) по категории - Авито
+             *
              * @var list<AvitoBoardElementInterface>|null $avitoElements
              */
             $avitoElements = $this->mapperProvider->filterElements($avitoBoardMapperDTO->getAvito());
@@ -123,16 +124,7 @@ final class AvitoBoardMapperForm extends AbstractType
         $builder->add('mapper_new', SubmitType::class, [
             'label' => 'Save',
             'label_html' => true,
-            'attr' => ['class' => 'btn-primary']
-        ]);
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => AvitoBoardMapperDTO::class,
-            'method' => 'POST',
-            'attr' => ['class' => 'w-100'],
+            'attr' => ['class' => 'btn-primary'],
         ]);
     }
 
@@ -143,6 +135,7 @@ final class AvitoBoardMapperForm extends AbstractType
     {
         /**
          * Массив с элементами "свойства продукта"
+         *
          * @var list<CategoryProductSectionFieldUid> $productProperties
          */
         $productProperties = $this->propertyFields
@@ -191,5 +184,14 @@ final class AvitoBoardMapperForm extends AbstractType
         }
 
         return $productFields;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => AvitoBoardMapperDTO::class,
+            'method' => 'POST',
+            'attr' => ['class' => 'w-100'],
+        ]);
     }
 }

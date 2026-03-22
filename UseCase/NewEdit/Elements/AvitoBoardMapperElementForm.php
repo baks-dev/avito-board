@@ -93,7 +93,7 @@ final class AvitoBoardMapperElementForm extends AbstractType
                 'data_class' => AvitoBoardMapperElementDTO::class,
                 'product_fields' => null,
                 'avito_product' => null,
-            ]
+            ],
         );
     }
 }

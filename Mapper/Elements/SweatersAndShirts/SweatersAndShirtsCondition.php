@@ -52,11 +52,6 @@ class SweatersAndShirtsCondition implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): string
-    {
-        return 'Новое с биркой';
-    }
-
     public function getHelp(): null
     {
         return null;
@@ -65,6 +60,11 @@ class SweatersAndShirtsCondition implements AvitoBoardElementInterface
     public function fetchData(AllProductsWithMapperResult $data): string
     {
         return $this->getDefault();
+    }
+
+    public function getDefault(): string
+    {
+        return 'Новое с биркой';
     }
 
     public function element(): string

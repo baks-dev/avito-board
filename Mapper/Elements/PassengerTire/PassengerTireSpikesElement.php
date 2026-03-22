@@ -52,11 +52,6 @@ final class PassengerTireSpikesElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): ?string
-    {
-        return 'не шипованные';
-    }
-
     public function getHelp(): ?string
     {
         return null;
@@ -79,6 +74,11 @@ final class PassengerTireSpikesElement implements AvitoBoardElementInterface
         };
 
         return $match;
+    }
+
+    public function getDefault(): ?string
+    {
+        return 'не шипованные';
     }
 
     public function element(): string
