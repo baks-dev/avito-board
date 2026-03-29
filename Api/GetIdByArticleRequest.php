@@ -41,9 +41,9 @@ final class GetIdByArticleRequest extends AvitoApi
      */
     public function find(string $article): int|false
     {
-        $cache = $this->getCacheInit('avito-promotion');
+        $cache = $this->getCacheInit('avito-board');
 
-        $key = md5($this->getProfile().$this->getTokenIdentifier().$article);
+        $key = md5($this->getProfile().$this->getTokenIdentifier().$this->getUser().$this->getClient().$article);
         //$cache->delete($key);
 
         $id = $cache->get($key, function(ItemInterface $item) use ($article): int|false {
