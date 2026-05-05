@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Api;
 
 use BaksDev\Avito\Api\AvitoApi;
-use DateInterval;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Contracts\Cache\ItemInterface;
 
@@ -41,51 +40,34 @@ final class GetIdByArticleRequest extends AvitoApi
      */
     public function find(string $article): int|false
     {
-        $cache = $this->getCacheInit('avito-board');
+        $request = $this->tokenHttpClient()->request(
+            'GET',
+            '/autoload/v2/items/avito_ids',
+            ['query' => ['query' => $article]],
+        );
 
-        $key = md5($this->getProfile().$this->getTokenIdentifier().$this->getUser().$this->getClient().$article);
-        //$cache->delete($key);
+        if($request->getStatusCode() !== 200)
+        {
+            return false;
+        }
 
-        $id = $cache->get($key, function(ItemInterface $item) use ($article): int|false {
+        $content = $request->toArray();
 
-            /** По умолчанию кешируем на 1 сек на случай, если результат вернет FALSE */
-            $item->expiresAfter(DateInterval::createFromDateString('1 second'));
+        if(
+            false === isset($content['items']) ||
+            false === is_array($content['items'])
+        )
+        {
+            return false;
+        }
 
-            $request = $this->tokenHttpClient()->request(
-                'GET',
-                '/autoload/v2/items/avito_ids',
-                ['query' => ['query' => $article]],
-            );
+        $current = current($content['items']);
 
-            if($request->getStatusCode() !== 200)
-            {
-                return false;
-            }
+        if(false === isset($current['avito_id']))
+        {
+            return false;
+        }
 
-            $content = $request->toArray();
-
-            if(
-                false === isset($content['items']) ||
-                false === is_array($content['items'])
-            )
-            {
-                return false;
-            }
-
-            $current = current($content['items']);
-
-            if(false === isset($current['avito_id']))
-            {
-                return false;
-            }
-
-            /** Если результат вернул идентификатор - кешируем на сутки */
-            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
-
-            return $current['avito_id'];
-
-        });
-
-        return $id;
+        return $current['avito_id'];
     }
 }
