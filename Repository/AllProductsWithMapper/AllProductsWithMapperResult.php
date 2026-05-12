@@ -99,6 +99,8 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
 
         private ?bool $promotion_active = null,
         private string|null $promotion_price = null,
+
+        private string|null $season_percent = null,
     ) {}
 
     public function getProductId(): ProductUid
@@ -272,6 +274,12 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         if(false === empty($this->project_discount))
         {
             $price->applyString($this->project_discount);
+        }
+
+        /* Торговая наценка с учетом сезонности */
+        if(false === empty($this->season_percent))
+        {
+            $price->applyString($this->season_percent);
         }
 
         /** Наценка/скидка токена профиля магазина */

@@ -29,7 +29,6 @@ use BaksDev\Avito\Board\Entity\AvitoBoard;
 use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Entity\AvitoToken;
-use BaksDev\Avito\Entity\Event\Active\AvitoTokenActive;
 use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
 use BaksDev\Avito\Entity\Event\Kit\AvitoTokenKit;
 use BaksDev\Avito\Entity\Event\Manager\AvitoTokenManager;
@@ -39,7 +38,6 @@ use BaksDev\Avito\Entity\Event\Profile\AvitoTokenProfile;
 use BaksDev\Avito\Products\Entity\AvitoProduct;
 use BaksDev\Avito\Products\Entity\Images\AvitoProductImage;
 use BaksDev\Avito\Products\Entity\Kit\AvitoProductKit;
-use BaksDev\Avito\Products\Entity\Profile\AvitoProductProfile;
 use BaksDev\Avito\Products\Entity\Token\AvitoProductToken;
 use BaksDev\Avito\Type\Id\AvitoTokenUid;
 use BaksDev\Core\Doctrine\DBALQueryBuilder;
@@ -54,22 +52,20 @@ use BaksDev\Products\Product\Entity\Category\ProductCategory;
 use BaksDev\Products\Product\Entity\Description\ProductDescription;
 use BaksDev\Products\Product\Entity\Event\ProductEvent;
 use BaksDev\Products\Product\Entity\Info\ProductInfo;
-use BaksDev\Products\Product\Entity\Offers\Image\ProductOfferImage;
 use BaksDev\Products\Product\Entity\Offers\Price\ProductOfferPrice;
 use BaksDev\Products\Product\Entity\Offers\ProductOffer;
 use BaksDev\Products\Product\Entity\Offers\Quantity\ProductOfferQuantity;
-use BaksDev\Products\Product\Entity\Offers\Variation\Image\ProductVariationImage;
-use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Image\ProductModificationImage;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Price\ProductModificationPrice;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\ProductModification;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Quantity\ProductModificationQuantity;
 use BaksDev\Products\Product\Entity\Offers\Variation\Price\ProductVariationPrice;
 use BaksDev\Products\Product\Entity\Offers\Variation\ProductVariation;
 use BaksDev\Products\Product\Entity\Offers\Variation\Quantity\ProductVariationQuantity;
-use BaksDev\Products\Product\Entity\Photo\ProductPhoto;
 use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\ProductInvariable;
+use BaksDev\Products\Product\Entity\Project\ProductProject;
+use BaksDev\Products\Product\Entity\Project\Season\ProductProjectSeason;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
 use BaksDev\Products\Product\Entity\Trans\ProductTrans;
 use BaksDev\Products\Promotion\BaksDevProductsPromotionBundle;
@@ -86,6 +82,7 @@ use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
 use Generator;
+use Doctrine\DBAL\ParameterType;
 use InvalidArgumentException;
 
 final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
@@ -224,6 +221,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_token_phone',
                 'avito_token_phone.event = avito_token.event',
             );
+
 
         $dbal->leftJoin(
             'product',
@@ -734,6 +732,34 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         project_profile_discount.event = project_profile.event',
                 );
         }
+
+        /* Получить товарную наценку (скидку) по сезонности с учетом текущего месяца */
+        $dbal
+            ->leftJoin(
+                'product',
+                ProductProject::class,
+                'product_project',
+                '
+                    product_project.product = product.id
+                    '.(true === $dbal->bindProjectProfile()
+                    ? 'AND product_project.profile = :'.$dbal::PROJECT_PROFILE_KEY
+                    : 'AND product_project.profile IS NULL'),
+            );
+
+        $dbal
+            ->addSelect('product_project_season.percent as season_percent')
+            ->leftJoin(
+                'product_project',
+                ProductProjectSeason::class,
+                'product_project_season',
+                'product_project_season.project = product_project.id
+                     AND product_project_season.month = :month',
+            )
+            ->setParameter(
+                key: 'month',
+                value: (int) date('n'),
+                type: ParameterType::INTEGER,
+            );
 
 
         /** ProductInvariable */
