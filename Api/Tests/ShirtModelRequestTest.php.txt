@@ -40,6 +40,7 @@ final class ShirtModelRequestTest extends KernelTestCase
 
     public static function setUpBeforeClass(): void
     {
+
         self::bootKernel();
         $container = static::getContainer();
 

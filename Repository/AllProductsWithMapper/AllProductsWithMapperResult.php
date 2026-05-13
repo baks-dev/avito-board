@@ -264,6 +264,12 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
 
         $price = new Money($this->product_price, true);
 
+        /* Торговая наценка с учетом сезонности */
+        if(false === empty($this->season_percent))
+        {
+            $price->applyString($this->season_percent);
+        }
+
         /** Акция/наценка магазина (promotion) */
         if(false === empty($this->promotion_price) && true === $this->promotion_active)
         {
@@ -274,12 +280,6 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         if(false === empty($this->project_discount))
         {
             $price->applyString($this->project_discount);
-        }
-
-        /* Торговая наценка с учетом сезонности */
-        if(false === empty($this->season_percent))
-        {
-            $price->applyString($this->season_percent);
         }
 
         /** Наценка/скидка токена профиля магазина */
