@@ -81,8 +81,8 @@ use BaksDev\Users\Profile\UserProfile\Entity\UserProfile;
 use BaksDev\Users\Profile\UserProfile\Type\Id\UserProfileUid;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\Status\UserProfileStatusActive;
 use BaksDev\Users\Profile\UserProfile\Type\UserProfileStatus\UserProfileStatus;
-use Generator;
 use Doctrine\DBAL\ParameterType;
+use Generator;
 use InvalidArgumentException;
 
 final class AllProductsWithMapperRepository implements AllProductsWithMapperInterface
@@ -131,15 +131,138 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->createQueryBuilder(self::class)
             ->bindLocal();
 
-        $dbal
+
+        $cteSelect = $this->DBALQueryBuilder->createQueryBuilder(self::class);
+
+        $cteSelect
             ->select('product.id')
             ->addSelect('product.event')
             ->from(Product::class, 'product');
 
+        /** Получаем только на активные продукты */
+        $cteSelect
+            ->join(
+                'product',
+                ProductActive::class,
+                'product_active',
+                '
+                    product_active.event = product.event AND 
+                    product_active.active IS TRUE',
+            );
+
+
+        $cteSelect
+            ->addSelect('product_offer.id as product_offer')
+            ->leftJoin(
+                'product',
+                ProductOffer::class,
+                'product_offer',
+                'product_offer.event = product.event',
+            );
+
+
+        $cteSelect
+            ->addSelect('product_variation.id as product_variation')
+            ->leftJoin(
+                'product_offer',
+                ProductVariation::class,
+                'product_variation',
+                'product_variation.offer = product_offer.id',
+            );
+
+        /**
+         * Модификация множественного варианта
+         */
+        $cteSelect
+            ->addSelect('product_modification.id as product_modification')
+            ->leftJoin(
+                'product_variation',
+                ProductModification::class,
+                'product_modification',
+                'product_modification.variation = product_variation.id ',
+            );
+
+        $cteSelect->leftJoin(
+            'product',
+            ProductPrice::class,
+            'product_price',
+            'product_price.event = product.event',
+        );
+
+        $cteSelect->leftJoin(
+            'product_offer',
+            ProductOfferPrice::class,
+            'product_offer_price',
+            'product_offer_price.offer = product_offer.id',
+        );
+
+        $cteSelect->leftJoin(
+            'product_variation',
+            ProductVariationPrice::class,
+            'product_variation_price',
+            'product_variation_price.variation = product_variation.id',
+        );
+
+        $cteSelect->leftJoin(
+            'product_modification',
+            ProductModificationPrice::class,
+            'product_modification_price',
+            'product_modification_price.modification = product_modification.id',
+        );
+
+        /** Только продукция, у которых указана стоимость */
+        $cteSelect->andWhere('
+        (
+            CASE
+               WHEN product_modification.id IS NOT NULL AND product_modification_price.price > 0
+               THEN product_modification_price.price
+
+               WHEN product_variation.id IS NOT NULL AND product_variation_price.price > 0
+               THEN product_variation_price.price
+
+               WHEN product_offer.id IS NOT NULL AND product_offer_price.price > 0
+               THEN product_offer_price.price
+
+               WHEN product_price.price IS NOT NULL AND product_price.price > 0
+               THEN product_price.price
+
+               ELSE 0
+            END
+            
+        ) > 0 ');
+
+
+        /**
+         * END cteSelect ===============================
+         */
+
+
+        $dbal
+            ->with('cte_products', $cteSelect)
+            ->from('cte_products', 'cteSelect');
+
+        $dbal
+            ->select('product.id')
+            ->addSelect('product.event')
+            ->join(
+                'cteSelect',
+                Product::class,
+                'product',
+                'product.id = cteSelect.id',
+            );
+
+
+        //        $dbal
+        //            ->select('product.id')
+        //            ->addSelect('product.event')
+        //            ->from(Product::class, 'product')
+        //            ->where('product.id = cteSelect.id');
+        //        ;
+
         /** Проверяю, есть ли соответствующий профиль */
         $dbal
             ->join(
-                'product',
+                'cteSelect',
                 AvitoToken::class,
                 'avito_token',
                 'avito_token.id = :token',
@@ -151,7 +274,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
         $dbal->join(
-            'product',
+            'cteSelect',
             AvitoTokenProfile::class,
             'avito_token_profile',
             'avito_token_profile.event = avito_token.event',
@@ -166,7 +289,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_kit',
                 'avito_kit.event = avito_token.event',
             );
-
 
         $dbal->join(
             'avito_token_profile',
@@ -223,11 +345,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
 
+
         $dbal->leftJoin(
-            'product',
+            'cteSelect',
             ProductEvent::class,
             'product_event',
-            'product_event.id = product.event',
+            'product_event.id = cteSelect.event',
         );
 
 
@@ -236,11 +359,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->addSelect('product_active.active_from AS product_date_begin')
             ->addSelect('product_active.active_to AS product_date_over')
             ->join(
-                'product',
+                'cteSelect',
                 ProductActive::class,
                 'product_active',
                 '
-                    product_active.event = product.event AND 
+                    product_active.event = cteSelect.event AND 
                     product_active.active IS TRUE',
             );
 
@@ -282,11 +405,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->addSelect('product_offer.postfix as product_offer_postfix')
             ->addSelect('product_offer.category_offer as offer_section_field_uid')
             ->leftJoin(
-                'product_event',
+                'cteSelect',
                 ProductOffer::class,
                 'product_offer',
-                'product_offer.event = product_event.id',
+                'product_offer.id = cteSelect.product_offer',
             );
+
 
         /**
          * Тип торгового предложения
@@ -310,11 +434,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->addSelect('product_variation.postfix as product_variation_postfix')
             ->addSelect('product_variation.category_variation as variation_section_field_uid')
             ->leftJoin(
-                'product_offer',
+                'cteSelect',
                 ProductVariation::class,
                 'product_variation',
-                'product_variation.offer = product_offer.id',
+                'product_variation.id = cteSelect.product_variation',
             );
+
 
         /**
          * Модификация множественного варианта
@@ -326,11 +451,12 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             ->addSelect('product_modification.postfix as product_modification_postfix')
             ->addSelect('product_modification.category_modification as modification_section_field_uid')
             ->leftJoin(
-                'product_variation',
+                'cteSelect',
                 ProductModification::class,
                 'product_modification',
-                'product_modification.variation = product_variation.id ',
+                'product_modification.id = cteSelect.product_modification ',
             );
+
 
         /**
          * Артикул продукта
@@ -343,6 +469,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 product_info.article
             ) AS product_article
 		');
+
 
         /**
          * Категория
@@ -385,10 +512,10 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          * Базовая Цена товара
          */
         $dbal->leftJoin(
-            'product',
+            'cteSelect',
             ProductPrice::class,
             'product_price',
-            'product_price.event = product.event',
+            'product_price.event = cteSelect.event',
         )
             ->addGroupBy('product_price.reserve');
 
@@ -709,13 +836,14 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 ');
         }
 
+
         /** Общая скидка (наценка) из профиля магазина */
         if(true === $dbal->bindProjectProfile())
         {
 
             $dbal
                 ->join(
-                    'product',
+                    'cteSelect',
                     UserProfile::class,
                     'project_profile',
                     '
@@ -736,11 +864,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         /* Получить товарную наценку (скидку) по сезонности с учетом текущего месяца */
         $dbal
             ->leftJoin(
-                'product',
+                'cteSelect',
                 ProductProject::class,
                 'product_project',
                 '
-                    product_project.product = product.id
+                    product_project.product = cteSelect.id
                     '.(true === $dbal->isProjectProfile()
                     ? 'AND product_project.profile = :'.$dbal::PROJECT_PROFILE_KEY
                     : 'AND product_project.profile IS NULL'),
@@ -790,6 +918,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         (product_modification.const IS NULL AND product_invariable.modification IS NULL)
                    )
             ');
+
 
         /**
          * ProductsPromotion
@@ -992,6 +1121,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     END
             ');
 
+
         /** Продукт Авито по токену бизнес-пользователя */
 
         $dbal
@@ -1003,6 +1133,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 avito_product_token.avito = avito_product.id
                 AND avito_product_token.value = avito_token.id',
             );
+
 
         /** Изображения Авито */
         $dbal->leftJoin(
@@ -1044,26 +1175,26 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         $dbal->andWhere('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
 
-        /** Только заказы, у которых указана стоимость */
-        $dbal->andWhere('
-            (
-                CASE
-                   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0
-                   THEN product_modification_price.price
-
-                   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0
-                   THEN product_variation_price.price
-
-                   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0
-                   THEN product_offer_price.price
-
-                   WHEN product_price.price IS NOT NULL AND product_price.price > 0
-                   THEN product_price.price
-
-                   ELSE 0
-                END
-            ) > 0
-        ');
+        //        /** Только заказы, у которых указана стоимость */
+        //        $dbal->andWhere('
+        //            (
+        //                CASE
+        //                   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0
+        //                   THEN product_modification_price.price
+        //
+        //                   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0
+        //                   THEN product_variation_price.price
+        //
+        //                   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0
+        //                   THEN product_offer_price.price
+        //
+        //                   WHEN product_price.price IS NOT NULL AND product_price.price > 0
+        //                   THEN product_price.price
+        //
+        //                   ELSE 0
+        //                END
+        //            ) > 0
+        //        ');
 
         $dbal->enableCache('avito-board', '1 day');
 

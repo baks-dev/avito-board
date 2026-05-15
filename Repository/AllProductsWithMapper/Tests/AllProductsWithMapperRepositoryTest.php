@@ -65,6 +65,13 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
             ->forAvitoToken(new AvitoTokenUid($AvitoTokenUid))
             ->findAll();
 
+        if(false === $products || false === $products->valid())
+        {
+            self::assertFalse(false);
+            return;
+        }
+
+
         if(false !== $products)
         {
             foreach($products as $AllProductsWithMapperResult)
@@ -80,7 +87,7 @@ class AllProductsWithMapperRepositoryTest extends KernelTestCase
                     {
                         // Вызываем метод
                         $data = $method->invoke($AllProductsWithMapperResult);
-                        // dump($data);
+                        dump($data);
                     }
                 }
             }
