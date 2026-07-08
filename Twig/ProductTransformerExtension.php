@@ -58,15 +58,19 @@ final class ProductTransformerExtension extends AbstractExtension
 
     public function productTransform(AllProductsWithMapperResult $product): ?array
     {
+
         $this->productResult = $product;
         $this->productName = $product->getProductName();
         $this->productArticle = $product->getProductArticle();
 
         $this->avitoCategory = $product->getAvitoBoardAvitoCategory();
+
         $this->avitoBoardPropertyMapper = $product->getAvitoBoardPropertyMapper();
+
 
         /** Список всех элементов категории */
         $avitoBoardElements = $this->mapperProvider->filterElements($this->avitoCategory);
+
 
         /** Получаем элементы по категории продукта, НЕ УЧАСТВУЮЩИЕ в маппинге */
         $unmappedElements = array_filter(
@@ -80,6 +84,7 @@ final class ProductTransformerExtension extends AbstractExtension
          * Формируем массив для отрисовки в фиде, где ключ - название элемента, значение - значением из свойств продукта
          */
         $elements = null;
+
 
         foreach($unmappedElements as $element)
         {
@@ -100,7 +105,6 @@ final class ProductTransformerExtension extends AbstractExtension
 
                 return null;
             }
-
 
             /** Добавляем элемент если имеется результат значения */
             if(false === empty($data))
@@ -124,7 +128,7 @@ final class ProductTransformerExtension extends AbstractExtension
     {
         $mapper = $this->avitoBoardPropertyMapper;
 
-        if(true === is_null($mapper))
+        if(empty($mapper))
         {
             $this->logger->critical(
                 sprintf(
@@ -138,41 +142,34 @@ final class ProductTransformerExtension extends AbstractExtension
             return null;
         }
 
-        $require = false;
+        $map = null;
 
-        /**
-         * Ищем для элементов маппера кастомные связанные элементы и преобразуем согласно формату из элемента методом fetchData
-         */
-        array_walk($mapper, function(&$value, $element) use (&$require) {
+        foreach($mapper as $element)
+        {
+            $AvitoBoardElementInstance = $this->mapperProvider->getElement($this->avitoCategory, $element->element);
 
-            $AvitoBoardElementInstance = $this->mapperProvider->getElement($this->avitoCategory, $element);
+            $data = $AvitoBoardElementInstance->fetchData($this->productResult);
 
-            $value = $AvitoBoardElementInstance->fetchData($this->productResult);
-
-            /** Если у продукта есть свойство null, обязательное для Авито - пропускаем продукт, пишем в лог */
-            if(null === $value && $AvitoBoardElementInstance->isRequired())
+            if(empty($data) && $AvitoBoardElementInstance->isRequired())
             {
-                $require = true;
-
                 $this->logger->warning(
                     sprintf(
                         '
                         В свойства продукта не найдено значение для обязательного элемента Авито! 
                         Название элемента: %s. Название продукта: %s. Артикул продукта: %s',
-                        $element,
+                        $element->element,
                         $this->productName,
                         $this->productArticle,
                     ),
                     [self::class.':'.__LINE__],
                 );
-            }
-        });
 
-        if($require === true)
-        {
-            return null;
+                return null;
+            }
+
+            $map[$element->element] = $data;
         }
 
-        return $mapper;
+        return $map;
     }
 }

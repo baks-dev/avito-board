@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Api\Tests;
 
+use BaksDev\Avito\Board\Api\TireBrandRequest;
 use BaksDev\Avito\Board\Api\TireModelRequest;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\DependsOnClass;
@@ -39,12 +40,12 @@ final class TireModelRequestTest extends KernelTestCase
     public static function modelProvider(): array
     {
         return [
+            ["Westlake H188"],
             ["Trazano Terra Legend SL399 Owl"],
             ["Kumho WinterCraft Ice WI32"],
             ["Triangle Sportex XL TH201"],
             ["Sport SA-37 Westlake"],
             ["Westlake MUD LEGEND SL366"],
-            ["Westlake H188"],
             ["Sailun Atrezzo Elite"],
             ["Sailun Atrezzo ZSR"],
             ["Zmax Gallopro H-T"],
@@ -53,7 +54,8 @@ final class TireModelRequestTest extends KernelTestCase
             ["Sailun Atrezzo ECO"],
             ["Taganca МШЗ М-233"],
             ["Triangle TRY88"],
-            // ["Triangle seasonx van ta702"],
+            ["Triangle seasonx van ta702"],
+            ["Trazano SL315 Trac Legend"],
         ];
     }
 
@@ -61,36 +63,50 @@ final class TireModelRequestTest extends KernelTestCase
     public function testRequest(string $productName): void
     {
         self::assertTrue(true);
-        return;
+        //return;
 
         self::bootKernel();
 
-
         $container = static::getContainer();
 
-        /** @var TireModelRequest $request */
-        $request = $container->get(TireModelRequest::class);
 
-        $result = $request->getModel($productName);
+        /** @var TireBrandRequest $TireBrandRequest */
+        $TireBrandRequest = $container->get(TireBrandRequest::class);
 
-        if(false === isset($result['models']))
+        $brand = $TireBrandRequest
+            ->brand($productName)
+            ->find();
+
+        if(empty($brand))
         {
             echo PHP_EOL.sprintf(
-                    'avito-board: Модель продукта %s не найдена, присвоено значение %s ', $productName, $result['model'],
+                    'avito-board: Бренд продукта %s не найдена', $productName,
                 ).self::class.':'.__LINE__.PHP_EOL;
 
             return;
         }
 
-        $random = $this->random($productName);
-        $result = $request->getModel($random);
-        self::assertNotNull($result);
-    }
+        self::assertNotEmpty($brand);
 
-    private function random(string $productName): string
-    {
-        $part = explode(' ', $productName);
-        natcasesort($part);
-        return implode(' ', $part);
+        /** ----------------------------------------------------------- */
+
+        /** @var TireModelRequest $TireModelRequest */
+        $TireModelRequest = $container->get(TireModelRequest::class);
+
+        $model = $TireModelRequest
+            ->brand($brand)
+            ->model($productName)
+            ->find();
+
+        if(empty($model))
+        {
+            echo PHP_EOL.sprintf(
+                    'avito-board: Модель продукта %s не найдена', $productName,
+                ).self::class.':'.__LINE__.PHP_EOL;
+
+            return;
+        }
+
+        self::assertNotEmpty($model);
     }
 }

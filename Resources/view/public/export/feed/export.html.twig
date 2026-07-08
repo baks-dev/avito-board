@@ -11,9 +11,7 @@
         {% if tags is not null %}
         <Ad index='{{ loop.index }}' identifier='{{ product.getAvitoProductId() }}'>
             {% for tag, data in tags %}
-                <{{ tag }}>
-                {{ data|raw }}
-                </{{ tag }}>
+                <{{ tag }}>{{ data|raw }}</{{ tag }}>
             {% endfor %}
             </Ad>
         {% endif %}

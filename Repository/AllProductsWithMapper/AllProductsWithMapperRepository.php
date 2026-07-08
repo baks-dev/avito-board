@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace BaksDev\Avito\Board\Repository\AllProductsWithMapper;
 
 use BaksDev\Avito\Board\Entity\AvitoBoard;
-use BaksDev\Avito\Board\Entity\Element\AvitoBoardMapperElement;
 use BaksDev\Avito\Board\Entity\Event\AvitoBoardEvent;
 use BaksDev\Avito\Entity\AvitoToken;
 use BaksDev\Avito\Entity\Event\Address\AvitoTokenAddress;
@@ -47,6 +46,7 @@ use BaksDev\Products\Category\Entity\CategoryProduct;
 use BaksDev\Products\Category\Entity\Info\CategoryProductInfo;
 use BaksDev\Products\Category\Entity\Offers\CategoryProductOffers;
 use BaksDev\Products\Category\Entity\Trans\CategoryProductTrans;
+use BaksDev\Products\Category\Type\Section\Field\Id\CategoryProductSectionFieldUid;
 use BaksDev\Products\Product\Entity\Active\ProductActive;
 use BaksDev\Products\Product\Entity\Category\ProductCategory;
 use BaksDev\Products\Product\Entity\Description\ProductDescription;
@@ -152,7 +152,22 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
 
         $cteSelect
-            ->addSelect('product_offer.id as product_offer')
+            ->leftJoin(
+                'product',
+                ProductInfo::class,
+                'product_info',
+                'product_info.product = product.id',
+            );
+
+
+        /** --------------------------------- */
+
+        $cteSelect
+            ->addSelect('product_offer.id as product_offer_id')
+            ->addSelect('product_offer.const as product_offer_const')
+            ->addSelect('product_offer.value as product_offer_value')
+            ->addSelect('product_offer.postfix as product_offer_postfix')
+            ->addSelect('product_offer.category_offer as offer_section_field_uid')
             ->leftJoin(
                 'product',
                 ProductOffer::class,
@@ -162,7 +177,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
 
         $cteSelect
-            ->addSelect('product_variation.id as product_variation')
+            ->addSelect('product_variation.id as product_variation_id')
+            ->addSelect('product_variation.const as product_variation_const')
+            ->addSelect('product_variation.value as product_variation_value')
+            ->addSelect('product_variation.postfix as product_variation_postfix')
+            ->addSelect('product_variation.category_variation as variation_section_field_uid')
             ->leftJoin(
                 'product_offer',
                 ProductVariation::class,
@@ -170,17 +189,21 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'product_variation.offer = product_offer.id',
             );
 
-        /**
-         * Модификация множественного варианта
-         */
         $cteSelect
-            ->addSelect('product_modification.id as product_modification')
+            ->addSelect('product_modification.id as product_modification_id')
+            ->addSelect('product_modification.const as product_modification_const')
+            ->addSelect('product_modification.value as product_modification_value')
+            ->addSelect('product_modification.postfix as product_modification_postfix')
+            ->addSelect('product_modification.category_modification as modification_section_field_uid')
             ->leftJoin(
                 'product_variation',
                 ProductModification::class,
                 'product_modification',
                 'product_modification.variation = product_variation.id ',
             );
+
+        /** --------------------------------- */
+
 
         $cteSelect->leftJoin(
             'product',
@@ -210,26 +233,144 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             'product_modification_price.modification = product_modification.id',
         );
 
+        /** --------------------------------- */
+
+        $cteSelect->addSelect(
+            '
+			CASE
+			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0 
+			   THEN product_modification_price.price
+			   
+			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0 
+			   THEN product_variation_price.price
+			   
+			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0 
+			   THEN product_offer_price.price
+			   
+			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
+			   THEN product_price.price
+			   
+			   ELSE NULL
+			END AS product_price',
+        );
+
+        $cteSelect->addSelect(
+            '
+			CASE
+			
+			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0 
+			   THEN product_modification_price.currency
+			   
+			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0 
+			   THEN product_variation_price.currency
+			   
+			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0 
+			   THEN product_offer_price.currency
+			   
+			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
+			   THEN product_price.currency
+			   
+			   ELSE NULL
+			   
+			END AS product_currency',
+        );
+
+
+        /**
+         * Артикул продукта
+         */
+        $cteSelect->addSelect('
+            COALESCE(
+                product_modification.article, 
+                product_variation.article, 
+                product_offer.article, 
+                product_info.article
+            ) AS product_article
+		');
+
+
+        /** ProductInvariable */
+        $cteSelect
+            ->addSelect('product_invariable.id AS product_invariable_id')
+            ->leftJoin(
+                'product_modification',
+                ProductInvariable::class,
+                'product_invariable',
+                '
+                    product_invariable.product = product.id 
+                    AND product_invariable.offer = product_offer.const
+                    AND product_invariable.variation = product_variation.const
+                    AND product_invariable.modification = product_modification.const
+                    
+            ');
+
+
+        /**
+         * Тип торгового предложения
+         */
+        $cteSelect
+            ->addSelect('category_offer.reference as product_offer_reference')
+            ->leftJoin(
+                'product_offer',
+                CategoryProductOffers::class,
+                'category_offer',
+                'category_offer.id = product_offer.category_offer',
+            );
+
+
+        /**
+         * Категория
+         */
+        $cteSelect
+            ->leftJoin(
+                'product',
+                ProductCategory::class,
+                'product_category',
+                'product_category.event = product.event AND product_category.root = true',
+            );
+
+        $cteSelect
+            ->addSelect('category.id AS category_product_id')
+            ->addSelect('category.event AS category_product_event')
+            ->join(
+                'product_category',
+                CategoryProduct::class,
+                'category',
+                'category.id = product_category.category',
+            );
+
+        /** Получаем только на активные категории */
+        $cteSelect
+            ->addSelect('category_info.active as category_active')
+            ->join(
+                'product_category',
+                CategoryProductInfo::class,
+                'category_info',
+                'category.event = category_info.event',
+            );
+
+
+        $cteSelect
+            ->addSelect('category_trans.name AS product_category')
+            ->leftJoin(
+                'category',
+                CategoryProductTrans::class,
+                'category_trans',
+                'category_trans.event = category.event AND category_trans.local = :local',
+            );
+
+
         /** Только продукция, у которых указана стоимость */
+        $cteSelect->andWhere('COALESCE(product_modification_price.price, product_variation_price.price, product_offer_price.price, product_price.price, 0) > 0 ');
+
+
         $cteSelect->andWhere('
-        (
-            CASE
-               WHEN product_modification.id IS NOT NULL AND product_modification_price.price > 0
-               THEN product_modification_price.price
-
-               WHEN product_variation.id IS NOT NULL AND product_variation_price.price > 0
-               THEN product_variation_price.price
-
-               WHEN product_offer.id IS NOT NULL AND product_offer_price.price > 0
-               THEN product_offer_price.price
-
-               WHEN product_price.price IS NOT NULL AND product_price.price > 0
-               THEN product_price.price
-
-               ELSE 0
-            END
-            
-        ) > 0 ');
+        
+       EXISTS (
+              SELECT 1 FROM avito_board b
+              JOIN avito_board_event be ON be.id = b.event
+              WHERE b.id = category.id AND be.category IS NOT NULL
+          )');
 
 
         /**
@@ -345,7 +486,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
 
-
         $dbal->leftJoin(
             'cteSelect',
             ProductEvent::class,
@@ -365,14 +505,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 '
                     product_active.event = cteSelect.event AND 
                     product_active.active IS TRUE',
-            );
-
-        $dbal
-            ->leftJoin(
-                'product_event',
-                ProductInfo::class,
-                'product_info',
-                'product_info.product = product.id',
             );
 
 
@@ -399,177 +531,200 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
          * Торговое предложение
          */
         $dbal
-            ->addSelect('product_offer.id as product_offer_id')
-            ->addSelect('product_offer.const as product_offer_const')
-            ->addSelect('product_offer.value as product_offer_value')
-            ->addSelect('product_offer.postfix as product_offer_postfix')
-            ->addSelect('product_offer.category_offer as offer_section_field_uid')
-            ->leftJoin(
-                'cteSelect',
-                ProductOffer::class,
-                'product_offer',
-                'product_offer.id = cteSelect.product_offer',
-            );
+            ->addSelect('cteSelect.product_offer_id')
+            ->addSelect('cteSelect.product_offer_const')
+            ->addSelect('cteSelect.product_offer_value')
+            ->addSelect('cteSelect.product_offer_postfix')
+            ->addSelect('cteSelect.offer_section_field_uid')
 
 
-        /**
-         * Тип торгового предложения
-         */
-        $dbal
-            ->addSelect('category_offer.reference as product_offer_reference')
-            ->leftJoin(
-                'product_offer',
-                CategoryProductOffers::class,
-                'category_offer',
-                'category_offer.id = product_offer.category_offer',
-            );
+            //            ->leftJoin(
+            //                'cteSelect',
+            //                ProductOffer::class,
+            //                'product_offer',
+            //                'product_offer.id = cteSelect.product_offer_id',
+            //            )
+        ;
+
+
+        //        /**
+        //         * Тип торгового предложения
+        //         */
+        //        $dbal
+        //            ->addSelect('category_offer.reference as product_offer_reference')
+        //            ->leftJoin(
+        //                'product_offer',
+        //                CategoryProductOffers::class,
+        //                'category_offer',
+        //                'category_offer.id = product_offer.category_offer',
+        //            );
+        //
+        //
+
+        $dbal->addSelect('cteSelect.product_offer_reference');
+
 
         /**
          * Множественные варианты торгового предложения
          */
         $dbal
-            ->addSelect('product_variation.id as product_variation_id')
-            ->addSelect('product_variation.const as product_variation_const')
-            ->addSelect('product_variation.value as product_variation_value')
-            ->addSelect('product_variation.postfix as product_variation_postfix')
-            ->addSelect('product_variation.category_variation as variation_section_field_uid')
-            ->leftJoin(
-                'cteSelect',
-                ProductVariation::class,
-                'product_variation',
-                'product_variation.id = cteSelect.product_variation',
-            );
+            ->addSelect('cteSelect.product_variation_id')
+            ->addSelect('cteSelect.product_variation_const')
+            ->addSelect('cteSelect.product_variation_value')
+            ->addSelect('cteSelect.product_variation_postfix')
+            ->addSelect('cteSelect.variation_section_field_uid')
+
+
+            //            ->leftJoin(
+            //                'cteSelect',
+            //                ProductVariation::class,
+            //                'product_variation',
+            //                'product_variation.id = cteSelect.product_variation',
+            //            )
+        ;
 
 
         /**
          * Модификация множественного варианта
          */
         $dbal
-            ->addSelect('product_modification.id as product_modification_id')
-            ->addSelect('product_modification.const as product_modification_const')
-            ->addSelect('product_modification.value as product_modification_value')
-            ->addSelect('product_modification.postfix as product_modification_postfix')
-            ->addSelect('product_modification.category_modification as modification_section_field_uid')
-            ->leftJoin(
-                'cteSelect',
-                ProductModification::class,
-                'product_modification',
-                'product_modification.id = cteSelect.product_modification ',
-            );
+            ->addSelect('cteSelect.product_modification_id')
+            ->addSelect('cteSelect.product_modification_const')
+            ->addSelect('cteSelect.product_modification_value')
+            ->addSelect('cteSelect.product_modification_postfix')
+            ->addSelect('cteSelect.modification_section_field_uid')
 
+
+            //            ->leftJoin(
+            //                'cteSelect',
+            //                ProductModification::class,
+            //                'product_modification',
+            //                'product_modification.id = cteSelect.product_modification ',
+            //            )
+        ;
 
         /**
          * Артикул продукта
          */
-        $dbal->addSelect('
-            COALESCE(
-                product_modification.article, 
-                product_variation.article, 
-                product_offer.article, 
-                product_info.article
-            ) AS product_article
-		');
+
+        $dbal->addSelect('cteSelect.product_article');
+
+        //        $dbal->addSelect('
+        //            COALESCE(
+        //                product_modification.article,
+        //                product_variation.article,
+        //                product_offer.article,
+        //                product_info.article
+        //            ) AS product_article
+        //		');
 
 
         /**
          * Категория
          */
-        $dbal
-            ->leftJoin(
-                'product_event',
-                ProductCategory::class,
-                'product_category',
-                'product_category.event = product_event.id AND product_category.root = true',
-            );
+        //        $dbal
+        //            ->leftJoin(
+        //                'product_event',
+        //                ProductCategory::class,
+        //                'product_category',
+        //                'product_category.event = product_event.id AND product_category.root = true',
+        //            );
 
-        $dbal->join(
-            'product_category',
-            CategoryProduct::class,
-            'category',
-            'category.id = product_category.category',
-        );
+        //        $dbal->join(
+        //            'product_category',
+        //            CategoryProduct::class,
+        //            'category',
+        //            'category.id = product_category.category',
+        //        );
 
         /** Получаем только на активные категории */
         $dbal
-            ->addSelect('category_info.active as category_active')
-            ->join(
-                'product_category',
-                CategoryProductInfo::class,
-                'category_info',
-                'category.event = category_info.event',
-            );
+            ->addSelect('cteSelect.category_active')
+            //            ->join(
+            //                'product_category',
+            //                CategoryProductInfo::class,
+            //                'category_info',
+            //                'category.event = category_info.event',
+            //            )
+        ;
 
         $dbal
-            ->addSelect('category_trans.name AS product_category')
-            ->leftJoin(
-                'category',
-                CategoryProductTrans::class,
-                'category_trans',
-                'category_trans.event = category.event AND category_trans.local = :local',
-            );
+            ->addSelect('cteSelect.product_category')
+            //            ->leftJoin(
+            //                'cteSelect',
+            //                CategoryProductTrans::class,
+            //                'category_trans',
+            //                'category_trans.event = category.event AND category_trans.local = :local',
+            //            )
+        ;
 
-        /**
-         * Базовая Цена товара
-         */
-        $dbal->leftJoin(
-            'cteSelect',
-            ProductPrice::class,
-            'product_price',
-            'product_price.event = cteSelect.event',
-        )
-            ->addGroupBy('product_price.reserve');
+        //        /**
+        //         * Базовая Цена товара
+        //         */
+        //        $dbal->leftJoin(
+        //            'cteSelect',
+        //            ProductPrice::class,
+        //            'product_price',
+        //            'product_price.event = cteSelect.event',
+        //        )
+        //            ->addGroupBy('product_price.reserve');
+        //
+        //        /**
+        //         * Цена торгового предо жения
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_offer',
+        //            ProductOfferPrice::class,
+        //            'product_offer_price',
+        //            'product_offer_price.offer = product_offer.id',
+        //        );
+        //
+        //        /**
+        //         * Цена множественного варианта
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_variation',
+        //            ProductVariationPrice::class,
+        //            'product_variation_price',
+        //            'product_variation_price.variation = product_variation.id',
+        //        );
+        //
+        //        /**
+        //         * Цена модификации множественного варианта
+        //         */
+        //        $dbal->leftJoin(
+        //            'product_modification',
+        //            ProductModificationPrice::class,
+        //            'product_modification_price',
+        //            'product_modification_price.modification = product_modification.id',
+        //        );
 
-        /**
-         * Цена торгового предо жения
-         */
-        $dbal->leftJoin(
-            'product_offer',
-            ProductOfferPrice::class,
-            'product_offer_price',
-            'product_offer_price.offer = product_offer.id',
-        );
+        $dbal
+            ->addSelect('cteSelect.product_price')
+            ->addSelect('cteSelect.product_currency');
 
-        /**
-         * Цена множественного варианта
-         */
-        $dbal->leftJoin(
-            'product_variation',
-            ProductVariationPrice::class,
-            'product_variation_price',
-            'product_variation_price.variation = product_variation.id',
-        );
 
-        /**
-         * Цена модификации множественного варианта
-         */
-        $dbal->leftJoin(
-            'product_modification',
-            ProductModificationPrice::class,
-            'product_modification_price',
-            'product_modification_price.modification = product_modification.id',
-        );
-
-        /**
-         * Стоимость продукта
-         */
-        $dbal->addSelect(
-            '
-			CASE
-			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0 
-			   THEN product_modification_price.price
-			   
-			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0 
-			   THEN product_variation_price.price
-			   
-			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0 
-			   THEN product_offer_price.price
-			   
-			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
-			   THEN product_price.price
-			   
-			   ELSE NULL
-			END AS product_price',
-        );
+        //        /**
+        //         * Стоимость продукта
+        //         */
+        //        $dbal->addSelect(
+        //            '
+        //			CASE
+        //			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0
+        //			   THEN product_modification_price.price
+        //
+        //			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0
+        //			   THEN product_variation_price.price
+        //
+        //			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0
+        //			   THEN product_offer_price.price
+        //
+        //			   WHEN product_price.price IS NOT NULL AND product_price.price > 0
+        //			   THEN product_price.price
+        //
+        //			   ELSE NULL
+        //			END AS product_price',
+        //        );
 
         /* Предыдущая стоимость продукта */
 
@@ -584,29 +739,29 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         //		");
 
 
-        /**
-         * Валюта продукта
-         */
-        $dbal->addSelect(
-            '
-			CASE
-			
-			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0 
-			   THEN product_modification_price.currency
-			   
-			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0 
-			   THEN product_variation_price.currency
-			   
-			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0 
-			   THEN product_offer_price.currency
-			   
-			   WHEN product_price.price IS NOT NULL AND product_price.price > 0 
-			   THEN product_price.currency
-			   
-			   ELSE NULL
-			   
-			END AS product_currency',
-        );
+        //        /**
+        //         * Валюта продукта
+        //         */
+        //        $dbal->addSelect(
+        //            '
+        //			CASE
+        //
+        //			   WHEN product_modification_price.price IS NOT NULL AND product_modification_price.price > 0
+        //			   THEN product_modification_price.currency
+        //
+        //			   WHEN product_variation_price.price IS NOT NULL AND product_variation_price.price > 0
+        //			   THEN product_variation_price.currency
+        //
+        //			   WHEN product_offer_price.price IS NOT NULL AND product_offer_price.price > 0
+        //			   THEN product_offer_price.currency
+        //
+        //			   WHEN product_price.price IS NOT NULL AND product_price.price > 0
+        //			   THEN product_price.currency
+        //
+        //			   ELSE NULL
+        //
+        //			END AS product_currency',
+        //        );
 
 
         /**
@@ -617,75 +772,77 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         if(class_exists(BaksDevProductsStocksBundle::class))
         {
 
+
             $dbal
-                ->addSelect("JSON_AGG ( 
-                        DISTINCT JSONB_BUILD_OBJECT (
-                            'total', stock.total, 
-                            'reserve', stock.reserve 
-                        )) FILTER (WHERE stock.total > stock.reserve)
-            
-                        AS product_quantity",
-                )
+                ->addSelect('stock_agg.product_quantity')
                 ->leftJoin(
-                    'product_modification',
-                    ProductStockTotal::class,
-                    'stock',
-                    '
-                    stock.profile = avito_token_profile.value AND
-                    stock.product = product.id 
-                    
-                    AND
-                        
-                        CASE 
-                            WHEN product_offer.const IS NOT NULL 
-                            THEN stock.offer = product_offer.const
-                            ELSE stock.offer IS NULL
-                        END
-                            
-                    AND 
-                    
-                        CASE
-                            WHEN product_variation.const IS NOT NULL 
-                            THEN stock.variation = product_variation.const
-                            ELSE stock.variation IS NULL
-                        END
-                        
-                    AND
-                    
-                        CASE
-                            WHEN product_modification.const IS NOT NULL 
-                            THEN stock.modification = product_modification.const
-                            ELSE stock.modification IS NULL
-                        END
-                    
-                    
-                ');
+                    'cteSelect',
+                    "LATERAL (
+                SELECT JSON_AGG(JSONB_BUILD_OBJECT('total', stock_sub.total, 'reserve', stock_sub.reserve)) AS product_quantity
+                FROM (
+                    SELECT DISTINCT s.total, s.reserve
+                    FROM product_stock_total s
+                    WHERE s.profile = avito_token_profile.value
+                      AND s.product = product.id
+                      AND s.offer = cteSelect.product_offer_const
+                      AND s.variation = cteSelect.product_variation_const
+                      AND s.modification = cteSelect.product_modification_const
+                      AND s.total > s.reserve
+                ) stock_sub
+            )",
+                    'stock_agg',
+                    'true');
+
+
+            //            $dbal
+            //                ->addSelect("JSON_AGG (
+            //                        DISTINCT JSONB_BUILD_OBJECT (
+            //                            'total', stock.total,
+            //                            'reserve', stock.reserve
+            //                        )) FILTER (WHERE stock.total > stock.reserve)
+            //
+            //                        AS product_quantity",
+            //                )
+            //                ->leftJoin(
+            //                    'cteSelect',
+            //                    ProductStockTotal::class,
+            //                    'stock',
+            //                    '
+            //                    stock.profile = avito_token_profile.value AND
+            //                    stock.product = product.id
+            //
+            //                    AND stock.offer = cteSelect.product_offer_const
+            //                    AND stock.variation = cteSelect.product_variation_const
+            //                    AND stock.modification = cteSelect.product_modification_const
+            //
+            //
+            //                ');
 
         }
         else
         {
             /* Наличие и резерв торгового предложения */
             $dbal->leftJoin(
-                'product_offer',
+                'cteSelect',
                 ProductOfferQuantity::class,
                 'product_offer_quantity',
-                'product_offer_quantity.offer = product_offer.id',
+                'product_offer_quantity.offer = cteSelect.product_offer_id',
             );
 
             /* Наличие и резерв множественного варианта */
             $dbal->leftJoin(
-                'product_variation',
+                'cteSelect',
                 ProductVariationQuantity::class,
                 'product_variation_quantity',
-                'product_variation_quantity.variation = product_variation.id',
+                'product_variation_quantity.variation = cteSelect.product_variation_id',
             );
 
             /* Наличие и резерв модификации множественного варианта */
             $dbal->leftJoin(
-                'product_modification',
+                'cteSelect',
                 ProductModificationQuantity::class,
                 'product_modification_quantity',
-                'product_modification_quantity.modification = product_modification.id',
+                'product_modification_quantity.modification = cteSelect.product_modification_id',
             );
 
             $dbal
@@ -716,90 +873,87 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         }
 
 
-        //        /**
-        //         * Фото модификаций
-        //         */
-        //        $dbal->leftJoin(
-        //            'product_modification',
-        //            ProductModificationImage::class,
-        //            'product_modification_image',
-        //            'product_modification_image.modification = product_modification.id'
-        //        );
-        //
-        //        /**
-        //         * Фото вариантов
-        //         */
-        //        $dbal->leftJoin(
-        //            'product_offer',
-        //            ProductVariationImage::class,
-        //            'product_variation_image',
-        //            'product_variation_image.variation = product_variation.id'
-        //        );
-        //
-        //        /**
-        //         * Фото торговых предложений
-        //         */
-        //        $dbal->leftJoin(
-        //            'product_offer',
-        //            ProductOfferImage::class,
-        //            'product_offer_images',
-        //            'product_offer_images.offer = product_offer.id'
-        //        );
-        //
-        //        /**
-        //         * Фото продукта
-        //         */
-        //        $dbal->leftJoin(
-        //            'product',
-        //            ProductPhoto::class,
-        //            'product_photo',
-        //            'product_photo.event = product.event'
-        //        );
-
-        /*$dbal->addSelect(
-            "JSON_AGG
-            (DISTINCT
-				CASE
-                    WHEN product_offer_images.ext IS NOT NULL
-                    THEN JSONB_BUILD_OBJECT
-                        (
-                            'img_root', product_offer_images.root,
-                            'img', CONCAT ( '/upload/".$dbal->table(ProductOfferImage::class)."' , '/', product_offer_images.name),
-                            'img_ext', product_offer_images.ext,
-                            'img_cdn', product_offer_images.cdn
-                        )
-
-                    WHEN product_variation_image.ext IS NOT NULL
-                    THEN JSONB_BUILD_OBJECT
-                        (
-                            'img_root', product_variation_image.root,
-                            'img', CONCAT ( '/upload/".$dbal->table(ProductVariationImage::class)."' , '/', product_variation_image.name),
-                            'img_ext', product_variation_image.ext,
-                            'img_cdn', product_variation_image.cdn
-                        )
-
-                    WHEN product_modification_image.ext IS NOT NULL
-                    THEN JSONB_BUILD_OBJECT
-                        (
-                            'img_root', product_modification_image.root,
-                            'img', CONCAT ( '/upload/".$dbal->table(ProductModificationImage::class)."' , '/', product_modification_image.name),
-                            'img_ext', product_modification_image.ext,
-                            'img_cdn', product_modification_image.cdn
-                        )
-
-                    WHEN product_photo.ext IS NOT NULL
-                    THEN JSONB_BUILD_OBJECT
-                        (
-                            'img_root', product_photo.root,
-                            'img', CONCAT ( '/upload/".$dbal->table(ProductPhoto::class)."' , '/', product_photo.name),
-                            'img_ext', product_photo.ext,
-                            'img_cdn', product_photo.cdn
-                        )
-                    END) AS product_images"
-        );*/
+        //$dbal->addSelect('NULL AS product_images');
 
 
-        $dbal->addSelect('NULL AS product_images');
+        $dbal
+            ->addSelect('product_images.product_images')
+            ->join(
+                'avito_board',
+                "LATERAL (
+                
+                SELECT
+
+                 JSON_AGG
+                (
+                    JSONB_BUILD_OBJECT
+                    (
+                        'img_root', product_images.root,
+                        'img', product_images.name,
+                        'img_ext', product_images.ext,
+                        'img_cdn', product_images.cdn
+                    )
+                    
+                ) AS product_images
+
+
+               
+                FROM (
+                
+                
+                SELECT DISTINCT 
+                    product_photo.root,
+                    product_photo.ext,
+                    product_photo.name,
+                    product_photo.cdn 
+                FROM product_photo product_photo
+                WHERE product_photo.event = product.event
+                
+                
+               
+                UNION
+                
+                
+                SELECT DISTINCT 
+                    product_offer_images.root,
+                    product_offer_images.ext,
+                    product_offer_images.name,
+                    product_offer_images.cdn 
+                FROM product_offer_images product_offer_images
+                WHERE product_offer_images.offer = cteSelect.product_offer_id
+                
+                
+                UNION
+                
+                
+                SELECT DISTINCT 
+                    product_variation_images.root,
+                    product_variation_images.ext,
+                    product_variation_images.name,
+                    product_variation_images.cdn 
+                FROM product_variation_images product_variation_images
+                WHERE product_variation_images.variation = cteSelect.product_variation_id
+
+
+
+                UNION
+                
+                
+                SELECT DISTINCT 
+                    product_modification_images.root,
+                    product_modification_images.ext,
+                    product_modification_images.name,
+                    product_modification_images.cdn 
+                FROM product_modification_images product_modification_images
+                WHERE product_modification_images.modification = cteSelect.product_modification_id
+
+
+                      
+                ) product_images
+            )",
+                'product_images',
+                'true');
+
 
         /**  Вес продукта  */
         if(class_exists(BaksDevDeliveryTransportBundle::class))
@@ -810,29 +964,14 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 ->addSelect('product_package.height AS product_height_delivery')
                 ->addSelect('product_package.weight AS product_weight_delivery')
                 ->leftJoin(
-                    'product_modification',
+                    'cteSelect',
                     DeliveryPackageProductParameter::class,
                     'product_package',
                     'product_package.product = product.id 
                     
-                    AND (CASE 
-                        WHEN product_offer.const IS NOT NULL 
-                        THEN product_package.offer = product_offer.const
-                        ELSE product_package.offer IS NULL
-                    END)
-                    
-                   AND (CASE 
-                        WHEN product_variation.const IS NOT NULL 
-                        THEN product_package.variation = product_variation.const
-                        ELSE product_package.variation IS NULL
-                    END)
-                    
-                   AND (CASE 
-                        WHEN product_modification.const IS NOT NULL 
-                        THEN product_package.modification = product_modification.const
-                        ELSE product_package.modification IS NULL
-                   END)
-                   
+                    AND product_package.offer = cteSelect.product_offer_const
+                    AND product_package.variation = cteSelect.product_variation_const
+                    AND product_package.modification = cteSelect.product_modification_const 
                 ');
         }
 
@@ -890,36 +1029,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
             );
 
 
-        /** ProductInvariable */
-        $dbal
-            ->leftJoin(
-                'product_modification',
-                ProductInvariable::class,
-                'product_invariable',
-                '
-                    product_invariable.product = product.id AND 
-                    
-                    (
-                        (product_offer.const IS NOT NULL AND product_invariable.offer = product_offer.const) OR 
-                        (product_offer.const IS NULL AND product_invariable.offer IS NULL)
-                    )
-                    
-                    AND
-                     
-                    (
-                        (product_variation.const IS NOT NULL AND product_invariable.variation = product_variation.const) OR 
-                        (product_variation.const IS NULL AND product_invariable.variation IS NULL)
-                    )
-                     
-                   AND
-                   
-                   (
-                        (product_modification.const IS NOT NULL AND product_invariable.modification = product_modification.const) OR 
-                        (product_modification.const IS NULL AND product_invariable.modification IS NULL)
-                   )
-            ');
-
-
         /**
          * ProductsPromotion
          */
@@ -927,11 +1036,11 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         {
             $dbal
                 ->leftJoin(
-                    'product_invariable',
+                    'cteSelect',
                     ProductPromotionInvariable::class,
                     'product_promotion_invariable',
                     '
-                        product_promotion_invariable.product = product_invariable.id
+                        product_promotion_invariable.product = cteSelect.product_invariable_id
                         AND product_promotion_invariable.profile = :'.$dbal::PROJECT_PROFILE_KEY,
                 );
 
@@ -984,10 +1093,10 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal
             ->addSelect('avito_board.id AS avito_board_mapper_category_id')
             ->leftJoin(
-                'product_category',
+                'cteSelect',
                 AvitoBoard::class,
                 'avito_board',
-                'avito_board.id = product_category.category',
+                'avito_board.id = cteSelect.category_product_id',
             );
 
         /**
@@ -1002,178 +1111,429 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_board_event.id = avito_board.event',
             );
 
-        $dbal
-            ->leftJoin(
-                'avito_board',
-                AvitoBoardMapperElement::class,
-                'avito_mapper',
-                'avito_mapper.event = avito_board.event',
-            );
 
-        /** Получаем значение из СВОЙСТВ товара */
-        $dbal
-            ->leftJoin(
-                'avito_mapper',
-                ProductProperty::class,
-                'product_property',
-                '
-                product_property.event = product.event AND 
-                product_property.field = avito_mapper.product_field',
-            );
-
-        /**
-         * Получаем значение из торговых предложений
-         */
-        $dbal
-            ->leftJoin(
-                'avito_mapper',
-                ProductOffer::class,
-                'product_offer_params',
-                '
-                    product_offer_params.id = product_offer.id AND  
-                    product_offer_params.category_offer = avito_mapper.product_field',
-            );
-
-        /**
-         * Получаем значение из вариантов модификации множественного варианта
-         */
-        $dbal
-            ->leftJoin(
-                'avito_mapper',
-                ProductVariation::class,
-                'product_variation_params',
-                '
-                    product_variation_params.id = product_variation.id AND 
-                    product_variation_params.category_variation = avito_mapper.product_field',
-            );
-
-        /**
-         * Получаем значение из модификаций множественного варианта
-         */
-        $dbal
-            ->leftJoin(
-                'avito_mapper',
-                ProductModification::class,
-                'product_modification_params',
-                '
-                    product_modification_params.id = product_modification.id AND 
-                    product_modification_params.category_modification = avito_mapper.product_field',
-            );
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_board',
+        //                AvitoBoardMapperElement::class,
+        //                'avito_mapper',
+        //                'avito_mapper.event = avito_board.event',
+        //            );
+        //
+        //        $dbal->addSelect(
+        //            "JSON_AGG
+        //			(
+        //                DISTINCT
+        //					JSONB_BUILD_OBJECT
+        //                        (
+        //                            'element', avito_mapper.element,
+        //                            'field', avito_mapper.product_field,
+        //                            'default', avito_mapper.def
+        //                        )
+        //			)
+        //			AS avito_board_mapper",
+        //        );
 
 
-        $dbal->addSelect(
-            "JSON_AGG
-			(
-                DISTINCT
-					JSONB_BUILD_OBJECT
-                        (
-                            'element', avito_mapper.element,
-                
-                            'value', 
-                                (CASE
-                                   WHEN product_property.value IS NOT NULL THEN product_property.value
-                                   WHEN product_offer_params.value IS NOT NULL THEN product_offer_params.value
-                                   WHEN product_modification_params.value IS NOT NULL THEN product_modification_params.value
-                                   WHEN product_variation_params.value IS NOT NULL THEN product_variation_params.value
-                                   WHEN avito_mapper.def IS NOT NULL THEN avito_mapper.def
-                                   ELSE NULL
-                                END)
-                        )
-			) 
-			AS avito_board_mapper",
-        );
+        //        /** Получаем значение из СВОЙСТВ товара */
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_mapper',
+        //                ProductProperty::class,
+        //                'product_property_mapper',
+        //                '
+        //                product_property_mapper.event = product.event AND
+        //                product_property_mapper.field = avito_mapper.product_field',
+        //            );
+
+        //        /**
+        //         * Получаем значение из торговых предложений
+        //         */
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_mapper',
+        //                ProductOffer::class,
+        //                'product_offer_params',
+        //                '
+        //                    product_offer_params.id = product_offer.id AND
+        //                    product_offer_params.category_offer = avito_mapper.product_field',
+        //            );
+
+        //        /**
+        //         * Получаем значение из вариантов модификации множественного варианта
+        //         */
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_mapper',
+        //                ProductVariation::class,
+        //                'product_variation_params',
+        //                '
+        //                    product_variation_params.id = product_variation.id AND
+        //                    product_variation_params.category_variation = avito_mapper.product_field',
+        //            );
+
+        //        /**
+        //         * Получаем значение из модификаций множественного варианта
+        //         */
+        //        $dbal
+        //            ->leftJoin(
+        //                'avito_mapper',
+        //                ProductModification::class,
+        //                'product_modification_params',
+        //                '
+        //                    product_modification_params.id = product_modification.id AND
+        //                    product_modification_params.category_modification = avito_mapper.product_field',
+        //            );
 
 
-        /** Продукт Авито */
-        $dbal
-            ->addSelect('avito_product.id as avito_product_id')
-            ->addSelect('avito_product.description as avito_product_description')
-            ->leftJoin(
-                'product_modification',
-                AvitoProduct::class,
-                'avito_product',
-                '
-                
-                avito_product.product = product.id 
+        //        $dbal->addSelect(
+        //            "JSON_AGG
+        //			(
+        //                DISTINCT
+        //					JSONB_BUILD_OBJECT
+        //                        (
+        //                            'element', avito_mapper.element,
+        //
+        //                            'value',
+        //                                (CASE
+        //                                   WHEN product_property_mapper.value IS NOT NULL THEN product_property_mapper.value
+        //                                   WHEN product_offer_params.value IS NOT NULL THEN product_offer_params.value
+        //                                   WHEN product_modification_params.value IS NOT NULL THEN product_modification_params.value
+        //                                   WHEN product_variation_params.value IS NOT NULL THEN product_variation_params.value
+        //                                   WHEN avito_mapper.def IS NOT NULL THEN avito_mapper.def
+        //                                   ELSE NULL
+        //                                END)
+        //                        )
+        //			)
+        //			AS avito_board_mapper",
+        //        );
 
-                AND
-                        
-                    CASE 
-                        WHEN product_offer.const IS NOT NULL 
-                        THEN avito_product.offer = product_offer.const
-                        ELSE avito_product.offer IS NULL
-                    END
-                        
-                AND 
-                
-                    CASE
-                        WHEN product_variation.const IS NOT NULL 
-                        THEN avito_product.variation = product_variation.const
-                        ELSE avito_product.variation IS NULL
-                    END
-                    
-                AND
-                
-                    CASE
-                        WHEN product_modification.const IS NOT NULL 
-                        THEN avito_product.modification = product_modification.const
-                        ELSE avito_product.modification IS NULL
-                    END
-            ');
+
+        //        /** Продукт Авито */
+        //        $dbal
+        //            ->addSelect('avito_product.id as avito_product_id')
+        //            ->addSelect('avito_product.description as avito_product_description')
+        //            ->leftJoin(
+        //                'cteSelect',
+        //                AvitoProduct::class,
+        //                'avito_product',
+        //                '
+        //                    avito_product.product = product.id
+        //                    AND avito_product.offer = cteSelect.product_offer_const
+        //                    AND avito_product.variation = cteSelect.product_variation_const
+        //                    AND avito_product.modification = cteSelect.product_modification_const
+        //            ');
 
 
         /** Продукт Авито по токену бизнес-пользователя */
 
+        //        $dbal
+        //            ->join(
+        //                'avito_product',
+        //                AvitoProductToken::class,
+        //                'avito_product_token',
+        //                '
+        //                avito_product_token.avito = avito_product.id
+        //                AND avito_product_token.value = avito_token.id',
+        //            );
+
+
+        //        /** Изображения Авито */
+        //        $dbal->leftJoin(
+        //            'avito_product_token',
+        //            AvitoProductKit::class,
+        //            'avito_product_kit',
+        //            '
+        //                avito_product_kit.avito = avito_product_token.avito
+        //                AND avito_product_kit.value = avito_kit.value
+        //            ');
+
+
+        //        /** Изображения Авито */
+        //        $dbal->join(
+        //            'avito_product_kit',
+        //            AvitoProductImage::class,
+        //            'avito_product_images',
+        //            'avito_product_images.avito = avito_product_kit.avito',
+        //        );
+
+        //        $dbal->addSelect(
+        //            "JSON_AGG
+        //            (DISTINCT
+        //                CASE
+        //                    WHEN avito_product_images.name IS NOT NULL THEN JSONB_BUILD_OBJECT
+        //                    (
+        //                        'img_root', avito_product_images.root,
+        //                        'img', CONCAT ( '/upload/".$dbal->table(AvitoProductImage::class)."' , '/', avito_product_images.name),
+        //                        'img_ext', avito_product_images.ext,
+        //                        'img_cdn', avito_product_images.cdn
+        //                    )
+        //                    ELSE NULL
+        //                END
+        //            ) as avito_product_images
+        //            ",
+        //        );
+
+
         $dbal
+            ->addSelect('avito_product.avito_product')
             ->join(
+                'product',
+                "LATERAL (
+                
+                SELECT
+                 
+                 JSON_AGG
+                (
+                    JSONB_BUILD_OBJECT
+                        (
+                            'avito_product_id', avito_product.id,
+                            'avito_product_description', avito_product.description
+                        )
+                ) AS avito_product
+
+               
+                FROM (
+                    SELECT DISTINCT 
+                    
+                        avito_product.id,
+                        avito_product.description
+
+                    
+                   FROM avito_product
+                    
+                    WHERE avito_product.product = product.id 
+                    AND avito_product.offer = cteSelect.product_offer_const
+                    AND avito_product.variation = cteSelect.product_variation_const
+                    AND avito_product.modification = cteSelect.product_modification_const  
+                    
+                    
+                      
+                ) avito_product
+            )",
                 'avito_product',
-                AvitoProductToken::class,
-                'avito_product_token',
-                '
-                avito_product_token.avito = avito_product.id
-                AND avito_product_token.value = avito_token.id',
-            );
+                'true');
 
 
-        /** Изображения Авито */
+        $dbal
+            ->addSelect('avito_product_images.avito_product_images')
+            ->join(
+                'avito_kit',
+                "LATERAL (
+                
+                SELECT
+                 
+                 JSON_AGG
+                (
+                    JSONB_BUILD_OBJECT
+                        (
+                            'img_root', avito_product_images.root,
+                            'img', CONCAT ( '/upload/".$dbal->table(AvitoProductImage::class)."' , '/', avito_product_images.name),
+                            'img_ext', avito_product_images.ext,
+                            'img_cdn', avito_product_images.cdn
+                        )
+                ) AS avito_product_images
+
+               
+                FROM (
+                    SELECT DISTINCT 
+                    
+                    avito_product_images.root,
+                    avito_product_images.name,
+                    avito_product_images.ext,
+                    avito_product_images.cdn
+
+                    
+                   FROM avito_product
+                    
+                   JOIN avito_product_token avito_product_token
+                   ON avito_product_token.avito = avito_product.id AND avito_product_token.value = avito_token.id
+                    
+                   JOIN avito_product_kit avito_product_kit
+                   ON avito_product_kit.avito = avito_product_token.avito AND avito_product_kit.value = avito_kit.value
+                  
+                   LEFT JOIN avito_product_images avito_product_images ON avito_product_images.avito = avito_product_kit.avito
+
+                    
+                    WHERE avito_product.product = product.id 
+                    AND avito_product.offer = cteSelect.product_offer_const
+                    AND avito_product.variation = cteSelect.product_variation_const
+                    AND avito_product.modification = cteSelect.product_modification_const  
+                    
+                    
+                      
+                ) avito_product_images
+            )",
+                'avito_product_images',
+                'true');
+
+
+        /**
+         * СВОЙСТВА ПРОДУКТА
+         */
+
+        //        $dbal->leftJoin(
+        //            'cteSelect',
+        //            CategoryProductSection::class,
+        //            'category_section',
+        //            'category_section.event = cteSelect.category_product_event',
+        //        );
+
+
+        //        $dbal->leftJoin(
+        //            'category_section',
+        //            CategoryProductSectionField::class,
+        //            'category_section_field',
+        //            'category_section_field.section = category_section.id',
+        //        );
+
+
+        //        $dbal->leftJoin(
+        //            'category_section_field',
+        //            CategoryProductSectionFieldTrans::class,
+        //            'category_section_field_trans',
+        //            'category_section_field_trans.field = category_section_field.id AND category_section_field_trans.local = :local',
+        //        );
+
+
+        /*
+
         $dbal->leftJoin(
-            'avito_product_token',
-            AvitoProductKit::class,
-            'avito_product_kit',
-            '
-                avito_product_kit.avito = avito_product_token.avito
-                AND avito_product_kit.value = avito_kit.value
-            ',
+            'category_section_field',
+            ProductProperty::class,
+            'category_product_property',
+            'category_product_property.event = product.event AND category_product_property.field = category_section_field.const',
         );
 
-        /** Изображения Авито */
-        $dbal->join(
-            'avito_product_kit',
-            AvitoProductImage::class,
-            'avito_product_images',
-            'avito_product_images.avito = avito_product_kit.avito',
-        );
+
 
         $dbal->addSelect(
             "JSON_AGG
-            (DISTINCT
-                CASE
-                    WHEN avito_product_images.name IS NOT NULL THEN JSONB_BUILD_OBJECT
-                    (
-                        'img_root', avito_product_images.root,
-                        'img', CONCAT ( '/upload/".$dbal->table(AvitoProductImage::class)."' , '/', avito_product_images.name),
-                        'img_ext', avito_product_images.ext,
-                        'img_cdn', avito_product_images.cdn
-                    )
-                    ELSE NULL
-                END
-            ) as avito_product_images
-            ",
+		( DISTINCT
+
+				JSONB_BUILD_OBJECT
+				(
+					'field_type', category_section_field.type,
+					'field_trans', category_section_field_trans.name,
+
+					'field_id', category_product_property.field,
+					'field_value', category_product_property.value
+				)
+
+		) FILTER (WHERE category_product_property.value IS NOT NULL)
+			AS product_property",
         );
 
-        $dbal->allGroupByExclude();
+
+        */
+
+
+        /**
+         * product_field => CategoryProductSectionFieldUid
+         */
+        $dbal
+            ->addSelect('avito_board_mapper.avito_board_mapper')
+            ->join(
+                'avito_board',
+                "LATERAL (
+                
+                SELECT
+                 
+                 JSON_AGG
+                (
+                    JSONB_BUILD_OBJECT
+                        (
+                            'field', avito_board_mapper.product_field,
+                            'element', avito_board_mapper.element,
+                            'default', avito_board_mapper.def
+                        )
+                ) AS avito_board_mapper
+
+               
+                FROM (
+                    SELECT DISTINCT 
+                        avito_mapper.element, 
+                        avito_mapper.product_field, 
+                        avito_mapper.def
+                    FROM 
+                        avito_board_mapper_element avito_mapper
+                    WHERE 
+                        avito_mapper.event = avito_board.event
+                        
+                        
+                        
+                      
+                ) avito_board_mapper
+            )",
+                'avito_board_mapper',
+                'true');
+
+
+        /** @var CategoryProductSectionFieldUid */
+
+
+        $dbal
+            ->addSelect('product_property.product_property')
+            ->leftJoin(
+                'cteSelect',
+                "LATERAL (
+                
+                SELECT
+                 
+                 JSON_AGG
+                (
+                    JSONB_BUILD_OBJECT
+                        (
+                            'field', product_property.field,
+                            'type', product_property.type,
+                            'value', product_property.value
+                        )
+                ) AS product_property
+
+                FROM (
+                    SELECT DISTINCT 
+                    
+                        product_property.field,
+                        product_property.value,
+                        category_section_field.type
+                    
+                    FROM product_property
+                    
+                   JOIN product_category_section category_section
+                   ON category_section.event = cteSelect.category_product_event
+
+                   
+                    JOIN product_category_section_field category_section_field
+                   ON category_section_field.section = category_section.id
+                    AND category_section_field.const = product_property.field
+
+                    
+                    WHERE 
+                    
+                    product_property.event = product.event
+                      
+                ) product_property
+            )",
+                'product_property',
+                'true');
+
+
+        //$dbal->allGroupByExclude();
+        //exit($dbal->getSQL()); /* TODO: удалить !!! */
+        //dd($dbal->analyze()); /* TODO: удалить !!! */
+        //dd($dbal->fetchAllAssociative()); /* TODO: удалить !!! */
+
+
+        //$dbal->allGroupByExclude();
 
         $dbal->andWhere('(avito_board.id IS NOT NULL AND avito_board_event.category IS NOT NULL)');
+
+
+        //$dbal->allGroupByExclude();
+        //exit($dbal->getSQL()); /* TODO: удалить !!! */
+        //dd($dbal->analyze()); /* TODO: удалить !!! */
+        //dd($dbal->fetchAllAssociative()); /* TODO: удалить !!! */
+
 
         //        /** Только заказы, у которых указана стоимость */
         //        $dbal->andWhere('
@@ -1196,7 +1556,21 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         //            ) > 0
         //        ');
 
-        $dbal->enableCache('avito-board', '1 day');
+
+        //        /** Получаем значение из СВОЙСТВ товара */
+        //        $dbal
+        //            ->leftJoin(
+        //                'product',
+        //                ProductProperty::class,
+        //                'product_property',
+        //                'product_property.event = product.event',
+        //            );
+
+
+        //$dbal->enableCache('avito-board', '1 day');
+
+
+        $dbal->orderBy('product.event', 'DESC');
 
         $result = $dbal->fetchAllHydrate(AllProductsWithMapperResult::class);
 

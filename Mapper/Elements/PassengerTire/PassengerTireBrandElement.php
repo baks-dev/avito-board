@@ -26,10 +26,11 @@ declare(strict_types=1);
 
 namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 
-use BaksDev\Avito\Board\Api\TireModelRequest;
+use BaksDev\Avito\Board\Api\TireBrandRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
+use BaksDev\Field\Pack\Brand\Type\BrandField;
 
 /**
  *  Бренд.
@@ -43,7 +44,7 @@ final readonly class PassengerTireBrandElement implements AvitoBoardElementInter
     private const string LABEL = 'Бренд шины';
 
     public function __construct(
-        private TireModelRequest $request,
+        private TireBrandRequest $request,
     ) {}
 
     public function isMapping(): false
@@ -68,14 +69,41 @@ final readonly class PassengerTireBrandElement implements AvitoBoardElementInter
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $search = $this->request->getModel($data->getProductName());
+
+        /** По умолчанию присваиваем из названия продукта */
+        $brand = $data->getProductName();
+
+        /** Пробуем определить свойство бренда */
+        if($data->getProductPropertyMapper())
+        {
+            $filter = array_filter(
+                $data->getProductPropertyMapper(),
+                static function($item) {
+                    return $item->type === BrandField::TYPE;
+                },
+            );
+
+            $result = current($filter);
+
+            if(false === empty($result))
+            {
+                $brand = $result->value;
+            }
+        }
+
+        /** Поиск бренда по списку значений Авито */
+        $search = $this->request
+            ->brand($brand)
+            ->find();
 
         if(true === empty($search))
         {
             return null;
         }
 
-        return $search['brand'];
+        $data->setProductBrand($search);
+
+        return $search;
     }
 
     public function element(): string

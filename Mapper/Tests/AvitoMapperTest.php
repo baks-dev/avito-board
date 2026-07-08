@@ -55,6 +55,7 @@ class AvitoMapperTest extends KernelTestCase
             ->forAvitoToken(new AvitoTokenUid($AvitoTokenUid))
             ->findAll();
 
+
         if(false === $products)
         {
             self::assertTrue(true);
@@ -88,6 +89,7 @@ class AvitoMapperTest extends KernelTestCase
                 self::$feed[] = $mappingProduct;
             }
         }
+
         $end = hrtime(true);
 
         /** Если теги не смаппились и фид пустой */

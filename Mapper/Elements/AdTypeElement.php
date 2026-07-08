@@ -62,7 +62,7 @@ class AdTypeElement implements AvitoBoardElementInterface
 
     public function getDefault(): string
     {
-        return 'Товар приобретен на продажу';
+        return 'Товар от производителя';
     }
 
     public function element(): string

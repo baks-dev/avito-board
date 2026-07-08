@@ -30,6 +30,8 @@ use BaksDev\Avito\Board\Api\TireModelRequest;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
+use BaksDev\Field\Pack\Brand\Type\BrandField;
+use BaksDev\Field\Pack\Model\Type\ModelField;
 
 /**
  * Одно из значений
@@ -66,14 +68,41 @@ final readonly class PassengerTireModelElement implements AvitoBoardElementInter
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        $search = $this->request->getModel($data->getProductName());
+
+        /** По умолчанию присваиваем из названия продукта */
+        $model = $data->getProductName();
+
+        /** Пробуем определить свойство бренда */
+        if($data->getProductPropertyMapper())
+        {
+            $filter = array_filter(
+                $data->getProductPropertyMapper(),
+                static function($item) {
+                    return $item->type === ModelField::TYPE;
+                },
+            );
+
+            $result = current($filter);
+
+            if(false === empty($result))
+            {
+                $model = $result->value;
+            }
+        }
+
+        /** Поиск бренда по списку значений Авито */
+
+        $search = $this->request
+            ->brand($data->getProductBrand())
+            ->model($model)
+            ->find();
 
         if(null === $search)
         {
             return null;
         }
 
-        return $search['model'];
+        return $search;
     }
 
     public function element(): string

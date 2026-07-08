@@ -42,22 +42,23 @@ use BaksDev\Reference\Money\Type\Money;
 use Symfony\Component\DependencyInjection\Attribute\Exclude;
 
 /** @see AllProductsWithMapperRepository */
-#[Exclude]
 final class AllProductsWithMapperResult implements ProductPriceResultInterface
 {
 
     private ?array $avito_board_mapper_decode = null;
 
+    private ?array $product_property_decode = null;
+
+    private ?array $avito_product_decode = null;
+
+    private ?string $brand = null;
+
+    private ?string $model = null;
+
     public function __construct(
         private readonly string $id,
         private readonly string $event,
-        private readonly ?int $avito_kit_value,
-        private readonly string $avito_profile_percent,
-        private readonly ?string $avito_product_id,
-        private readonly ?string $avito_profile_address_id,
-        private readonly ?string $avito_profile_address,
-        private readonly string $avito_profile_manager,
-        private readonly string $avito_profile_phone,
+
         private readonly string $product_date_begin,
         private readonly ?string $product_date_over,
         private readonly string $product_name,
@@ -89,10 +90,18 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         private readonly ?int $product_width_delivery,
         private readonly ?int $product_height_delivery,
         private readonly ?int $product_weight_delivery,
+
+        private readonly ?int $avito_kit_value,
+        private readonly string $avito_profile_percent,
+        private readonly ?string $avito_profile_address_id,
+        private readonly ?string $avito_profile_address,
+        private readonly string $avito_profile_manager,
+        private readonly string $avito_profile_phone,
         private readonly string $avito_board_mapper_category_id,
         private readonly string $avito_board_avito_category,
         private readonly string $avito_board_mapper,
-        private readonly ?string $avito_product_description,
+
+        private readonly ?string $avito_product,
         private readonly ?string $avito_product_images,
 
         private readonly string|null $project_discount = null,
@@ -101,6 +110,7 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         private string|null $promotion_price = null,
 
         private string|null $season_percent = null,
+        private string|null $product_property = null,
     ) {}
 
     public function getProductId(): ProductUid
@@ -113,9 +123,40 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         return new ProductEventUid($this->event);
     }
 
-    public function getAvitoProductId(): string
+    public function getAvitoProductId(): string|null
     {
-        return $this->avito_product_id ?: 'undefined';
+        if(true === is_null($this->avito_product_decode))
+        {
+            if(empty($this->avito_product))
+            {
+                return null;
+            }
+
+            if(false === json_validate($this->avito_product))
+            {
+                return null;
+            }
+
+            /**
+             * @var array{'value': string, 'element': string } $data
+             */
+            $data = json_decode($this->avito_product, false, 512, JSON_THROW_ON_ERROR);
+
+            if(null === current($data))
+            {
+                return null;
+            }
+
+            $this->avito_product_decode = $data;
+        }
+
+
+        if(empty($this->avito_product['avito_product_id']))
+        {
+            return null;
+        }
+
+        return $this->avito_product['avito_product_id'];
     }
 
     public function getAvitoProfilePhone(): string
@@ -171,7 +212,7 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
     {
         return is_null($this->offer_section_field_uid)
             ? null
-            : new CategoryProductOffersUid($this->product_offer_const);
+            : new CategoryProductOffersUid($this->offer_section_field_uid);
     }
 
     public function getProductOfferReference(): string
@@ -376,7 +417,38 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
 
     public function getAvitoProductDescription(): ?string
     {
-        return $this->avito_product_description;
+        if(true === is_null($this->avito_product_decode))
+        {
+            if(empty($this->avito_product))
+            {
+                return null;
+            }
+
+            if(false === json_validate($this->avito_product))
+            {
+                return null;
+            }
+
+            /**
+             * @var array{'value': string, 'element': string } $data
+             */
+            $data = json_decode($this->avito_product, false, 512, JSON_THROW_ON_ERROR);
+
+            if(null === current($data))
+            {
+                return null;
+            }
+
+            $this->avito_product_decode = $data;
+        }
+
+
+        if(empty($this->avito_product['avito_product_description']))
+        {
+            return null;
+        }
+
+        return $this->avito_product['avito_product_description'];
     }
 
     public function getAvitoProductImages(): array|null
@@ -452,7 +524,60 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
                 return null;
             }
 
-            $this->avito_board_mapper_decode = array_column($data, 'value', 'element');
+            $propertyMap = $this->getProductPropertyMapper();
+
+            $elementMap = [];
+
+            // Обновляем значения элементов
+            foreach($data as $element)
+            {
+                if(isset($element->field) && isset($propertyMap[$element->field]))
+                {
+                    $element->value = $propertyMap[$element->field]->value;
+                    $elementMap[$element->element] = $element;
+                    continue;
+                }
+
+                /** Поиск по торговому предложению */
+                if($this->getOfferSectionFieldUid()->equals($element->field))
+                {
+                    $element->value = $this->getProductOfferValue();
+                    $elementMap[$element->element] = $element;
+                    continue;
+                }
+
+                /** Поиск по множественному варианту */
+                if($this->getVariationSectionFieldUid()->equals($element->field))
+                {
+                    $element->value = $this->getProductVariationValue();
+                    $elementMap[$element->element] = $element;
+                    continue;
+                }
+
+                /** Поиск по модификации множественного варианта */
+                if($this->getModificationSectionFieldUid()->equals($element->field))
+                {
+                    $element->value = $this->getProductModificationValue();
+                    $elementMap[$element->element] = $element;
+                    continue;
+                }
+
+                /** Если имеется значение по умолчанию - присваиваем */
+                if(isset($element->default))
+                {
+                    $element->value = $element->default;
+                    $elementMap[$element->element] = $element;
+                    continue;
+                }
+
+                $element->value = null;
+                $elementMap[$element->element] = $element;
+
+            }
+
+            unset($element, $data);
+
+            $this->avito_board_mapper_decode = $elementMap;
         }
 
         return $this->avito_board_mapper_decode;
@@ -462,4 +587,68 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
     {
         return false;
     }
+
+    /** Property Avito Board Mapper */
+    public function getProductPropertyMapper(): ?array
+    {
+        if(true === is_null($this->product_property_decode))
+        {
+            if(is_null($this->product_property))
+            {
+                return null;
+            }
+
+            if(false === json_validate($this->product_property))
+            {
+                return null;
+            }
+
+            /**
+             * @var array{'value': string, 'element': string } $data
+             */
+            $data = json_decode($this->product_property, false, 512, JSON_THROW_ON_ERROR);
+
+            if(null === current($data))
+            {
+                return null;
+            }
+
+            $propertyMap = [];
+
+            foreach($data as $prop)
+            {
+                if(isset($prop->field))
+                {
+                    $propertyMap[$prop->field] = $prop;
+                }
+            }
+
+            $this->product_property_decode = $propertyMap;
+        }
+
+        return $this->product_property_decode;
+    }
+
+    public function getProductBrand(): ?string
+    {
+        return $this->brand;
+    }
+
+    public function setProductBrand(?string $brand): self
+    {
+        $this->brand = $brand;
+        return $this;
+    }
+
+    public function getProductModel(): ?string
+    {
+        return $this->model;
+    }
+
+    public function setProductModel(?string $model): self
+    {
+        $this->model = $model;
+        return $this;
+    }
+
 }

@@ -59,16 +59,23 @@ class PassengerTireProductTypeElement implements AvitoBoardElementInterface
     {
         $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
+        if(empty($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        $match = match ($AvitoBoardPropertyMapper[self::ELEMENT])
+        $element = $AvitoBoardPropertyMapper[self::ELEMENT];
+
+        if(empty($element->value))
+        {
+            return $this->getDefault();
+        }
+
+        $match = match ($element->value)
         {
             TireCarTypeEnum::PASSENGER->value, TireCarTypeEnum::JEEP->value, TireCarTypeEnum::BUS->value => 'Легковые шины',
             TireCarTypeEnum::TRUCK->value => 'Шины для грузовиков и спецтехники',
-            default => null,
+            default => $this->getDefault(),
         };
 
         return $match;

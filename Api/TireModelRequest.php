@@ -1,17 +1,17 @@
 <?php
 /*
  *  Copyright 2026.  Baks.dev <admin@baks.dev>
- *  
+ *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is furnished
  *  to do so, subject to the following conditions:
- *  
+ *
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
- *  
+ *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,257 +26,341 @@ namespace BaksDev\Avito\Board\Api;
 use BaksDev\Core\Cache\AppCacheInterface;
 use BaksDev\Core\Type\UserAgent\UserAgentGenerator;
 use DateInterval;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\Cache\ItemInterface;
 
-final readonly class TireModelRequest
+final class TireModelRequest
 {
+    private string|false $model = false;
+
+    private string|false $brand = false;
+
     public function __construct(
-        #[Target('avitoBoardLogger')] private LoggerInterface $logger,
+        #[Target("avitoBoardLogger")] private LoggerInterface $logger,
         private AppCacheInterface $cache,
     ) {}
+
+    public function brand(string $brand): self
+    {
+        $this->brand = $brand;
+
+        return $this;
+    }
+
+    public function model(string $model): self
+    {
+        /** Нормализация строки */
+
+        // Приводим в нижний регистр и разбивка на слова
+        $searchWords = preg_split('/[\s,\.\-]+/', mb_strtolower($model));
+        // Удаляем слишком короткие слова (например, "e", "a")
+        $searchWords = array_filter($searchWords, static fn($word) => mb_strlen($word) > 1);
+
+        $this->model = implode(' ', $searchWords);
+
+        return $this;
+    }
 
     /**
      * @return array{'models': array{string, int}, 'band': string, 'model': string }|null
      * @see https://autoload.avito.ru/format/tyres_make.xml
      */
-    public function getModel(string $nameInfo): ?array
+    public function find(): ?string
     {
-        $cache = $this->cache->init('avito-board');
-        $key = 'avito-board-'.md5($nameInfo);
-        // $cache->delete($key);
+        if(empty($this->brand))
+        {
+            throw new InvalidArgumentException('Invalid Argument Brand');
 
-        $result = $cache->get($key, function(ItemInterface $item) use ($nameInfo): array {
+        }
 
-            $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+        if(empty($this->model))
+        {
+            throw new InvalidArgumentException('Invalid Argument Model');
+        }
 
-            $array = $this->cache
-                ->init('avito-board')
-                ->get('avito-board-tires', function(ItemInterface $item): array|false {
+        /** Разбиваем строку по пробелу для поиска вхождений */
+        $words = explode(' ', $this->model);
 
-                    $item->expiresAfter(DateInterval::createFromDateString('10 second'));
+        $cache = $this->cache->init("avito-board");
 
-                    $UserAgentGenerator = new UserAgentGenerator();
-                    $userAgent = $UserAgentGenerator->genDesktop();
 
-                    $httpClient = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
-                        ->withOptions(['base_uri' => 'https://autoload.avito.ru']);
+        /** Получаем весь документ */
 
-                    $request = $httpClient->request('GET', 'format/tyres_make.xml');
+        //$cache->deleteItem('avito-board-tires');
 
-                    if($request->getStatusCode() !== 200)
-                    {
-                        return false;
-                    }
+        $document = $cache->get("avito-board-tires", function(ItemInterface $item): array|false {
 
-                    $item->expiresAfter(DateInterval::createFromDateString('1 day'));
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
 
-                    $xml = simplexml_load_string($request->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
+            $UserAgentGenerator = new UserAgentGenerator();
+            $userAgent = $UserAgentGenerator->genDesktop();
 
-                    $json = json_encode($xml);
+            $httpClient = HttpClient::create(["headers" => ["User-Agent" => $userAgent]])
+                ->withOptions(["base_uri" => "https://autoload.avito.ru"]);
 
-                    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            $request = $httpClient->request(
+                "GET",
+                "format/tyres_make.xml",
+            );
 
-                });
-
-            // Форматированная строка модели без найденного бренда
-
-            $formatModel['brand'] = $nameInfo;
-            $formatModel['model'] = $nameInfo;
-
-            if(empty($array))
+            if($request->getStatusCode() !== 200)
             {
-                return $formatModel;
+                return false;
             }
 
+            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
 
-            $string = mb_strtolower($nameInfo);
-            $searchArray = explode(" ", $string);
+            $xml = simplexml_load_string(
+                $request->getContent(),
+                "SimpleXMLElement",
+                LIBXML_NOCDATA,
+            );
 
-            $result = [];
+            $json = json_encode($xml);
 
-            foreach($array['make'] as $make)
+            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+        });
+
+
+        $brandMapAllKey = "avito-board-all-brand-".md5($this->brand);
+        //$cache->deleteItem(brandMapAllKey);
+
+        $modelMapAll = $cache->get($brandMapAllKey, function(ItemInterface $item) use ($document): array|false {
+
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            $modelMapAll = [];
+
+            // Ищем нужный бренд и собираем карту моделей
+            foreach($document['make'] as $i)
             {
-                $brandName = trim(strtok($make['@attributes']['name'], " "));
-
-                if(in_array(mb_strtolower($brandName), $searchArray, false))
+                if(($i['@attributes']['name'] ?? '') === $this->brand)
                 {
+                    $models = $i['model'] ?? [];
 
-                    // Форматируем массив с брендом и моделью
-                    $formatModel['model'] = trim(str_ireplace($brandName, '', $formatModel['brand']));
-                    $formatModel['brand'] = $brandName;
-
-                    // удаляем название бренда из массива для поиска
-                    $unset = array_search(mb_strtolower($brandName), $searchArray);
-                    unset($searchArray[$unset]);
-
-                    foreach($make['model'] as $models)
+                    // Защита: если модель всего одна, PHP/XML-парсер часто делает массив ассоциативным,
+                    // а не списком. Принудительно превращаем в список для единого цикла.
+                    if(isset($models['@attributes']))
                     {
-                        $count = 0;
+                        $models = [$models];
+                    }
 
-                        foreach($searchArray as $in)
+                    // Быстро собираем хэш-карту моделей для выбранного бренда
+                    foreach($models as $modelItem)
+                    {
+                        $modelName = $modelItem['@attributes']['name'] ?? null;
+                        if(is_string($modelName))
                         {
-                            $modelName = $models['@attributes']['name'] ?? $models['name'];
-                            $modelNameLower = mb_strtolower($modelName);
-
-                            $isset = mb_substr_count($modelNameLower, $in);
-
-                            // Определяем все элементы моделей, которые могут соответствовать поиску
-                            if($isset !== 0)
-                            {
-                                $count++; // увеличиваем вес
-
-                                $searchModel = explode(' ', $modelNameLower);
-
-                                // проверяем соответствие модели строке поиска
-                                foreach($searchModel as $confirm)
-                                {
-                                    if(stripos($string, $confirm) === false)
-                                    {
-                                        $count--; // снимаем вес если не соответствует
-                                    }
-                                }
-                            }
-
-                            // пробуем удалить в строке символы «-»
-                            if($isset === 0)
-                            {
-                                $ins = str_replace('-', '', $in);
-
-                                $isset = mb_substr_count($modelNameLower, $ins);
-
-                                if($isset !== 0)
-                                {
-                                    $count++; // увеличиваем вес
-                                }
-                            }
-
-                            // пробуем заменить в строке символы «-» на пробел
-                            if($isset === 0)
-                            {
-                                $ins = str_replace('-', ' ', $in);
-
-                                $isset = mb_substr_count($modelNameLower, $ins);
-
-                                if($isset !== 0)
-                                {
-                                    $count++; // увеличиваем вес
-                                }
-                            }
-
-                            if($isset === 0)
-                            {
-                                $ins = str_replace('-', '/', $in);
-
-                                $isset = mb_substr_count($modelNameLower, $ins);
-
-                                if($isset !== 0)
-                                {
-                                    $count++; // увеличиваем вес
-                                }
-                            }
-                        }
-
-                        if($count > 0)
-                        {
-                            if(!isset($models['@attributes']) && isset($models['name']))
-                            {
-                                $result['models'][$models['name']] = $count;
-                            }
-                            else
-                            {
-                                $result['models'][$models['@attributes']['name']] = $count;
-                            }
+                            $modelMapAll[$modelName] = 0;
                         }
                     }
 
-                    if(isset($result['models']))
-                    {
-                        // Присваиваем в массив название бренда если найдена модель
-                        $result['brand'] = $make['@attributes']['name'];
-                        break;
-                    }
+                    break; // Бренд найден, модели собраны — выходим из внешнего цикла
                 }
             }
 
-            if(isset($result['models']))
+            if(empty($modelMapAll))
             {
-                $maxValue = max($result['models']);
-                $result['model'] = array_search($maxValue, $result['models'], true);
+                return false;
             }
 
-            // если модель не найдена - возвращаем результат отформатированной строки
-            if(empty($result))
-            {
-                $cacheHttpClientSpec = $this->cache->init('avito-board');
+            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
 
-                $arraySpec = $cacheHttpClientSpec->get('avito-board-spec', function(ItemInterface $item): array|false {
-
-                    $item->expiresAfter(DateInterval::createFromDateString('10 second'));
-
-                    $UserAgentGenerator = new UserAgentGenerator();
-                    $userAgent = $UserAgentGenerator->genDesktop();
-
-                    $httpClientSpec = HttpClient::create(['headers' => ['User-Agent' => $userAgent]])
-                        ->withOptions(['base_uri' => 'https://avito.ru']);
-
-                    $requestSpec = $httpClientSpec
-                        ->request('GET', '/web/1/autoload/user-docs/category/67021/field/121740/values-xml');
-
-                    if($requestSpec->getStatusCode() !== 200)
-                    {
-                        return false;
-                    }
-
-                    $item->expiresAfter(DateInterval::createFromDateString('1 day'));
-
-                    $xml = simplexml_load_string($requestSpec->getContent(), "SimpleXMLElement", LIBXML_NOCDATA);
-
-                    $json = json_encode($xml);
-
-                    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-
-                });
-
-                if(empty($arraySpec))
-                {
-                    return $formatModel;
-                }
-
-
-                /**
-                 * Пробуем найти по моделям спец-техники
-                 *
-                 * @see https://www.avito.ru/web/1/autoload/user-docs/category/67021/field/121740/values-xml
-                 */
-
-                $models = array_filter($arraySpec['Model'], static function($element) use ($formatModel) {
-                    return mb_strtolower($element) === mb_strtolower($formatModel['model']);
-                });
-
-                if(true === empty($models))
-                {
-                    $this->logger->critical(
-                        sprintf('Не найдено совпадений бренда или модели для продукта %s. Присвоили значение из карточки', $nameInfo),
-                        [self::class.':'.__LINE__, $formatModel],
-                    );
-
-                    return $formatModel;
-                }
-
-                return [
-                    'models' => [current($models)],
-                    'brand' => $formatModel['brand'],
-                    'model' => $formatModel['model'],
-                ];
-            }
-
-            return $result;
+            return $modelMapAll;
 
         });
 
-        return $result;
+
+        if(false === empty($modelMapAll))
+        {
+            $modelMapAllKey = "avito-board-all-model-".md5($this->model);
+            // $cache->deleteItem($modelMapAllKey);
+
+            $modelMapSearch = $cache->get(
+                $modelMapAllKey,
+                function(ItemInterface $item) use ($modelMapAll): string|false {
+
+                    $words = explode(' ', $this->model);
+
+                    $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+                    foreach($modelMapAll as $key => $value)
+                    {
+                        foreach($words as $currentAttempt)
+                        {
+                            $search = mb_strtolower($currentAttempt, 'UTF-8');
+
+                            if(str_contains(mb_strtolower($key, 'UTF-8'), $search))
+                            {
+                                ++$modelMapAll[$key];
+                            }
+                        }
+                    }
+
+                    $maxValue = max($modelMapAll);
+
+                    /** Если найдено значение с весом больше 0 - возвращаем его */
+                    if($maxValue > 0)
+                    {
+                        $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
+                        /** Находим все результаты */
+                        $maxKeys = array_keys($modelMapAll, $maxValue);
+
+                        /** Если значений больше одного - проверяем обратное вхождение */
+                        if(count($maxKeys) > 1)
+                        {
+                            foreach($maxKeys as $exist)
+                            {
+                                if(str_contains(mb_strtolower($this->model, 'UTF-8'), mb_strtolower($exist, 'UTF-8')))
+                                {
+                                    return $exist;
+                                }
+                            }
+                        }
+
+                        return current($maxKeys);
+                    }
+
+                    return false;
+
+                });
+
+            if($modelMapSearch)
+            {
+                return $modelMapSearch;
+            }
+        }
+
+
+        /**
+         * Пробуем определить по списку моделей для грузовиков и спецтехники
+         */
+
+        //$cache->deleteItem('avito-board-spec');
+
+        $arraySpecResult = $cache->get('avito-board-spec', function(ItemInterface $item): array|false {
+
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            $UserAgentGenerator = new UserAgentGenerator();
+            $userAgent = $UserAgentGenerator->genDesktop();
+
+            $httpClientSpec = HttpClient::create(["headers" => ["User-Agent" => $userAgent]])
+                ->withOptions(["base_uri" => "https://avito.ru"]);
+
+            $requestSpec = $httpClientSpec->request(
+                "GET",
+                "/web/1/autoload/user-docs/category/67021/field/121740/values-xml",
+            );
+
+            if($requestSpec->getStatusCode() !== 200)
+            {
+                return false;
+            }
+
+            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
+            $xml = simplexml_load_string(
+                $requestSpec->getContent(),
+                "SimpleXMLElement",
+                LIBXML_NOCDATA,
+            );
+
+            $json = json_encode($xml);
+
+            return json_decode(
+                $json,
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+        });
+
+        if(empty($arraySpecResult['Model']))
+        {
+            return false;
+        }
+
+
+        $arraySpec = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($arraySpecResult): array|false {
+
+            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
+            $flipped = array_flip($arraySpecResult['Model']);
+            $modelMapSpec = array_fill_keys(array_keys($flipped), 0);
+
+            if(empty($modelMapSpec))
+            {
+                return false;
+            }
+
+            return $modelMapSpec;
+
+        });
+
+        if(empty($arraySpec))
+        {
+            return false;
+        }
+
+
+        $modelMapAllKey = "avito-board-spec-model-".md5($this->model);
+        //$cache->deleteItem($modelMapAllKey);
+
+
+        $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($arraySpec): array|false {
+
+            $words = explode(' ', $this->model);
+
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            foreach($arraySpec as $key => $value)
+            {
+                foreach($words as $currentAttempt)
+                {
+                    $search = mb_strtolower($currentAttempt, 'UTF-8');
+
+                    if(str_contains(mb_strtolower($key, 'UTF-8'), $search))
+                    {
+                        ++$arraySpec[$key];
+                    }
+                }
+            }
+
+            $maxValue = max($arraySpec);
+
+            /** Если найдено значение с весом больше 0 - возвращаем его */
+            if($maxValue > 0)
+            {
+                $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
+                /** Находим все результаты */
+                $maxKeys = array_keys($arraySpec, $maxValue);
+
+                /** Если значений больше одного - проверяем обратное вхождение */
+                if(count($maxKeys) > 1)
+                {
+                    foreach($maxKeys as $exist)
+                    {
+                        if(str_contains(mb_strtolower($this->model, 'UTF-8'), mb_strtolower($exist, 'UTF-8')))
+                        {
+                            return $exist;
+                        }
+                    }
+                }
+
+                return current($maxKeys);
+            }
+
+            return false;
+
+        });
+
+
+        return $modelMapSearch;
     }
 }

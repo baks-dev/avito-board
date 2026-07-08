@@ -55,17 +55,20 @@ class PassengerTireTireAspectRatioElement implements AvitoBoardElementInterface
     {
         $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
+        if(empty($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        if(null === $AvitoBoardPropertyMapper[self::ELEMENT])
+        $element = $AvitoBoardPropertyMapper[self::ELEMENT];
+
+        if(empty($element->value))
         {
-            return null;
+            return $this->getDefault();
         }
 
-        return preg_replace('/\D\./', '', $AvitoBoardPropertyMapper[self::ELEMENT]);
+        return preg_replace('/\D\./', '', $element->value);
+
     }
 
     public function getDefault(): null

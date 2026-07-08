@@ -57,14 +57,23 @@ class PassengerTireRimDiameterElement implements AvitoBoardElementInterface
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
+
         $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
-        if(false === isset($AvitoBoardPropertyMapper[self::ELEMENT]))
+        if(empty($AvitoBoardPropertyMapper[self::ELEMENT]))
         {
             return $this->getDefault();
         }
 
-        return $AvitoBoardPropertyMapper[self::ELEMENT] ?? null;
+        $element = $AvitoBoardPropertyMapper[self::ELEMENT];
+
+        if(empty($element->value))
+        {
+            return $this->getDefault();
+        }
+
+        // удаляем любую букву, пробел или знак препинания
+        return preg_replace('/\D/', '', $element->value);
     }
 
     public function getDefault(): null
