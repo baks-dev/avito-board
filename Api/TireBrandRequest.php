@@ -176,6 +176,17 @@ final class TireBrandRequest
             return false;
         });
 
+        if(empty($result))
+        {
+            $this->logger->critical(
+                sprintf("avito-board: Не найдено совпадений бренда %s",
+                    $this->brand,
+                ),
+                [self::class.":".__LINE__],
+            );
+
+        }
+
         return $result;
     }
 }

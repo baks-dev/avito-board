@@ -140,23 +140,24 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
             /**
              * @var array{'value': string, 'element': string } $data
              */
-            $data = json_decode($this->avito_product, false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($this->avito_product, true, 512, JSON_THROW_ON_ERROR);
 
-            if(null === current($data))
+            $current = current($data);
+
+            if(empty($current))
             {
                 return null;
             }
 
-            $this->avito_product_decode = $data;
+            $this->avito_product_decode = $current;
         }
 
-
-        if(empty($this->avito_product['avito_product_id']))
+        if(empty($this->avito_product_decode['avito_product_id']))
         {
             return null;
         }
 
-        return $this->avito_product['avito_product_id'];
+        return $this->avito_product_decode['avito_product_id'];
     }
 
     public function getAvitoProfilePhone(): string
@@ -432,23 +433,24 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
             /**
              * @var array{'value': string, 'element': string } $data
              */
-            $data = json_decode($this->avito_product, false, 512, JSON_THROW_ON_ERROR);
+            $data = json_decode($this->avito_product, true, 512, JSON_THROW_ON_ERROR);
 
-            if(null === current($data))
+            $current = current($data);
+
+            if(empty($current))
             {
                 return null;
             }
 
-            $this->avito_product_decode = $data;
+            $this->avito_product_decode = $current;
         }
 
-
-        if(empty($this->avito_product['avito_product_description']))
+        if(empty($this->avito_product_decode['avito_product_description']))
         {
             return null;
         }
 
-        return $this->avito_product['avito_product_description'];
+        return $this->avito_product_decode['avito_product_description'];
     }
 
     public function getAvitoProductImages(): array|null

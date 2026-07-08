@@ -328,6 +328,17 @@ final class TireModelRequest
 
         });
 
+        if(empty($modelMapSearch))
+        {
+            $this->logger->critical(
+                sprintf(
+                    "avito-board: Не найдено совпадений бренда %s модели %s",
+                    $this->brand,
+                    $this->model,
+                ),
+                [self::class.":".__LINE__],
+            );
+        }
 
         return $modelMapSearch;
     }

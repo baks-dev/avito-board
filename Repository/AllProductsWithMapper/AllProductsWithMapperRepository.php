@@ -1278,7 +1278,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         $dbal
             ->addSelect('avito_product.avito_product')
             ->join(
-                'product',
+                'avito_kit',
                 "LATERAL (
                 
                 SELECT
@@ -1301,6 +1301,13 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
                     
                    FROM avito_product
+                   
+                   
+                   JOIN avito_product_token avito_product_token
+                   ON avito_product_token.avito = avito_product.id AND avito_product_token.value = avito_token.id
+                   
+                   JOIN avito_product_kit avito_product_kit
+                   ON avito_product_kit.avito = avito_product_token.avito AND avito_product_kit.value = avito_kit.value
                     
                     WHERE avito_product.product = product.id 
                     AND avito_product.offer = cteSelect.product_offer_const
@@ -1576,6 +1583,4 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
 
         return (true === $result->valid()) ? $result : false;
     }
-
-
 }
