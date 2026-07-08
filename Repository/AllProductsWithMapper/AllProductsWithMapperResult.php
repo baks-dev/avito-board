@@ -634,7 +634,7 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         return $this->brand;
     }
 
-    public function setProductBrand(?string $brand): self
+    public function setProductBrand(string $brand): self
     {
         $this->brand = $brand;
         return $this;

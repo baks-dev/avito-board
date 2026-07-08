@@ -68,7 +68,7 @@ final class TireModelRequest
      * @return array{'models': array{string, int}, 'band': string, 'model': string }|null
      * @see https://autoload.avito.ru/format/tyres_make.xml
      */
-    public function find(): ?string
+    public function find(): string|false
     {
         if(empty($this->brand))
         {
@@ -81,17 +81,13 @@ final class TireModelRequest
             throw new InvalidArgumentException('Invalid Argument Model');
         }
 
-        /** Разбиваем строку по пробелу для поиска вхождений */
-        $words = explode(' ', $this->model);
 
         $cache = $this->cache->init("avito-board");
 
-
         /** Получаем весь документ */
-
         //$cache->deleteItem('avito-board-tires');
 
-        $document = $cache->get("avito-board-tires", function(ItemInterface $item): array|false {
+        $document = $cache->get("avito-board-tires", function(ItemInterface $item): string|false {
 
             $item->expiresAfter(DateInterval::createFromDateString("10 second"));
 
@@ -119,18 +115,23 @@ final class TireModelRequest
                 LIBXML_NOCDATA,
             );
 
-            $json = json_encode($xml);
-
-            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            return json_encode($xml);
         });
 
+        if(empty($document))
+        {
+            return false;
+        }
 
-        $brandMapAllKey = "avito-board-all-brand-".md5($this->brand);
-        //$cache->deleteItem(brandMapAllKey);
 
-        $modelMapAll = $cache->get($brandMapAllKey, function(ItemInterface $item) use ($document): array|false {
+        $modelMapAllKey = "avito-board-all-model-".md5($this->model);
+        // $cache->deleteItem($modelMapAllKey);
+
+        $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($document): string|false {
 
             $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            $document = json_decode($document, true, 512, JSON_THROW_ON_ERROR);
 
             $modelMapAll = [];
 
@@ -167,72 +168,56 @@ final class TireModelRequest
                 return false;
             }
 
-            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
 
-            return $modelMapAll;
+            $words = explode(' ', $this->model);
+
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            foreach($modelMapAll as $key => $value)
+            {
+                foreach($words as $currentAttempt)
+                {
+                    $search = mb_strtolower($currentAttempt, 'UTF-8');
+
+                    if(str_contains(mb_strtolower($key, 'UTF-8'), $search))
+                    {
+                        ++$modelMapAll[$key];
+                    }
+                }
+            }
+
+            $maxValue = max($modelMapAll);
+
+            /** Если найдено значение с весом больше 0 - возвращаем его */
+            if($maxValue > 0)
+            {
+                $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
+                /** Находим все результаты */
+                $maxKeys = array_keys($modelMapAll, $maxValue);
+
+                /** Если значений больше одного - проверяем обратное вхождение */
+                if(count($maxKeys) > 1)
+                {
+                    foreach($maxKeys as $exist)
+                    {
+                        if(str_contains(mb_strtolower($this->model, 'UTF-8'), mb_strtolower($exist, 'UTF-8')))
+                        {
+                            return $exist;
+                        }
+                    }
+                }
+
+                return current($maxKeys);
+            }
+
+            return false;
 
         });
 
-
-        if(false === empty($modelMapAll))
+        if($modelMapSearch)
         {
-            $modelMapAllKey = "avito-board-all-model-".md5($this->model);
-            // $cache->deleteItem($modelMapAllKey);
-
-            $modelMapSearch = $cache->get(
-                $modelMapAllKey,
-                function(ItemInterface $item) use ($modelMapAll): string|false {
-
-                    $words = explode(' ', $this->model);
-
-                    $item->expiresAfter(DateInterval::createFromDateString("10 second"));
-
-                    foreach($modelMapAll as $key => $value)
-                    {
-                        foreach($words as $currentAttempt)
-                        {
-                            $search = mb_strtolower($currentAttempt, 'UTF-8');
-
-                            if(str_contains(mb_strtolower($key, 'UTF-8'), $search))
-                            {
-                                ++$modelMapAll[$key];
-                            }
-                        }
-                    }
-
-                    $maxValue = max($modelMapAll);
-
-                    /** Если найдено значение с весом больше 0 - возвращаем его */
-                    if($maxValue > 0)
-                    {
-                        $item->expiresAfter(DateInterval::createFromDateString("1 day"));
-
-                        /** Находим все результаты */
-                        $maxKeys = array_keys($modelMapAll, $maxValue);
-
-                        /** Если значений больше одного - проверяем обратное вхождение */
-                        if(count($maxKeys) > 1)
-                        {
-                            foreach($maxKeys as $exist)
-                            {
-                                if(str_contains(mb_strtolower($this->model, 'UTF-8'), mb_strtolower($exist, 'UTF-8')))
-                                {
-                                    return $exist;
-                                }
-                            }
-                        }
-
-                        return current($maxKeys);
-                    }
-
-                    return false;
-
-                });
-
-            if($modelMapSearch)
-            {
-                return $modelMapSearch;
-            }
+            return $modelMapSearch;
         }
 
 
@@ -242,7 +227,7 @@ final class TireModelRequest
 
         //$cache->deleteItem('avito-board-spec');
 
-        $arraySpecResult = $cache->get('avito-board-spec', function(ItemInterface $item): array|false {
+        $specDocument = $cache->get('avito-board-spec', function(ItemInterface $item): string|false {
 
             $item->expiresAfter(DateInterval::createFromDateString("10 second"));
 
@@ -270,39 +255,11 @@ final class TireModelRequest
                 LIBXML_NOCDATA,
             );
 
-            $json = json_encode($xml);
-
-            return json_decode(
-                $json,
-                true,
-                512,
-                JSON_THROW_ON_ERROR,
-            );
-        });
-
-        if(empty($arraySpecResult['Model']))
-        {
-            return false;
-        }
-
-
-        $arraySpec = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($arraySpecResult): array|false {
-
-            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
-
-            $flipped = array_flip($arraySpecResult['Model']);
-            $modelMapSpec = array_fill_keys(array_keys($flipped), 0);
-
-            if(empty($modelMapSpec))
-            {
-                return false;
-            }
-
-            return $modelMapSpec;
+            return json_encode($xml);
 
         });
 
-        if(empty($arraySpec))
+        if(empty($specDocument))
         {
             return false;
         }
@@ -311,8 +268,19 @@ final class TireModelRequest
         $modelMapAllKey = "avito-board-spec-model-".md5($this->model);
         //$cache->deleteItem($modelMapAllKey);
 
+        $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($specDocument): string|false {
 
-        $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($arraySpec): array|false {
+            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+
+            $arraySpec = json_decode($specDocument, true, 512, JSON_THROW_ON_ERROR);
+
+            $flipped = array_flip($arraySpec['Model']);
+            $modelMapSpec = array_fill_keys(array_keys($flipped), 0);
+
+            if(empty($modelMapSpec))
+            {
+                return false;
+            }
 
             $words = explode(' ', $this->model);
 

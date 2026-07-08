@@ -65,8 +65,9 @@ final class TireBrandRequest
         $cache = $this->cache->init("avito-board");
 
         /** Получаем весь документ */
+        //$cache->deleteItem("avito-board-tires");
 
-        $document = $cache->get("avito-board-tires", function(ItemInterface $item): array|false {
+        $document = $cache->get("avito-board-tires", function(ItemInterface $item): string|false {
 
             $item->expiresAfter(DateInterval::createFromDateString("10 second"));
 
@@ -94,9 +95,7 @@ final class TireBrandRequest
                 LIBXML_NOCDATA,
             );
 
-            $json = json_encode($xml);
-
-            return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            return json_encode($xml);
         });
 
         if(empty($document))
@@ -105,13 +104,14 @@ final class TireBrandRequest
         }
 
 
-        /**
-         *  Cобираем карту только по брендам
-         */
+        $key = "avito-board-brand-".md5($this->brand);
+        //$cache->deleteItem($key);
 
-        $brandMap = $cache->get("avito-board-tires-brands", function(ItemInterface $item) use ($document): array|false {
+        $result = $cache->get($key, function(ItemInterface $item) use ($document): string|false {
 
-            $item->expiresAfter(DateInterval::createFromDateString("10 second"));
+            $item->expiresAfter(DateInterval::createFromDateString("10 seconds"));
+
+            $document = json_decode($document, true, 512, JSON_THROW_ON_ERROR);
 
             // собираем карту только по брендам
             $brandMap = [];
@@ -131,23 +131,6 @@ final class TireBrandRequest
                 return false;
             }
 
-            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
-
-            return $brandMap;
-        });
-
-
-        if(empty($brandMap))
-        {
-            return false;
-        }
-
-        $key = "avito-board-".md5($this->brand);
-        //$cache->deleteItem($key);
-
-        $result = $cache->get($key, function(ItemInterface $item) use ($brandMap): string|false {
-
-            $item->expiresAfter(DateInterval::createFromDateString("1 day"));
 
             // Разбиваем исходную строку на массив слов
             $words = explode(' ', $this->brand);
@@ -170,6 +153,8 @@ final class TireBrandRequest
             /** Если найдено значение с весом больше 0 */
             if($maxValue > 0)
             {
+                $item->expiresAfter(DateInterval::createFromDateString("1 day"));
+
                 /** Находим все результаты */
                 $maxKeys = array_keys($brandMap, $maxValue);
 
@@ -189,7 +174,6 @@ final class TireBrandRequest
             }
 
             return false;
-
         });
 
         return $result;

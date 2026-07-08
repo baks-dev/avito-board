@@ -1567,7 +1567,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         //            );
 
 
-        //$dbal->enableCache('avito-board', '1 day');
+        $dbal->enableCache('avito-board', '1 day');
 
 
         $dbal->orderBy('product.event', 'DESC');
