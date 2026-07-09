@@ -57,7 +57,7 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function getDefault(): null
     {
-        return null;
+        return '%PRODUCT_NAME% %PRODUCT_VARIATION% %PRODUCT_MOD% %PRODUCT_OFFER%';
     }
 
     public function getHelp(): ?string
@@ -113,7 +113,7 @@ class DescriptionElement implements AvitoBoardElementInterface
             return sprintf('<![CDATA[%s]]>', $desc);
         }
 
-        return null;
+        return $this->getDefault();
     }
 
     public function element(): string

@@ -29,31 +29,34 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
+use BaksDev\Field\Pack\Brand\Type\BrandField;
+use BaksDev\Field\Tire\Season\Type\TireSeasonEnum;
+use BaksDev\Field\Tire\Season\Type\TireSeasonField;
+use BaksDev\Field\Tire\Season\Type\TireSeasonFieldType;
 
-class PassengerTireTireSectionWidthElement implements AvitoBoardElementInterface
+final class PassengerTireTypeElement implements AvitoBoardElementInterface
 {
-    private const string ELEMENT = 'TireSectionWidth';
+    private const string ELEMENT = 'TireType';
 
-    private const string LABEL = 'Ширина профиля шины';
+    private const string LABEL = 'Сезонность шин';
 
-    public function isMapping(): true
+    public function isMapping(): bool
     {
         return true;
     }
 
-    public function isRequired(): true
+    public function isRequired(): bool
     {
         return true;
     }
 
-    public function getHelp(): null
+    public function getHelp(): ?string
     {
         return null;
     }
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-
         $AvitoBoardPropertyMapper = $data->getAvitoBoardPropertyMapper();
 
         if(empty($AvitoBoardPropertyMapper[self::ELEMENT]))
@@ -68,12 +71,38 @@ class PassengerTireTireSectionWidthElement implements AvitoBoardElementInterface
             return $this->getDefault();
         }
 
-        if($element->value === 'null')
+        $tireType = match ($element->value)
         {
-            $element->value = '80';
+            TireSeasonEnum::WINTER->value => 'Зимние',
+            TireSeasonEnum::SUMMER->value => 'Летние',
+            TireSeasonEnum::ALL->value => 'Всесезонные',
+        };
+
+        if($tireType === 'Летние' || $tireType === 'Всесезонные')
+        {
+            return $tireType;
         }
 
-        return preg_replace('/\D\./', '', $element->value);
+
+        /**
+         * Если шина зимняя - проверяем, является ли она шипованная и конкатенируем
+         */
+
+        if(empty($AvitoBoardPropertyMapper[PassengerTireSpikesElement::ELEMENT]))
+        {
+            return sprintf('%s %s', $tireType, 'нешипованные');
+        }
+
+        $spikesElement = $AvitoBoardPropertyMapper[PassengerTireSpikesElement::ELEMENT];
+
+        $spikes = match ($spikesElement->value)
+        {
+            'true' => 'шипованные',
+            'false' => 'нешипованные',
+        };
+
+        return sprintf('%s %s', $tireType, $spikes);
+
     }
 
     public function getDefault(): null

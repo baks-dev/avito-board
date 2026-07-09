@@ -124,7 +124,7 @@ final class TireModelRequest
         }
 
 
-        $modelMapAllKey = "avito-board-all-model-".md5($this->model);
+        $modelMapAllKey = "avito-board-all-model-".md5($this->brand.$this->model);
         // $cache->deleteItem($modelMapAllKey);
 
         $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($document): string|false {
@@ -265,7 +265,7 @@ final class TireModelRequest
         }
 
 
-        $modelMapAllKey = "avito-board-spec-model-".md5($this->model);
+        $modelMapAllKey = "avito-board-spec-model-".md5($this->brand.$this->model);
         //$cache->deleteItem($modelMapAllKey);
 
         $modelMapSearch = $cache->get($modelMapAllKey, function(ItemInterface $item) use ($specDocument): string|false {

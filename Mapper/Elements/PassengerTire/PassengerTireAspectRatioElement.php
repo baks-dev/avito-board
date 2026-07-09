@@ -30,7 +30,7 @@ use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
 
-class PassengerTireTireAspectRatioElement implements AvitoBoardElementInterface
+class PassengerTireAspectRatioElement implements AvitoBoardElementInterface
 {
     private const string ELEMENT = 'TireAspectRatio';
 
@@ -65,6 +65,11 @@ class PassengerTireTireAspectRatioElement implements AvitoBoardElementInterface
         if(empty($element->value))
         {
             return $this->getDefault();
+        }
+
+        if($element->value === 'null')
+        {
+            return '80';
         }
 
         return preg_replace('/\D\./', '', $element->value);

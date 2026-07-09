@@ -40,7 +40,7 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
  * -- не используем, так как не реализуем разноширокие комплекты --
  * -- если элемент обязательный, то значение будем брать такое же, как и в элементе TireAspectRatioElement --
  *
- * @see PassengerTireTireAspectRatioElement
+ * @see PassengerTireAspectRatioElement
  */
 class PassengerTireBackTireAspectRatioElement
 {

@@ -34,7 +34,7 @@ use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperRe
  *
  * Авито игнорирует кастомные теги.
  *
- * Связан с @see PassengerTireTireTypeElement
+ * Связан с @see PassengerTireTypeElement
  */
 final class PassengerTireSpikesElement implements AvitoBoardElementInterface
 {

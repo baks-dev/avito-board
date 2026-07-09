@@ -79,8 +79,7 @@ class PassengerTireBackRimDiameterElement
             return $this->getDefault();
         }
 
-        // удаляем любую букву, пробел или знак препинания
-        return preg_replace('/\D/', '', $element->value);
+        return $element->value;
     }
 
     public function getDefault(): null

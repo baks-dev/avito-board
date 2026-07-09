@@ -52,18 +52,23 @@ use BaksDev\Products\Product\Entity\Category\ProductCategory;
 use BaksDev\Products\Product\Entity\Description\ProductDescription;
 use BaksDev\Products\Product\Entity\Event\ProductEvent;
 use BaksDev\Products\Product\Entity\Info\ProductInfo;
+use BaksDev\Products\Product\Entity\Offers\Image\ProductOfferImage;
 use BaksDev\Products\Product\Entity\Offers\Price\ProductOfferPrice;
 use BaksDev\Products\Product\Entity\Offers\ProductOffer;
 use BaksDev\Products\Product\Entity\Offers\Quantity\ProductOfferQuantity;
+use BaksDev\Products\Product\Entity\Offers\Variation\Image\ProductVariationImage;
+use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Image\ProductModificationImage;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Price\ProductModificationPrice;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\ProductModification;
 use BaksDev\Products\Product\Entity\Offers\Variation\Modification\Quantity\ProductModificationQuantity;
 use BaksDev\Products\Product\Entity\Offers\Variation\Price\ProductVariationPrice;
 use BaksDev\Products\Product\Entity\Offers\Variation\ProductVariation;
 use BaksDev\Products\Product\Entity\Offers\Variation\Quantity\ProductVariationQuantity;
+use BaksDev\Products\Product\Entity\Photo\ProductPhoto;
 use BaksDev\Products\Product\Entity\Price\ProductPrice;
 use BaksDev\Products\Product\Entity\Product;
 use BaksDev\Products\Product\Entity\ProductInvariable;
+use BaksDev\Products\Product\Entity\Project\Description\ProductProjectDescription;
 use BaksDev\Products\Product\Entity\Project\ProductProject;
 use BaksDev\Products\Product\Entity\Project\Season\ProductProjectSeason;
 use BaksDev\Products\Product\Entity\Property\ProductProperty;
@@ -518,14 +523,26 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'product_trans.event = product_event.id AND product_trans.local = :local',
             );
 
-        $dbal
-            ->addSelect('product_desc.preview AS product_description')
-            ->leftJoin(
-                'product_event',
-                ProductDescription::class,
-                'product_desc',
-                'product_desc.event = product_event.id AND product_desc.device = :device ',
-            )->setParameter('device', 'pc');
+        //        $dbal
+        //            ->addSelect('product_desc.preview AS product_description')
+        //            ->leftJoin(
+        //                'product_event',
+        //                ProductDescription::class,
+        //                'product_desc',
+        //                'product_desc.event = product_event.id AND product_desc.device = :device ',
+        //            )->setParameter('device', 'pc');
+
+
+        //        /* Задать профиль - PROJECT_PROFILE */
+        //        if(true === $dbal->isProjectProfile())
+        //        {
+        //            $dbal->andWhere('product_project.profile = :'.$dbal::PROJECT_PROFILE_KEY.' OR product_project.profile IS NULL');
+        //        }
+
+
+
+
+
 
         /**
          * Торговое предложение
@@ -894,7 +911,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                         'img_cdn', product_images.cdn
                     )
                     
-                ) AS product_images
+                ) FILTER (WHERE product_images.ext IS NOT NULL) AS product_images
 
 
                
@@ -904,7 +921,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 SELECT DISTINCT 
                     product_photo.root,
                     product_photo.ext,
-                    product_photo.name,
+                    CONCAT ( '/upload/".$dbal->table(ProductPhoto::class)."' , '/', product_photo.name) AS name,
                     product_photo.cdn 
                 FROM product_photo product_photo
                 WHERE product_photo.event = product.event
@@ -917,7 +934,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 SELECT DISTINCT 
                     product_offer_images.root,
                     product_offer_images.ext,
-                    product_offer_images.name,
+                    CONCAT ( '/upload/".$dbal->table(ProductOfferImage::class)."' , '/', product_offer_images.name) AS name,
                     product_offer_images.cdn 
                 FROM product_offer_images product_offer_images
                 WHERE product_offer_images.offer = cteSelect.product_offer_id
@@ -929,7 +946,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 SELECT DISTINCT 
                     product_variation_images.root,
                     product_variation_images.ext,
-                    product_variation_images.name,
+                    CONCAT ( '/upload/".$dbal->table(ProductVariationImage::class)."' , '/', product_variation_images.name) AS name,
                     product_variation_images.cdn 
                 FROM product_variation_images product_variation_images
                 WHERE product_variation_images.variation = cteSelect.product_variation_id
@@ -942,7 +959,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 SELECT DISTINCT 
                     product_modification_images.root,
                     product_modification_images.ext,
-                    product_modification_images.name,
+                    CONCAT ( '/upload/".$dbal->table(ProductModificationImage::class)."' , '/', product_modification_images.name) AS name,
                     product_modification_images.cdn 
                 FROM product_modification_images product_modification_images
                 WHERE product_modification_images.modification = cteSelect.product_modification_id
@@ -1026,6 +1043,19 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 key: 'month',
                 value: (int) date('n'),
                 type: ParameterType::INTEGER,
+            );
+
+
+        $dbal
+            ->addSelect('product_project_description.preview AS product_description')
+            ->leftJoin(
+                'product_project',
+                ProductProjectDescription::class,
+                'product_project_description',
+                "
+                    product_project_description.project = product_project.id
+                    AND product_project_description.device = 'pc'
+                ",
             );
 
 
@@ -1339,7 +1369,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                             'img_ext', avito_product_images.ext,
                             'img_cdn', avito_product_images.cdn
                         )
-                ) AS avito_product_images
+                ) FILTER (WHERE avito_product_images.ext IS NOT NULL) AS avito_product_images
 
                
                 FROM (
