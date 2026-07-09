@@ -55,7 +55,7 @@ class DescriptionElement implements AvitoBoardElementInterface
         return true;
     }
 
-    public function getDefault(): null
+    public function getDefault(): string
     {
         return '%PRODUCT_NAME% %PRODUCT_VARIATION% %PRODUCT_MOD% %PRODUCT_OFFER%';
     }
