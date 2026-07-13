@@ -157,7 +157,7 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
             return false;
         }
 
-        return $this->avito_product_decode['avito_product_salse'];
+        return $this->avito_product_decode['avito_product_sale'];
     }
 
 

@@ -73,7 +73,7 @@ class DateEndElement implements AvitoBoardElementInterface
         $date = new DateTimeImmutable('+ 2 day');
 
         /** Если объявления снято с продажи */
-        if(false === $data->isAvitoProductSale())
+        if(true === $data->isAvitoProductSale())
         {
             return $date->format('Y-m-d');
         }
