@@ -123,6 +123,44 @@ final class AllProductsWithMapperResult implements ProductPriceResultInterface
         return new ProductEventUid($this->event);
     }
 
+    public function isAvitoProductSale(): bool
+    {
+        if(true === is_null($this->avito_product_decode))
+        {
+            if(empty($this->avito_product))
+            {
+                return false;
+            }
+
+            if(false === json_validate($this->avito_product))
+            {
+                return false;
+            }
+
+            /**
+             * @var array{'value': string, 'element': string } $data
+             */
+            $data = json_decode($this->avito_product, true, 512, JSON_THROW_ON_ERROR);
+
+            $current = current($data);
+
+            if(empty($current))
+            {
+                return false;
+            }
+
+            $this->avito_product_decode = $current;
+        }
+
+        if(empty($this->avito_product_decode['avito_product_sale']))
+        {
+            return false;
+        }
+
+        return $this->avito_product_decode['avito_product_salse'];
+    }
+
+
     public function getAvitoProductId(): string|null
     {
         if(true === is_null($this->avito_product_decode))

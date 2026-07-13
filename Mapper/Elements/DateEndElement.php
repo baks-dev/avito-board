@@ -72,6 +72,12 @@ class DateEndElement implements AvitoBoardElementInterface
         /** По умолчанию объявление будет добавлено в фид, НО НЕ ОПУБЛИКОВАННО - дата в будущем */
         $date = new DateTimeImmutable('+ 2 day');
 
+        /** Если объявления снято с продажи */
+        if($data->isAvitoProductSale())
+        {
+            return $date->format('Y-m-d');
+        }
+
         $product_quantity = $data->getProductQuantity();
 
         /**

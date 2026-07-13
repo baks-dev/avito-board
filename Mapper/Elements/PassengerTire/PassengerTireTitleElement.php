@@ -28,6 +28,8 @@ namespace BaksDev\Avito\Board\Mapper\Elements\PassengerTire;
 use BaksDev\Avito\Board\Mapper\Elements\AvitoBoardElementInterface;
 use BaksDev\Avito\Board\Mapper\Products\PassengerTireProduct;
 use BaksDev\Avito\Board\Repository\AllProductsWithMapper\AllProductsWithMapperResult;
+use BaksDev\Field\Pack\Brand\Type\BrandField;
+use BaksDev\Field\Pack\Model\Type\ModelField;
 
 /**
  * Название объявления — строка до 50 символов.
@@ -62,14 +64,65 @@ final readonly class PassengerTireTitleElement implements AvitoBoardElementInter
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
+        $brand = null;
+
+        $model = null;
+
+        /** Пробуем определить свойство Бренда и Модели */
+        if($data->getProductPropertyMapper())
+        {
+            $filter = array_filter(
+                $data->getProductPropertyMapper(),
+                static function($item) {
+                    return $item->type === BrandField::TYPE;
+                },
+            );
+
+            $result = current($filter);
+
+            if(false === empty($result))
+            {
+                $brand = $result->value;
+            }
+
+            $filter = array_filter(
+                $data->getProductPropertyMapper(),
+                static function($item) {
+                    return $item->type === ModelField::TYPE;
+                },
+            );
+
+            $result = current($filter);
+
+            if(false === empty($result))
+            {
+                $model = $result->value;
+            }
+
+        }
+
         $kit = $data->getAvitoKitValue();
 
-        $name = 'Шины '.$data->getProductName();
-
-        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
-        if((false === empty($kit)) && $kit !== 1)
+        /** Если найдены бренд и модель - присваиваем, т.к. ограничение до 50 символов в названии */
+        if(isset($brand, $model))
         {
-            $name = 'Комплект шин '.$data->getProductName();
+            $name = sprintf('Шины %s %s', $brand, $model);
+
+            /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
+            if((false === empty($kit)) && $kit !== 1)
+            {
+                $name = sprintf('Комплект шин  %s %s', $brand, $model);
+            }
+        }
+        else
+        {
+            $name = 'Шины '.$data->getProductName();
+
+            /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
+            if((false === empty($kit)) && $kit !== 1)
+            {
+                $name = 'Комплект шин '.$data->getProductName();
+            }
         }
 
         if($data->getProductVariationValue())

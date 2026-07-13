@@ -436,6 +436,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                 'avito_kit.event = avito_token.event',
             );
 
+
         $dbal->join(
             'avito_token_profile',
             UserProfileInfo::class,
@@ -538,10 +539,6 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
         //        {
         //            $dbal->andWhere('product_project.profile = :'.$dbal::PROJECT_PROFILE_KEY.' OR product_project.profile IS NULL');
         //        }
-
-
-
-
 
 
         /**
@@ -1318,6 +1315,7 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     JSONB_BUILD_OBJECT
                         (
                             'avito_product_id', avito_product.id,
+                            'avito_product_sale', avito_product.sale,
                             'avito_product_description', avito_product.description
                         )
                 ) AS avito_product
@@ -1327,7 +1325,8 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                     SELECT DISTINCT 
                     
                         avito_product.id,
-                        avito_product.description
+                        avito_product.description,
+                        avito_product_sale.value AS sale
 
                     
                    FROM avito_product
@@ -1338,6 +1337,10 @@ final class AllProductsWithMapperRepository implements AllProductsWithMapperInte
                    
                    JOIN avito_product_kit avito_product_kit
                    ON avito_product_kit.avito = avito_product_token.avito AND avito_product_kit.value = avito_kit.value
+
+                   LEFT JOIN avito_product_sale avito_product_sale
+                   ON avito_product_sale.avito = avito_product_token.avito
+                   
                     
                     WHERE avito_product.product = product.id 
                     AND avito_product.offer = cteSelect.product_offer_const
