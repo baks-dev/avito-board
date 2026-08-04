@@ -67,6 +67,23 @@ class DescriptionElement implements AvitoBoardElementInterface
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
+        $search = [
+            '%PRODUCT_NAME%',
+            '%PRODUCT_OFFER%',
+            '%PRODUCT_VARIATION%',
+            '%PRODUCT_MOD%',
+            '%PRODUCT_ADDRESS%',
+        ];
+
+        $replace = [
+            $data->getProductName(),
+            $data->getProductOfferValue(),
+            $data->getProductVariationValue(),
+            $data->getProductModificationValue(),
+            $data->getAvitoProfileAddress(),
+        ];
+
+
         $desc = '';
 
         /**
@@ -84,22 +101,6 @@ class DescriptionElement implements AvitoBoardElementInterface
         // Если есть шаблон для описания - форматируем
         if(false === is_null($data->getAvitoProductDescription()))
         {
-            $search = [
-                '%PRODUCT_NAME%',
-                '%PRODUCT_OFFER%',
-                '%PRODUCT_VARIATION%',
-                '%PRODUCT_MOD%',
-                '%PRODUCT_ADDRESS%',
-            ];
-
-            $replace = [
-                $data->getProductName(),
-                $data->getProductOfferValue(),
-                $data->getProductVariationValue(),
-                $data->getProductModificationValue(),
-                $data->getAvitoProfileAddress(),
-            ];
-
             $desc .= str_replace($search, $replace, $data->getAvitoProductDescription());
 
             return sprintf('<![CDATA[%s]]>', $desc);
@@ -113,7 +114,7 @@ class DescriptionElement implements AvitoBoardElementInterface
             return sprintf('<![CDATA[%s]]>', $desc);
         }
 
-        return $this->getDefault();
+        return str_replace($search, $replace, $this->getDefault());
     }
 
     public function element(): string

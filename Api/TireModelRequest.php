@@ -273,8 +273,10 @@ final class TireModelRequest
             $item->expiresAfter(DateInterval::createFromDateString("10 second"));
 
             $arraySpec = json_decode($specDocument, true, 512, JSON_THROW_ON_ERROR);
+            $arraySpec = $arraySpec['Model'];
 
-            $flipped = array_flip($arraySpec['Model']);
+            $flipped = array_flip($arraySpec);
+
             $modelMapSpec = array_fill_keys(array_keys($flipped), 0);
 
             if(empty($modelMapSpec))
@@ -292,14 +294,14 @@ final class TireModelRequest
                 {
                     $search = mb_strtolower($currentAttempt, 'UTF-8');
 
-                    if(str_contains(mb_strtolower($key, 'UTF-8'), $search))
+                    if(str_contains(mb_strtolower($value, 'UTF-8'), $search))
                     {
-                        ++$arraySpec[$key];
+                        ++$modelMapSpec[$value];
                     }
                 }
             }
 
-            $maxValue = max($arraySpec);
+            $maxValue = max($modelMapSpec);
 
             /** Если найдено значение с весом больше 0 - возвращаем его */
             if($maxValue > 0)
@@ -307,7 +309,7 @@ final class TireModelRequest
                 $item->expiresAfter(DateInterval::createFromDateString("1 day"));
 
                 /** Находим все результаты */
-                $maxKeys = array_keys($arraySpec, $maxValue);
+                $maxKeys = array_keys($modelMapSpec, $maxValue);
 
                 /** Если значений больше одного - проверяем обратное вхождение */
                 if(count($maxKeys) > 1)

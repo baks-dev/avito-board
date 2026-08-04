@@ -62,21 +62,31 @@ class PassengerTireLoadIndexElement implements AvitoBoardElementInterface
 
     public function fetchData(AllProductsWithMapperResult $data): ?string
     {
-        if(null === $data->getProductModificationPostfix())
+        $postfix = $data->getProductModificationPostfix();
+
+        if(empty($postfix))
         {
             return null;
         }
 
-        $index = explode('/', $data->getProductModificationPostfix()); // 102/104Q
-        $cleanedIndex = (int) filter_var(current($index), FILTER_SANITIZE_NUMBER_INT);
-
-        /** Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется, цена умножается на значение avito_kit_value */
-        if($data->getAvitoKitValue() > 1)
+        // Извлекаем только первые цифры регулярным выражением
+        if(!preg_match('/^\d+/', $postfix, $matches))
         {
-            $cleanedIndex += $data->getAvitoKitValue();
+            return null;
         }
 
-        return (string) $cleanedIndex;
+        $index = (int) $matches[0];
+
+        /**
+         * Если параметр Количество товаров в объявлении УСТАНОВЛЕН и не равен 1 - объявление дублируется,
+         * цена умножается на значение avito_kit_value
+         */
+        if($data->getAvitoKitValue() > 1)
+        {
+            $index += $data->getAvitoKitValue();
+        }
+
+        return (string) $index;
     }
 
     public function element(): string
