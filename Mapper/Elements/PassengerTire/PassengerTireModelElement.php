@@ -97,9 +97,9 @@ final readonly class PassengerTireModelElement implements AvitoBoardElementInter
             ->model($model)
             ->find();
 
-        if(null === $search)
+        if(empty($search))
         {
-            return null;
+            return $model;
         }
 
         return $search;
